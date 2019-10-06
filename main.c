@@ -5,10 +5,11 @@
  */
 
 /*  I N C L U D E S   */
+#include <driver_clocks.h>
 #include <stdint.h>
 #include <stdbool.h>
 
-/*  D R I V E R   L I B   */
+/*  D R I V E R L I B   */
 #include "inc/hw_types.h"
 #include "inc/hw_memmap.h"
 #include "driverlib/sysctl.h"
@@ -23,7 +24,6 @@
 #include "led.h"
 
 /*   D R I V E R   I N C L U D E S   */
-#include "clocks.h"
 
 /*  F R E E R T O S   H O O K S   */
 void vApplicationMallocFailedHook( void );
@@ -38,7 +38,8 @@ void *malloc( size_t xSize );
  */
 void main(void)
 {
-    configure_pll_clock_source();
+    // set clock source to 16MHz external oscillator, use PLL and divide by 10 to get 20MHz
+    SysCtlClockSet(SYSCTL_SYSDIV_10 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
 
     /* T A S K S */
     BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, NULL);

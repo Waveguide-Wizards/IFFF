@@ -14,5 +14,4 @@ void prvLED_Heartbeat(void *pvParameters);
 /*  F U N C T I O N S   */
 void init_led_gpio(void);
 
-
 #endif /* INCLUDE_LED_H_ */

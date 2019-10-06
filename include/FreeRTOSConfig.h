@@ -100,9 +100,9 @@ header file. */
 #define INCLUDE_xEventGroupSetBitFromISR        1
 #define INCLUDE_xTimerPendFunctionCall          1
 #define INCLUDE_xTaskAbortDelay                 0
-#define INCLUDE_xTaskGetHandle                  0
+#define INCLUDE_xTaskGetHandle                  1
 #define INCLUDE_xTaskResumeFromISR              1
-#define INCLUDE_xSemaphoreGetMutexHolder        0
+#define INCLUDE_xSemaphoreGetMutexHolder        1
 #define INCLUDE_eTaskGetState                   1
 
 /* Cortex-M3/4 interrupt priority configuration follows...................... */

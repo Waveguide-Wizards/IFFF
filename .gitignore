@@ -37,6 +37,7 @@
 *.hex
 
 # Debug files
+Debug/
 *.dSYM/
 *.su
 *.idb
@@ -50,3 +51,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# CCS files
+targetConfigs/
+.project
+.cproject
+.ccsproject
+.settings
