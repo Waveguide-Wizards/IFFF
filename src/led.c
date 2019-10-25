@@ -28,7 +28,9 @@ void prvLED_Heartbeat(void *pvParameters) {
     static uint8_t led_status = GPIO_PIN_3;
     init_led_gpio();
     for( ;; ) {
-        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, (led_status ^ GPIO_PIN_3));
+        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
+        vTaskDelay(delay_time);
+        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
         vTaskDelay(delay_time);
     }
 }

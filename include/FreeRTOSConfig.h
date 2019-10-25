@@ -40,8 +40,8 @@
 //#define xPortPendSVHandler      PendSV_Handler
 //#define xPortSysTickHandler     SysTick_Handler
 
+
 /* Constants related to the behaviour or the scheduler. */
-#define configUSE_PORT_OPTIMISED_TASK_SELECTION	1
 #define configUSE_PREEMPTION					1
 //#define configUSE_TIME_SLICING					1
 #define configMAX_PRIORITIES					( 5 )
@@ -55,7 +55,7 @@
 #define configMAX_TASK_NAME_LEN					( 16 )
 
 /* TODO: look at datasheet for heap size */
-#define configTOTAL_HEAP_SIZE					( ( size_t ) ( 50 * 1024 ) )
+#define configTOTAL_HEAP_SIZE					( ( size_t ) 6500)  // ( 50 * 1024 ) )
 
 #define configUSE_IDLE_HOOK             0
 #define configUSE_TICK_HOOK             0

@@ -49,7 +49,17 @@ void main(void)
 
     /* start scheduler */
     vTaskStartScheduler();
-    for( ;; );
+
+//    init_led_gpio();
+//    uint8_t led_status = GPIO_PIN_3;
+    int i;
+
+    for( ;; ) {
+//        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
+//        for(i = 0; i < 100000; i++);
+//        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
+//        for(i = 0; i < 100000; i++);
+    }
 }
 
 
