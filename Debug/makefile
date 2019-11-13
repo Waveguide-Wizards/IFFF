@@ -2,7 +2,9 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
-CG_TOOL_ROOT := /home/jack/ti/ccs910/ccs/tools/compiler/ti-cgt-arm_18.12.2.LTS
+SHELL = cmd.exe
+
+CG_TOOL_ROOT := C:/ti/ccs920/ccs/tools/compiler/ti-cgt-arm_18.12.3.LTS
 
 GEN_OPTS__FLAG := 
 GEN_CMDS__FLAG := 
@@ -22,17 +24,17 @@ ORDERED_OBJS += \
 "./FreeRTOS/Source/portable/MemMang/heap_4.obj" \
 "./drivers/source/driver_clocks.obj" \
 "./drivers/source/driver_motor_control.obj" \
+"./src/drv888.obj" \
 "./src/led.obj" \
 "./src/motor_control.obj" \
-"../tm4c123gh6pm.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibc.a \
 -l"/home/jack/ti/tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/driverlib.lib" \
 
 -include ../makefile.init
 
-RM := rm -rf
-RMDIR := rm -rf
+RM := DEL /F
+RMDIR := RMDIR /S/Q
 
 # All of the sources participating in the build are defined here
 -include sources.mk
@@ -157,30 +159,30 @@ BIN_OUTPUTS__QUOTED += \
 
 
 # All Target
-all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+all: $(OBJS) $(GEN_CMDS)
 	@$(MAKE) --no-print-directory -Onone "IFFF.out"
 
 # Tool invocations
-IFFF.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+IFFF.out: $(OBJS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: ARM Linker'
-	"/home/jack/ti/ccs910/ccs/tools/compiler/ti-cgt-arm_18.12.2.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --define=ccs="ccs" --define=PART_TM4C123GH6PM -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi -z -m"IFFF.map" --heap_size=0 --stack_size=512 -i"/home/jack/ti/ccs910/ccs/tools/compiler/ti-cgt-arm_18.12.2.LTS/lib" -i"/home/jack/ti/ccs910/ccs/tools/compiler/ti-cgt-arm_18.12.2.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="IFFF_linkInfo.xml" --rom_model -o "IFFF.out" $(ORDERED_OBJS)
+	"C:/ti/ccs920/ccs/tools/compiler/ti-cgt-arm_18.12.3.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --define=ccs="ccs" --define=PART_TM4C123GH6PM -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi -z -m"IFFF.map" --heap_size=0 --stack_size=512 -i"C:/ti/ccs920/ccs/tools/compiler/ti-cgt-arm_18.12.3.LTS/lib" -i"C:/ti/ccs920/ccs/tools/compiler/ti-cgt-arm_18.12.3.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="IFFF_linkInfo.xml" --rom_model -o "IFFF.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
 IFFF.hex: $(EXE_OUTPUTS)
 	@echo 'Building files: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo 'Invoking: ARM Hex Utility'
-	"/home/jack/ti/ccs910/ccs/tools/compiler/ti-cgt-arm_18.12.2.LTS/bin/armhex"  -o "IFFF.hex" $(EXE_OUTPUTS__QUOTED)
+	"C:/ti/ccs920/ccs/tools/compiler/ti-cgt-arm_18.12.3.LTS/bin/armhex"  -o "IFFF.hex" $(EXE_OUTPUTS__QUOTED)
 	@echo 'Finished building: $(strip $(EXE_OUTPUTS__QUOTED))'
 	@echo ' '
 
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "tm4c123gh6pm_startup_ccs.obj" "FreeRTOS/Source/croutine.obj" "FreeRTOS/Source/event_groups.obj" "FreeRTOS/Source/list.obj" "FreeRTOS/Source/queue.obj" "FreeRTOS/Source/stream_buffer.obj" "FreeRTOS/Source/tasks.obj" "FreeRTOS/Source/timers.obj" "FreeRTOS/Source/portable/CCS/ARM_CM4F/port.obj" "FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.obj" "FreeRTOS/Source/portable/MemMang/heap_4.obj" "drivers/source/driver_clocks.obj" "drivers/source/driver_motor_control.obj" "src/led.obj" "src/motor_control.obj" 
-	-$(RM) "main.d" "tm4c123gh6pm_startup_ccs.d" "FreeRTOS/Source/croutine.d" "FreeRTOS/Source/event_groups.d" "FreeRTOS/Source/list.d" "FreeRTOS/Source/queue.d" "FreeRTOS/Source/stream_buffer.d" "FreeRTOS/Source/tasks.d" "FreeRTOS/Source/timers.d" "FreeRTOS/Source/portable/CCS/ARM_CM4F/port.d" "FreeRTOS/Source/portable/MemMang/heap_4.d" "drivers/source/driver_clocks.d" "drivers/source/driver_motor_control.d" "src/led.d" "src/motor_control.d" 
-	-$(RM) "FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.d" 
+	-$(RM) "main.obj" "tm4c123gh6pm_startup_ccs.obj" "FreeRTOS\Source\croutine.obj" "FreeRTOS\Source\event_groups.obj" "FreeRTOS\Source\list.obj" "FreeRTOS\Source\queue.obj" "FreeRTOS\Source\stream_buffer.obj" "FreeRTOS\Source\tasks.obj" "FreeRTOS\Source\timers.obj" "FreeRTOS\Source\portable\CCS\ARM_CM4F\port.obj" "FreeRTOS\Source\portable\CCS\ARM_CM4F\portasm.obj" "FreeRTOS\Source\portable\MemMang\heap_4.obj" "drivers\source\driver_clocks.obj" "drivers\source\driver_motor_control.obj" "src\drv888.obj" "src\led.obj" "src\motor_control.obj" 
+	-$(RM) "main.d" "tm4c123gh6pm_startup_ccs.d" "FreeRTOS\Source\croutine.d" "FreeRTOS\Source\event_groups.d" "FreeRTOS\Source\list.d" "FreeRTOS\Source\queue.d" "FreeRTOS\Source\stream_buffer.d" "FreeRTOS\Source\tasks.d" "FreeRTOS\Source\timers.d" "FreeRTOS\Source\portable\CCS\ARM_CM4F\port.d" "FreeRTOS\Source\portable\MemMang\heap_4.d" "drivers\source\driver_clocks.d" "drivers\source\driver_motor_control.d" "src\drv888.d" "src\led.d" "src\motor_control.d" 
+	-$(RM) "FreeRTOS\Source\portable\CCS\ARM_CM4F\portasm.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
 
