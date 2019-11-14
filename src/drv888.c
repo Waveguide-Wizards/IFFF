@@ -11,7 +11,7 @@
 
 DRV888_Ret_t DRV888_Init(DRV888_t * driver)
 {
-//    driver->
+
 }
 
 
