@@ -48,8 +48,6 @@
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}"/>
 									<listOptionValue builtIn="false" value="C:\ti\tivaware_c_series_2_1_4_178"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/littlefs}"/>
-									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/drivers/include}"/>
-									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/drivers/source}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/FreeRTOS/Source/include}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/FreeRTOS/Source/portable/CCS/ARM_CM4F}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/FreeRTOS/Source/portable/MemMang}"/>

@@ -61,6 +61,4 @@ targetConfigs/
 .cproject
 .ccsproject
 .settings
-*.mk
-*.mk
-*.opt
+
