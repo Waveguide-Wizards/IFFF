@@ -5,7 +5,6 @@
  */
 
 /*  I N C L U D E S   */
-#include <driver_clocks.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -15,15 +14,15 @@
 #include "driverlib/sysctl.h"
 #include "driverlib/gpio.h"
 
-
 /*  F R E E R T O S   I N C L U D E S   */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
 
 /*  A P P L I C A T I O N    I N C L U D E S   */
+#include "main_motor_control.h"
 #include "led.h"
-
-/*   D R I V E R   I N C L U D E S   */
+#include "x_motor_control.h"
 
 /*  F R E E R T O S   H O O K S   */
 void vApplicationMallocFailedHook( void );
@@ -33,33 +32,34 @@ void vPreSleepProcessing( uint32_t ulExpectedIdleTime );
 void vApplicationTickHook( void);
 void *malloc( size_t xSize );
 
-/**
- * main.c
- */
+
+/*  G L O B A L S   */
+QueueHandle_t motor_instruction_queue;
+
+/* main.c */
 void main(void)
 {
     // set clock source to 16MHz external oscillator, use PLL and divide by 10 to get 20MHz
     SysCtlClockSet(SYSCTL_SYSDIV_10 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
 
+    /* I N I T */
+    initialize_motors();
+
+    /* Q U E U E S */
+    motor_instruction_queue = xQueueCreate(10, sizeof(Motor_Instruction_t));
+
     /* T A S K S */
     BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, NULL);
+    BaseType_t XMotorReturned = xTaskCreate(prvX_Motor, "XMotor", configMINIMAL_STACK_SIZE, (void *)NULL, 3, NULL); // PB6
 
     /* check that tasks were created successfully */
     configASSERT(BlinkyReturned == pdPASS);
+    configASSERT(XMotorReturned == pdPASS);
 
     /* start scheduler */
     vTaskStartScheduler();
 
-//    init_led_gpio();
-//    uint8_t led_status = GPIO_PIN_3;
-    int i;
-
-    for( ;; ) {
-//        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
-//        for(i = 0; i < 100000; i++);
-//        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
-//        for(i = 0; i < 100000; i++);
-    }
+    for( ;; );
 }
 
 

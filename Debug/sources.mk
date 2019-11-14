@@ -115,6 +115,5 @@ SUBDIRS := \
 FreeRTOS/Source \
 FreeRTOS/Source/portable/CCS/ARM_CM4F \
 FreeRTOS/Source/portable/MemMang \
-drivers/source \
 src \
 

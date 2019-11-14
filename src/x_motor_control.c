@@ -1,7 +1,7 @@
 /*
  * motor_control.c
  *
- *  Created on: Oct 5, 2019
+ *  Created on: Oct 6, 2019
  *      Author: jack
  */
 
@@ -17,20 +17,45 @@
 #include "driverlib/debug.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/pwm.h"
-
 #include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_pwm.h"
 #include "inc/hw_sysctl.h"
 #include "inc/hw_types.h"
 
-/*  A P P L I C A T I O N    I N C L U D E S   */
-#include "driver_motor_control.h"
+
+/*  F R E E R T O S   I N C L U D E S   */
+#include "FreeRTOS.h"
+#include "task.h"
 
 
-#define     SOURCE_FREQUENCY    20000000    // 20MHz
-#define     PWM0_FREQUENCY      50000       // 50kHz, DRV8886 f_pwm range is 0-100kHz
-#define     CALC_PERIOD(X)      (SOURCE_FREQUENCY / X)
+/*  A P P L I C A T I O N   I N C L U D E S   */
+#include "x_motor_control.h"
+
+
+/*  T A S K S   */
+void prvX_Motor(void *pvParameters) {
+    static TickType_t delay_time = pdMS_TO_TICKS(1000);     // 1s
+    static uint8_t duty_cycle = 0;  // 0-100%
+    static eMotor_Direction direction = Forward;
+    init_x_motor_pwm();
+    enable_x_motor();
+
+    for( ;; ) {
+        if(direction == Forward) {
+            change_x_motor_pwm_duty_cycle(0);
+            direction = Backward;
+        }
+        if(direction == Backward) {
+            change_x_motor_pwm_duty_cycle(90);
+            direction = Forward;
+        }
+        vTaskDelay(delay_time);
+    }
+}
+
+
+/*  F U N C T I O N S   */
 
 void init_x_motor(void) {
     init_x_motor_pwm();
@@ -105,5 +130,15 @@ void set_x_motor_to_sleep(void) {
     GPIOPinWrite(X_MOTOR_GPIO_BASE, X_NSLEEP, 0);   // set nSLEEP pin LOW
 }
 
+void x_motor_set_direction(eMotor_Direction direction) {
+    if(direction == Forward) {
+        GPIOPinWrite(X_MOTOR_GPIO_BASE, X_DIR, X_DIR);
+    }
+    else if(direction == Backward) {
+
+    }
+}
+
 // if needed
 void PWM0IntHandler(void) {}
+

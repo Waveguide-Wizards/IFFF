@@ -20,10 +20,9 @@ ORDERED_OBJS += \
 "./FreeRTOS/Source/portable/CCS/ARM_CM4F/port.obj" \
 "./FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.obj" \
 "./FreeRTOS/Source/portable/MemMang/heap_4.obj" \
-"./drivers/source/driver_clocks.obj" \
-"./drivers/source/driver_motor_control.obj" \
 "./src/led.obj" \
-"./src/motor_control.obj" \
+"./src/main_motor_control.obj" \
+"./src/x_motor_control.obj" \
 "../tm4c123gh6pm.cmd" \
 $(GEN_CMDS__FLAG) \
 -llibc.a \
@@ -40,13 +39,11 @@ RMDIR := rm -rf
 -include FreeRTOS/Source/subdir_vars.mk
 -include FreeRTOS/Source/portable/CCS/ARM_CM4F/subdir_vars.mk
 -include FreeRTOS/Source/portable/MemMang/subdir_vars.mk
--include drivers/source/subdir_vars.mk
 -include src/subdir_vars.mk
 -include subdir_rules.mk
 -include FreeRTOS/Source/subdir_rules.mk
 -include FreeRTOS/Source/portable/CCS/ARM_CM4F/subdir_rules.mk
 -include FreeRTOS/Source/portable/MemMang/subdir_rules.mk
--include drivers/source/subdir_rules.mk
 -include src/subdir_rules.mk
 -include objects.mk
 
@@ -178,8 +175,8 @@ IFFF.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "tm4c123gh6pm_startup_ccs.obj" "FreeRTOS/Source/croutine.obj" "FreeRTOS/Source/event_groups.obj" "FreeRTOS/Source/list.obj" "FreeRTOS/Source/queue.obj" "FreeRTOS/Source/stream_buffer.obj" "FreeRTOS/Source/tasks.obj" "FreeRTOS/Source/timers.obj" "FreeRTOS/Source/portable/CCS/ARM_CM4F/port.obj" "FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.obj" "FreeRTOS/Source/portable/MemMang/heap_4.obj" "drivers/source/driver_clocks.obj" "drivers/source/driver_motor_control.obj" "src/led.obj" "src/motor_control.obj" 
-	-$(RM) "main.d" "tm4c123gh6pm_startup_ccs.d" "FreeRTOS/Source/croutine.d" "FreeRTOS/Source/event_groups.d" "FreeRTOS/Source/list.d" "FreeRTOS/Source/queue.d" "FreeRTOS/Source/stream_buffer.d" "FreeRTOS/Source/tasks.d" "FreeRTOS/Source/timers.d" "FreeRTOS/Source/portable/CCS/ARM_CM4F/port.d" "FreeRTOS/Source/portable/MemMang/heap_4.d" "drivers/source/driver_clocks.d" "drivers/source/driver_motor_control.d" "src/led.d" "src/motor_control.d" 
+	-$(RM) "main.obj" "tm4c123gh6pm_startup_ccs.obj" "FreeRTOS/Source/croutine.obj" "FreeRTOS/Source/event_groups.obj" "FreeRTOS/Source/list.obj" "FreeRTOS/Source/queue.obj" "FreeRTOS/Source/stream_buffer.obj" "FreeRTOS/Source/tasks.obj" "FreeRTOS/Source/timers.obj" "FreeRTOS/Source/portable/CCS/ARM_CM4F/port.obj" "FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.obj" "FreeRTOS/Source/portable/MemMang/heap_4.obj" "src/led.obj" "src/main_motor_control.obj" "src/x_motor_control.obj" 
+	-$(RM) "main.d" "tm4c123gh6pm_startup_ccs.d" "FreeRTOS/Source/croutine.d" "FreeRTOS/Source/event_groups.d" "FreeRTOS/Source/list.d" "FreeRTOS/Source/queue.d" "FreeRTOS/Source/stream_buffer.d" "FreeRTOS/Source/tasks.d" "FreeRTOS/Source/timers.d" "FreeRTOS/Source/portable/CCS/ARM_CM4F/port.d" "FreeRTOS/Source/portable/MemMang/heap_4.d" "src/led.d" "src/main_motor_control.d" "src/x_motor_control.d" 
 	-$(RM) "FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.d" 
 	-@echo 'Finished clean'
 	-@echo ' '

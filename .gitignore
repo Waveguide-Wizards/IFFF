@@ -42,6 +42,7 @@ Debug/
 *.su
 *.idb
 *.pdb
+*.mk
 
 # Kernel Module Compile Results
 *.mod*
@@ -58,3 +59,4 @@ targetConfigs/
 .cproject
 .ccsproject
 .settings
+Debug/
