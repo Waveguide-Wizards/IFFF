@@ -24,6 +24,15 @@
 #define X_STEP      GPIO_PIN_6      // output
 
 
+
+/*  MOTOR   DIRECTIONS  */
+#define STEP_FULL   0U
+#define STEP_16     1U
+#define STEP_2      2U
+#define STEP_4      3U
+#define STEP_8      4U
+
+
 /*  F U N C T I O N S */
 void init_x_motor(void);
 
@@ -42,6 +51,10 @@ void enable_x_motor(void);
 void disable_x_motor(void);
 
 void set_x_motor_to_sleep(void);
+
+void toggle_x_motor_direction(void);
+
+void set_x_motor_step_size(uint8_t direction);
 
 
 /*  Y - MOTOR   */
