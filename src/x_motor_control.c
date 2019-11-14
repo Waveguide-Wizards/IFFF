@@ -130,6 +130,39 @@ void set_x_motor_to_sleep(void) {
     GPIOPinWrite(X_MOTOR_GPIO_BASE, X_NSLEEP, 0);   // set nSLEEP pin LOW
 }
 
+void toggle_x_motor_direction(void) {
+    if(GPIOPinRead(X_MOTOR_GPIO_BASE, X_DIR)){      // If pin is a 1, write 0, else write 1
+        GPIOPinWrite(X_MOTOR_GPIO_BASE, X_DIR, 0);
+    }
+    else GPIOPinWrite(X_MOTOR_GPIO_BASE, X_DIR, 1);
+}
+
+void set_x_motor_step_size(uint8_t direction){
+    switch(direction)
+    {
+    case STEP_FULL:
+        GPIOPinWrite(X_MOTOR_GPIO_BASE, X_M0, 0);
+        GPIOPinWrite(X_MOTOR_GPIO_BASE, X_M1, 0);
+        break;
+    case STEP_16:
+        GPIOPinWrite(X_MOTOR_GPIO_BASE, X_M0, 1);
+        GPIOPinWrite(X_MOTOR_GPIO_BASE, X_M1, 0);
+        break;
+    case STEP_2:
+        GPIOPinWrite(X_MOTOR_GPIO_BASE, X_M0, 0);
+        GPIOPinWrite(X_MOTOR_GPIO_BASE, X_M1, 1);
+        break;
+    case STEP_4:
+        GPIOPinWrite(X_MOTOR_GPIO_BASE, X_M0, 1);
+        GPIOPinWrite(X_MOTOR_GPIO_BASE, X_M1, 1);
+        break;
+    case STEP_8:
+        GPIOPinWrite(X_MOTOR_GPIO_BASE, X_M0, 1);
+        GPIOPinWrite(X_MOTOR_GPIO_BASE, X_M1, 0);
+        break;
+    }
+}
+
 void x_motor_set_direction(eMotor_Direction direction) {
     if(direction == Forward) {
         GPIOPinWrite(X_MOTOR_GPIO_BASE, X_DIR, X_DIR);
