@@ -9,6 +9,9 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+/*  A P P L I C A T I O N   I N C L U D E S   */
+#include <motor_control.h>
+
 /*  D R I V E R   L I B   */
 #include "driverlib/gpio.h"
 #include "driverlib/pin_map.h"
@@ -29,25 +32,29 @@
 #include "task.h"
 
 
-/*  A P P L I C A T I O N   I N C L U D E S   */
-#include "x_motor_control.h"
+/*  P R I V A T E   V A R I A B L E S   */
+static Motor_t x_motor;
+static Motor_t y_motor;
+static Motor_t z_motor;
 
 
 /*  T A S K S   */
-void prvX_Motor(void *pvParameters) {
+void prv_Motor(void *pvParameters) {
     static TickType_t delay_time = pdMS_TO_TICKS(1000);     // 1s
     static uint8_t duty_cycle = 0;  // 0-100%
     static eMotor_Direction direction = Forward;
-    init_x_motor_pwm();
-    enable_x_motor();
+
+    init_all_motors();
+    init_motor_pwm(x_motor);
+    enable_motor(x_motor);
 
     for( ;; ) {
         if(direction == Forward) {
-            change_x_motor_pwm_duty_cycle(0);
+            change_motor_pwm_duty_cycle(x_motor, 0);
             direction = Backward;
         }
         if(direction == Backward) {
-            change_x_motor_pwm_duty_cycle(90);
+            change_motor_pwm_duty_cycle(x_motor, 90);
             direction = Forward;
         }
         vTaskDelay(delay_time);
@@ -58,12 +65,25 @@ void prvX_Motor(void *pvParameters) {
 /*  F U N C T I O N S   */
 
 void init_x_motor(void) {
-    init_x_motor_pwm();
-    init_x_motor_gpio();
+    // TODO: assign values to the x_motor struct
 }
 
-/*  X   M O T O R   P W M   */
-void init_x_motor_pwm(void) {
+void init_y_motor(void) {
+    // TODO: assign values to the y_motor struct
+}
+
+void init_z_motor(void) {
+    // TODO: assign values to the z_motor struct
+}
+
+void init_all_motors(void) {
+    init_x_motor();
+    init_y_motor();
+    init_z_motor();
+}
+
+/*  M O T O R   P W M   */
+void init_motor_pwm(Motor_t motor) {
     /* setup and enable clock */
     SysCtlPWMClockSet(SYSCTL_PWMDIV_1);             // Set the PWM clock to the system clock.
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);     // The PWM peripheral must be enabled for use.
@@ -84,7 +104,7 @@ void init_x_motor_pwm(void) {
 }
 
 /* @param uint8_t duty_cycle: 0-100 */
-void change_x_motor_pwm_duty_cycle(uint8_t duty_cycle) {
+void change_motor_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle) {
     PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, ((duty_cycle * CALC_PERIOD(PWM0_FREQUENCY))/100));
 }
 
@@ -101,41 +121,41 @@ void change_x_motor_pwm_duty_cycle(uint8_t duty_cycle) {
  *  DECAY - ?
  *  TRQ - ?
  */
-void init_x_motor_gpio(void) {
+void init_motor_gpio(void) {
     // Enable GPIO port(s) for motor driver control
-    MAP_SysCtlPeripheralEnable(X_MOTOR_GPIO_BASE);
-
+//    MAP_SysCtlPeripheralEnable(X_MOTOR_GPIO_BASE);
+//
     /* Set GPIOs to OUTPUT direction */
-    MAP_GPIODirModeSet(X_MOTOR_GPIO_BASE, (X_M1 | X_M0 | X_DIR | X_ENABLE | X_NSLEEP), GPIO_DIR_MODE_OUT);
-
+//    MAP_GPIODirModeSet(X_MOTOR_GPIO_BASE, (X_M1 | X_M0 | X_DIR | X_ENABLE | X_NSLEEP), GPIO_DIR_MODE_OUT);
+//
     /* Set GPIO to INPUT direction */
-    MAP_GPIODirModeSet(X_MOTOR_GPIO_BASE, X_NFAULT, GPIO_DIR_MODE_IN);
+//    MAP_GPIODirModeSet(X_MOTOR_GPIO_BASE, X_NFAULT, GPIO_DIR_MODE_IN);
 
 //    MAP_GPIOPadConfigSet(); // used to set drive strength
 }
 
-void enable_x_motor(void) {
-    GPIOPinWrite(X_MOTOR_GPIO_BASE, X_ENABLE, X_ENABLE);    // set ENABLE pin HIGH
+void enable_motor(Motor_t motor) {
+    GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, motor.ENABLE.pin);    // set ENABLE pin HIGH
     PWMOutputState(PWM0_BASE, PWM_OUT_0_BIT, true);         // enables PWM output
     PWMGenEnable(PWM0_BASE, PWM_GEN_0);                     // enables PWM
 }
 
-void disable_x_motor(void) {
-    GPIOPinWrite(X_MOTOR_GPIO_BASE, X_ENABLE, 0);           // set ENABLE pin LOW
+void disable_motor(Motor_t motor) {
+    GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, 0);          // set ENABLE pin LOW
     PWMOutputState(PWM0_BASE, PWM_OUT_0_BIT, false);        // disables PWM output
     PWMGenDisable(PWM0_BASE, PWM_GEN_0);                    // disable PWM
 }
 
-void set_x_motor_to_sleep(void) {
-    GPIOPinWrite(X_MOTOR_GPIO_BASE, X_NSLEEP, 0);   // set nSLEEP pin LOW
+void motor_to_sleep(Motor_t motor) {
+    GPIOPinWrite(motor.NSLEEP.base, motor.NSLEEP.pin, 0);   // set nSLEEP pin LOW
 }
 
-void x_motor_set_direction(eMotor_Direction direction) {
+void motor_set_direction(Motor_t motor, eMotor_Direction direction) {
     if(direction == Forward) {
-        GPIOPinWrite(X_MOTOR_GPIO_BASE, X_DIR, X_DIR);
+        GPIOPinWrite(motor.DIR.base, motor.DIR.pin, motor.DIR.pin);
     }
     else if(direction == Backward) {
-
+        GPIOPinWrite(motor.DIR.base, motor.DIR.pin, 0);
     }
 }
 

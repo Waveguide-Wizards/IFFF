@@ -12,12 +12,12 @@
 #include <stdint.h>
 
 /*  S T R U C T S   */
-typedef struct {
-    uint16_t x_pos;
-    uint16_t y_pos;
-    uint16_t z_pos;
-    uint8_t speed; // 0-100
-} Motor_Instruction_t;
+//typedef struct {
+//    uint16_t x_pos;
+//    uint16_t y_pos;
+//    uint16_t z_pos;
+//    uint8_t speed; // 0-100
+//} Motor_Instruction_t;
 
 
 #endif /* MAIN_MOTOR_CONTROL_H_ */

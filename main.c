@@ -5,6 +5,7 @@
  */
 
 /*  I N C L U D E S   */
+#include <motor_control.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -20,9 +21,8 @@
 #include "queue.h"
 
 /*  A P P L I C A T I O N    I N C L U D E S   */
-#include "main_motor_control.h"
+#include "motor_control.h"
 #include "led.h"
-#include "x_motor_control.h"
 
 /*  F R E E R T O S   H O O K S   */
 void vApplicationMallocFailedHook( void );
@@ -43,14 +43,14 @@ void main(void)
     SysCtlClockSet(SYSCTL_SYSDIV_10 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
 
     /* I N I T */
-    initialize_motors();
+    init_all_motors();
 
     /* Q U E U E S */
     motor_instruction_queue = xQueueCreate(10, sizeof(Motor_Instruction_t));
 
     /* T A S K S */
     BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, NULL);
-    BaseType_t XMotorReturned = xTaskCreate(prvX_Motor, "XMotor", configMINIMAL_STACK_SIZE, (void *)NULL, 3, NULL); // PB6
+    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", configMINIMAL_STACK_SIZE, (void *)NULL, 3, NULL); // PB6
 
     /* check that tasks were created successfully */
     configASSERT(BlinkyReturned == pdPASS);

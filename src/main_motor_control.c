@@ -6,6 +6,7 @@
  */
 
 /*  I N C L U D E S   */
+#include <motor_control.h>
 #include <stdint.h>
 
 /*  D R I V E R L I B   */
@@ -17,21 +18,14 @@
 
 /*  A P P L I C A T I O N    I N C L U D E S   */
 #include "main_motor_control.h"
-#include "x_motor_control.h"
 
 /* P R I V A T E   V A R I A B L E S   */
-static uint32_t x_steps;
-static uint32_t y_steps;
-static uint32_t z_steps;
+//static uint32_t x_steps;
+//static uint32_t y_steps;
+//static uint32_t z_steps;
 
 
 /*  F U N C T I O N S   */
-
-void initialize_motors(void) {
-    init_x_motor();
-//    init_y_motor();
-//    init_z_motor();
-}
 
 
 /*  T A S K S   */
