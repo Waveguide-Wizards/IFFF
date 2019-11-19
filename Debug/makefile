@@ -23,10 +23,45 @@ ORDERED_OBJS += \
 "./src/led.obj" \
 "./src/main_motor_control.obj" \
 "./src/motor_control.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/adc.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/aes.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/can.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/comp.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/cpu.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/crc.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/des.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/eeprom.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/emac.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/epi.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/epi_workaround_ccs.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/flash.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/fpu.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/gpio.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/hibernate.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/i2c.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/interrupt.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/lcd.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/mpu.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/onewire.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/pwm.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/qei.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/shamd5.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/ssi.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/sw_crc.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/sysctl.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/sysexc.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/systick.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/timer.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/uart.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/udma.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/usb.obj" \
+"./tivaware_c_series_2_1_4_178/driverlib/watchdog.obj" \
 "../tm4c123gh6pm.cmd" \
+"../tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/driverlib.lib" \
+"../tivaware_c_series_2_1_4_178/driverlib/rvmdk/driverlib.lib" \
 $(GEN_CMDS__FLAG) \
+-l"/home/jack/workspace_v9/IFFF/tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/driverlib.lib" \
 -llibc.a \
--l"/home/jack/ti/tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/driverlib.lib" \
 
 -include ../makefile.init
 
@@ -40,11 +75,21 @@ RMDIR := rm -rf
 -include FreeRTOS/Source/portable/CCS/ARM_CM4F/subdir_vars.mk
 -include FreeRTOS/Source/portable/MemMang/subdir_vars.mk
 -include src/subdir_vars.mk
+-include tivaware_c_series_2_1_4_178/driverlib/subdir_vars.mk
+-include tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/subdir_vars.mk
+-include tivaware_c_series_2_1_4_178/driverlib/ewarm/Exe/subdir_vars.mk
+-include tivaware_c_series_2_1_4_178/driverlib/gcc/subdir_vars.mk
+-include tivaware_c_series_2_1_4_178/driverlib/rvmdk/subdir_vars.mk
 -include subdir_rules.mk
 -include FreeRTOS/Source/subdir_rules.mk
 -include FreeRTOS/Source/portable/CCS/ARM_CM4F/subdir_rules.mk
 -include FreeRTOS/Source/portable/MemMang/subdir_rules.mk
 -include src/subdir_rules.mk
+-include tivaware_c_series_2_1_4_178/driverlib/subdir_rules.mk
+-include tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/subdir_rules.mk
+-include tivaware_c_series_2_1_4_178/driverlib/ewarm/Exe/subdir_rules.mk
+-include tivaware_c_series_2_1_4_178/driverlib/gcc/subdir_rules.mk
+-include tivaware_c_series_2_1_4_178/driverlib/rvmdk/subdir_rules.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -154,14 +199,14 @@ BIN_OUTPUTS__QUOTED += \
 
 
 # All Target
-all: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+all: $(OBJS) $(LD_SRCS) $(CMD_SRCS) $(LIB_SRCS) $(A_SRCS) $(GEN_CMDS)
 	@$(MAKE) --no-print-directory -Onone "IFFF.out"
 
 # Tool invocations
-IFFF.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+IFFF.out: $(OBJS) $(LD_SRCS) $(CMD_SRCS) $(LIB_SRCS) $(A_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: ARM Linker'
-	"/home/jack/ti/ccs910/ccs/tools/compiler/ti-cgt-arm_18.12.2.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --define=ccs="ccs" --define=PART_TM4C123GH6PM -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi -z -m"IFFF.map" --heap_size=0 --stack_size=512 -i"/home/jack/ti/ccs910/ccs/tools/compiler/ti-cgt-arm_18.12.2.LTS/lib" -i"/home/jack/ti/ccs910/ccs/tools/compiler/ti-cgt-arm_18.12.2.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="IFFF_linkInfo.xml" --rom_model -o "IFFF.out" $(ORDERED_OBJS)
+	"/home/jack/ti/ccs910/ccs/tools/compiler/ti-cgt-arm_18.12.2.LTS/bin/armcl" -mv7M4 --code_state=16 --float_support=FPv4SPD16 -me --define=ccs="ccs" --define=PART_TM4C123GH6PM -g --gcc --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi -z -m"IFFF.map" --heap_size=0 --stack_size=512 -i"/home/jack/ti/ccs910/ccs/tools/compiler/ti-cgt-arm_18.12.2.LTS/lib" -i"/home/jack/ti/ccs910/ccs/tools/compiler/ti-cgt-arm_18.12.2.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="IFFF_linkInfo.xml" --rom_model -o "IFFF.out" $(ORDERED_OBJS) $(A_SRCS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
@@ -175,8 +220,12 @@ IFFF.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(BIN_OUTPUTS__QUOTED)$(EXE_OUTPUTS__QUOTED)
-	-$(RM) "main.obj" "tm4c123gh6pm_startup_ccs.obj" "FreeRTOS/Source/croutine.obj" "FreeRTOS/Source/event_groups.obj" "FreeRTOS/Source/list.obj" "FreeRTOS/Source/queue.obj" "FreeRTOS/Source/stream_buffer.obj" "FreeRTOS/Source/tasks.obj" "FreeRTOS/Source/timers.obj" "FreeRTOS/Source/portable/CCS/ARM_CM4F/port.obj" "FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.obj" "FreeRTOS/Source/portable/MemMang/heap_4.obj" "src/led.obj" "src/main_motor_control.obj" "src/motor_control.obj" 
-	-$(RM) "main.d" "tm4c123gh6pm_startup_ccs.d" "FreeRTOS/Source/croutine.d" "FreeRTOS/Source/event_groups.d" "FreeRTOS/Source/list.d" "FreeRTOS/Source/queue.d" "FreeRTOS/Source/stream_buffer.d" "FreeRTOS/Source/tasks.d" "FreeRTOS/Source/timers.d" "FreeRTOS/Source/portable/CCS/ARM_CM4F/port.d" "FreeRTOS/Source/portable/MemMang/heap_4.d" "src/led.d" "src/main_motor_control.d" "src/motor_control.d" 
+	-$(RM) "main.obj" "tm4c123gh6pm_startup_ccs.obj" "FreeRTOS/Source/croutine.obj" "FreeRTOS/Source/event_groups.obj" "FreeRTOS/Source/list.obj" "FreeRTOS/Source/queue.obj" "FreeRTOS/Source/stream_buffer.obj" "FreeRTOS/Source/tasks.obj" "FreeRTOS/Source/timers.obj" "FreeRTOS/Source/portable/CCS/ARM_CM4F/port.obj" "FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.obj" "FreeRTOS/Source/portable/MemMang/heap_4.obj" "src/led.obj" "src/main_motor_control.obj" "src/motor_control.obj" "tivaware_c_series_2_1_4_178/driverlib/adc.obj" "tivaware_c_series_2_1_4_178/driverlib/aes.obj" "tivaware_c_series_2_1_4_178/driverlib/can.obj" "tivaware_c_series_2_1_4_178/driverlib/comp.obj" "tivaware_c_series_2_1_4_178/driverlib/cpu.obj" "tivaware_c_series_2_1_4_178/driverlib/crc.obj" "tivaware_c_series_2_1_4_178/driverlib/des.obj" "tivaware_c_series_2_1_4_178/driverlib/eeprom.obj" "tivaware_c_series_2_1_4_178/driverlib/emac.obj" "tivaware_c_series_2_1_4_178/driverlib/epi.obj" "tivaware_c_series_2_1_4_178/driverlib/epi_workaround_ccs.obj" 
+	-$(RM) "tivaware_c_series_2_1_4_178/driverlib/flash.obj" "tivaware_c_series_2_1_4_178/driverlib/fpu.obj" "tivaware_c_series_2_1_4_178/driverlib/gpio.obj" "tivaware_c_series_2_1_4_178/driverlib/hibernate.obj" "tivaware_c_series_2_1_4_178/driverlib/i2c.obj" "tivaware_c_series_2_1_4_178/driverlib/interrupt.obj" "tivaware_c_series_2_1_4_178/driverlib/lcd.obj" "tivaware_c_series_2_1_4_178/driverlib/mpu.obj" "tivaware_c_series_2_1_4_178/driverlib/onewire.obj" "tivaware_c_series_2_1_4_178/driverlib/pwm.obj" "tivaware_c_series_2_1_4_178/driverlib/qei.obj" "tivaware_c_series_2_1_4_178/driverlib/shamd5.obj" "tivaware_c_series_2_1_4_178/driverlib/ssi.obj" "tivaware_c_series_2_1_4_178/driverlib/sw_crc.obj" "tivaware_c_series_2_1_4_178/driverlib/sysctl.obj" "tivaware_c_series_2_1_4_178/driverlib/sysexc.obj" "tivaware_c_series_2_1_4_178/driverlib/systick.obj" "tivaware_c_series_2_1_4_178/driverlib/timer.obj" "tivaware_c_series_2_1_4_178/driverlib/uart.obj" "tivaware_c_series_2_1_4_178/driverlib/udma.obj" "tivaware_c_series_2_1_4_178/driverlib/usb.obj" 
+	-$(RM) "tivaware_c_series_2_1_4_178/driverlib/watchdog.obj" 
+	-$(RM) "main.d" "tm4c123gh6pm_startup_ccs.d" "FreeRTOS/Source/croutine.d" "FreeRTOS/Source/event_groups.d" "FreeRTOS/Source/list.d" "FreeRTOS/Source/queue.d" "FreeRTOS/Source/stream_buffer.d" "FreeRTOS/Source/tasks.d" "FreeRTOS/Source/timers.d" "FreeRTOS/Source/portable/CCS/ARM_CM4F/port.d" "FreeRTOS/Source/portable/MemMang/heap_4.d" "src/led.d" "src/main_motor_control.d" "src/motor_control.d" "tivaware_c_series_2_1_4_178/driverlib/adc.d" "tivaware_c_series_2_1_4_178/driverlib/aes.d" "tivaware_c_series_2_1_4_178/driverlib/can.d" "tivaware_c_series_2_1_4_178/driverlib/comp.d" "tivaware_c_series_2_1_4_178/driverlib/cpu.d" "tivaware_c_series_2_1_4_178/driverlib/crc.d" "tivaware_c_series_2_1_4_178/driverlib/des.d" "tivaware_c_series_2_1_4_178/driverlib/eeprom.d" "tivaware_c_series_2_1_4_178/driverlib/emac.d" "tivaware_c_series_2_1_4_178/driverlib/epi.d" "tivaware_c_series_2_1_4_178/driverlib/flash.d" "tivaware_c_series_2_1_4_178/driverlib/fpu.d" "tivaware_c_series_2_1_4_178/driverlib/gpio.d" "tivaware_c_series_2_1_4_178/driverlib/hibernate.d" 
+	-$(RM) "tivaware_c_series_2_1_4_178/driverlib/i2c.d" "tivaware_c_series_2_1_4_178/driverlib/interrupt.d" "tivaware_c_series_2_1_4_178/driverlib/lcd.d" "tivaware_c_series_2_1_4_178/driverlib/mpu.d" "tivaware_c_series_2_1_4_178/driverlib/onewire.d" "tivaware_c_series_2_1_4_178/driverlib/pwm.d" "tivaware_c_series_2_1_4_178/driverlib/qei.d" "tivaware_c_series_2_1_4_178/driverlib/shamd5.d" "tivaware_c_series_2_1_4_178/driverlib/ssi.d" "tivaware_c_series_2_1_4_178/driverlib/sw_crc.d" "tivaware_c_series_2_1_4_178/driverlib/sysctl.d" "tivaware_c_series_2_1_4_178/driverlib/sysexc.d" "tivaware_c_series_2_1_4_178/driverlib/systick.d" "tivaware_c_series_2_1_4_178/driverlib/timer.d" "tivaware_c_series_2_1_4_178/driverlib/uart.d" "tivaware_c_series_2_1_4_178/driverlib/udma.d" "tivaware_c_series_2_1_4_178/driverlib/usb.d" "tivaware_c_series_2_1_4_178/driverlib/watchdog.d" 
+	-$(RM) "tivaware_c_series_2_1_4_178/driverlib/epi_workaround_ccs.d" 
 	-$(RM) "FreeRTOS/Source/portable/CCS/ARM_CM4F/portasm.d" 
 	-@echo 'Finished clean'
 	-@echo ' '

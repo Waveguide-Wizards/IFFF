@@ -10,6 +10,13 @@
 
 #include <stdint.h>
 
+#define STEP_FULL           0U
+#define STEP_16             1U
+#define STEP_2              2U
+#define STEP_4              3U
+#define STEP_8              4U
+
+
 #define SOURCE_FREQUENCY    20000000    // 20MHz
 #define PWM0_FREQUENCY      50000       // 50kHz, DRV8886 f_pwm range is 0-100kHz
 #define CALC_PERIOD(X)      (SOURCE_FREQUENCY / X)
@@ -46,21 +53,23 @@ typedef struct {
 /*  T A S K S   */
 void prv_Motor(void *pvParameters);
 
-/*  F U N C T I O N S */
-void init_motor(void);
+/*  F U N C T I O N S   */
+void init_x_motor(void);
+void init_y_motor(void);
+void init_z_motor(void);
 void init_all_motors(void);
 
 /*  M O T O R   P W M   */
+void motor_init_pwm(Motor_t motor);
+void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle);
 
-void init_motor_pwm(Motor_t motor);
-void change_motor_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle);
-
-/*  M O T O R   G P I O   */
-
-void init_motor_gpio(void);
-void enable_motor(Motor_t motor);
-void enable_motor(Motor_t motor);
-void set_motor_to_sleep(void);
+/*  X   M O T O R   G P I O   */
+void motor_init_gpio(void);
+void motor_enable(Motor_t motor);
+void motor_disable(Motor_t motor);
+void motor_set_to_sleep(Motor_t motor);
+void motor_set_direction(Motor_t motor, eMotor_Direction direction);
+void set_motor_step_size(Motor_t motor, uint8_t direction);
 
 
 #endif /* MOTOR_CONTROL_H_ */

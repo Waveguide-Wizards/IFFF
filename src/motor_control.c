@@ -45,16 +45,16 @@ void prv_Motor(void *pvParameters) {
     static eMotor_Direction direction = Forward;
 
     init_all_motors();
-    init_motor_pwm(x_motor);
-    enable_motor(x_motor);
+    motor_init_pwm(x_motor);
+    motor_enable(x_motor);
 
     for( ;; ) {
         if(direction == Forward) {
-            change_motor_pwm_duty_cycle(x_motor, 0);
+            motor_change_pwm_duty_cycle(x_motor, 0);
             direction = Backward;
         }
         if(direction == Backward) {
-            change_motor_pwm_duty_cycle(x_motor, 90);
+            motor_change_pwm_duty_cycle(x_motor, 90);
             direction = Forward;
         }
         vTaskDelay(delay_time);
@@ -83,7 +83,7 @@ void init_all_motors(void) {
 }
 
 /*  M O T O R   P W M   */
-void init_motor_pwm(Motor_t motor) {
+void motor_init_pwm(Motor_t motor) {
     /* setup and enable clock */
     SysCtlPWMClockSet(SYSCTL_PWMDIV_1);             // Set the PWM clock to the system clock.
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);     // The PWM peripheral must be enabled for use.
@@ -104,7 +104,7 @@ void init_motor_pwm(Motor_t motor) {
 }
 
 /* @param uint8_t duty_cycle: 0-100 */
-void change_motor_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle) {
+void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle) {
     PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, ((duty_cycle * CALC_PERIOD(PWM0_FREQUENCY))/100));
 }
 
@@ -121,7 +121,7 @@ void change_motor_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle) {
  *  DECAY - ?
  *  TRQ - ?
  */
-void init_motor_gpio(void) {
+void motor_init_gpio(void) {
     // Enable GPIO port(s) for motor driver control
 //    MAP_SysCtlPeripheralEnable(X_MOTOR_GPIO_BASE);
 //
@@ -134,19 +134,19 @@ void init_motor_gpio(void) {
 //    MAP_GPIOPadConfigSet(); // used to set drive strength
 }
 
-void enable_motor(Motor_t motor) {
+void motor_enable(Motor_t motor) {
     GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, motor.ENABLE.pin);    // set ENABLE pin HIGH
     PWMOutputState(PWM0_BASE, PWM_OUT_0_BIT, true);         // enables PWM output
     PWMGenEnable(PWM0_BASE, PWM_GEN_0);                     // enables PWM
 }
 
-void disable_motor(Motor_t motor) {
+void motor_disable(Motor_t motor) {
     GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, 0);          // set ENABLE pin LOW
     PWMOutputState(PWM0_BASE, PWM_OUT_0_BIT, false);        // disables PWM output
     PWMGenDisable(PWM0_BASE, PWM_GEN_0);                    // disable PWM
 }
 
-void motor_to_sleep(Motor_t motor) {
+void motor_set_to_sleep(Motor_t motor) {
     GPIOPinWrite(motor.NSLEEP.base, motor.NSLEEP.pin, 0);   // set nSLEEP pin LOW
 }
 
@@ -158,6 +158,33 @@ void motor_set_direction(Motor_t motor, eMotor_Direction direction) {
         GPIOPinWrite(motor.DIR.base, motor.DIR.pin, 0);
     }
 }
+
+void set_motor_step_size(Motor_t motor, uint8_t direction){
+    switch(direction)
+    {
+    case STEP_FULL:
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, 0);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, 0);
+        break;
+    case STEP_16:
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, 1);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, 0);
+        break;
+    case STEP_2:
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, 0);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, 1);
+        break;
+    case STEP_4:
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, 1);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, 1);
+        break;
+    case STEP_8:
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, 1);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, 1);
+        break;
+    }
+}
+
 
 // if needed
 void PWM0IntHandler(void) {}
