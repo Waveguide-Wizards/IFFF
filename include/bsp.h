@@ -44,6 +44,8 @@
 #define X_MOTOR_PWM_BASE    PWM0_BASE       //  M0PWM0
 #define X_MOTOR_PWM_CHANNEL 0
 
+#define X_MOTOR_STEP        GPIOH_PH0_M0PWM0
+
 /*  Y - MOTOR   */
 #define Y_M1_PORT           GPIO_PORTH_BASE
 #define Y_M1_PIN            GPIO_PIN_3      // output
@@ -68,6 +70,9 @@
 
 #define Y_MOTOR_PWM_BASE    PWM0_BASE       //  M0PWM6
 #define Y_MOTOR_PWM_CHANNEL 6
+
+#define Y_MOTOR_STEP        GPIOH_PC4_M0PWM6
+
 
 /*  Z - MOTOR   */
 #define Z_M1_PORT           GPIO_PORTF_BASE
@@ -94,6 +99,9 @@
 #define Z_MOTOR_PWM_BASE    PWM1_BASE       //  M0PWM6
 #define Z_MOTOR_PWM_CHANNEL 1
 
+#define Z_MOTOR_STEP        GPIOH_PG3_M0PWM6
+
+
 /*  EXTRUDER - MOTOR   */
 #define EX_M1_PORT           GPIO_PORTB_BASE
 #define EX_M1_PIN            GPIO_PIN_5      // output
@@ -118,5 +126,7 @@
 
 #define EX_MOTOR_PWM_BASE    PWM0_BASE       //  M0PWM5
 #define EX_MOTOR_PWM_CHANNEL 5
+
+#define EX_MOTOR_STEP        GPIOH_PE5_M0PWM5
 
 #endif /* BSP_H_ */
