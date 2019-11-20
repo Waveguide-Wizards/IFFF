@@ -139,19 +139,14 @@ void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle) {
  *  TRQ - ?
  */
 void motor_init_gpio(Motor_t motor) {
-
-    // TODO: This is very hardcoded and redundant, would like to discuss a better way of doing this
-
-        // After doing a search, I found there is no safe way to iterate through members of a struct
-
     // Enable GPIO port(s) for motor driver control
     MAP_SysCtlPeripheralEnable(motor.M0.base);
     MAP_SysCtlPeripheralEnable(motor.M1.base);
-    MAP_SysCtlPeripheralEnable(motor.M1.base);
-    MAP_SysCtlPeripheralEnable(motor.M1.base);
-    MAP_SysCtlPeripheralEnable(motor.M1.base);
-    MAP_SysCtlPeripheralEnable(motor.M1.base);
-    MAP_SysCtlPeripheralEnable(motor.M1.base);
+    MAP_SysCtlPeripheralEnable(motor.DIR.base);
+    MAP_SysCtlPeripheralEnable(motor.ENABLE.base);
+    MAP_SysCtlPeripheralEnable(motor.STEP.base);
+    MAP_SysCtlPeripheralEnable(motor.NSLEEP.base);
+    MAP_SysCtlPeripheralEnable(motor.NFAULT.base);
 
     /* Set GPIO output pins */
     MAP_GPIODirModeSet(motor.M0.base, motor.M0.pin, GPIO_DIR_MODE_OUT);
@@ -164,7 +159,7 @@ void motor_init_gpio(Motor_t motor) {
     /* Set GPIO Input pins */
     MAP_GPIODirModeSet(motor.NFAULT.base, motor.NFAULT.pin, GPIO_DIR_MODE_IN);
 
-    /* Set Drive Stregth */
+    /* Set Drive Strength */
     MAP_GPIOPadConfigSet(); // used to set drive strength
 
 }
