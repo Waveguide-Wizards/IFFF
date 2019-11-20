@@ -64,24 +64,28 @@ void prv_Motor(void *pvParameters) {
 
 void init_x_motor(void) {
     // TODO: assign values to the x_motor struct
+    motor_init_gpio(x_motor);
     motor_init_pwm(x_motor);
     motor_disable(x_motor);
 }
 
 void init_y_motor(void) {
     // TODO: assign values to the y_motor struct
+    motor_init_gpio(y_motor);
     motor_init_pwm(y_motor);
     motor_disable(y_motor);
 }
 
 void init_z_motor(void) {
     // TODO: assign values to the z_motor struct
+    motor_init_gpio(z_motor);
     motor_init_pwm(z_motor);
     motor_disable(z_motor);
 }
 
 void init_ex_motor(void) {
     // TODO: assign values to the y_motor struct
+    motor_init_gpio(ex_motor);
     motor_init_pwm(ex_motor);
     motor_disable(ex_motor);
 }
@@ -134,17 +138,35 @@ void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle) {
  *  DECAY - ?
  *  TRQ - ?
  */
-void motor_init_gpio(void) {
-    // Enable GPIO port(s) for motor driver control
-//    MAP_SysCtlPeripheralEnable(X_MOTOR_GPIO_BASE);
-//
-    /* Set GPIOs to OUTPUT direction */
-//    MAP_GPIODirModeSet(X_MOTOR_GPIO_BASE, (X_M1 | X_M0 | X_DIR | X_ENABLE | X_NSLEEP), GPIO_DIR_MODE_OUT);
-//
-    /* Set GPIO to INPUT direction */
-//    MAP_GPIODirModeSet(X_MOTOR_GPIO_BASE, X_NFAULT, GPIO_DIR_MODE_IN);
+void motor_init_gpio(Motor_t motor) {
 
-//    MAP_GPIOPadConfigSet(); // used to set drive strength
+    // TODO: This is very hardcoded and redundant, would like to discuss a better way of doing this
+
+        // After doing a search, I found there is no safe way to iterate through members of a struct
+
+    // Enable GPIO port(s) for motor driver control
+    MAP_SysCtlPeripheralEnable(motor.M0.base);
+    MAP_SysCtlPeripheralEnable(motor.M1.base);
+    MAP_SysCtlPeripheralEnable(motor.M1.base);
+    MAP_SysCtlPeripheralEnable(motor.M1.base);
+    MAP_SysCtlPeripheralEnable(motor.M1.base);
+    MAP_SysCtlPeripheralEnable(motor.M1.base);
+    MAP_SysCtlPeripheralEnable(motor.M1.base);
+
+    /* Set GPIO output pins */
+    MAP_GPIODirModeSet(motor.M0.base, motor.M0.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(motor.M1.base, motor.M1.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(motor.DIR.base, motor.DIR.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(motor.ENABLE.base, motor.ENABLE.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(motor.STEP.base, motor.STEP.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(motor.NSLEEP.base, motor.NSLEEP.pin, GPIO_DIR_MODE_OUT);
+
+    /* Set GPIO Input pins */
+    MAP_GPIODirModeSet(motor.NFAULT.base, motor.NFAULT.pin, GPIO_DIR_MODE_IN);
+
+    /* Set Drive Stregth */
+    MAP_GPIOPadConfigSet(); // used to set drive strength
+
 }
 
 void motor_enable(Motor_t motor) {

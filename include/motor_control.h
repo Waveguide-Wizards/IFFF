@@ -21,6 +21,7 @@
 #define PWM0_FREQUENCY      50000       // 50kHz, DRV8886 f_pwm range is 0-100kHz
 #define CALC_PERIOD(X)      (SOURCE_FREQUENCY / X)
 
+
 /*  E N U M S   */
 typedef enum {
     Forward = 0,
