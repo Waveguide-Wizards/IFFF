@@ -36,17 +36,15 @@
 static Motor_t x_motor;
 static Motor_t y_motor;
 static Motor_t z_motor;
+static Motor_t ex_motor;
 
 
 /*  T A S K S   */
 void prv_Motor(void *pvParameters) {
     static TickType_t delay_time = pdMS_TO_TICKS(1000);     // 1s
-    static uint8_t duty_cycle = 0;  // 0-100%
     static eMotor_Direction direction = Forward;
 
     init_all_motors();
-    motor_init_pwm(x_motor);
-    motor_enable(x_motor);
 
     for( ;; ) {
         if(direction == Forward) {
@@ -66,46 +64,61 @@ void prv_Motor(void *pvParameters) {
 
 void init_x_motor(void) {
     // TODO: assign values to the x_motor struct
+    motor_init_pwm(x_motor);
+    motor_disable(x_motor);
 }
 
 void init_y_motor(void) {
     // TODO: assign values to the y_motor struct
+    motor_init_pwm(y_motor);
+    motor_disable(y_motor);
 }
 
 void init_z_motor(void) {
     // TODO: assign values to the z_motor struct
+    motor_init_pwm(z_motor);
+    motor_disable(z_motor);
+}
+
+void init_ex_motor(void) {
+    // TODO: assign values to the y_motor struct
+    motor_init_pwm(ex_motor);
+    motor_disable(ex_motor);
 }
 
 void init_all_motors(void) {
     init_x_motor();
     init_y_motor();
     init_z_motor();
+    init_ex_motor();
 }
 
 /*  M O T O R   P W M   */
 void motor_init_pwm(Motor_t motor) {
     /* setup and enable clock */
-    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);             // Set the PWM clock to the system clock.
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);     // The PWM peripheral must be enabled for use.
+    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
 
-    /* init GPIO pin - PB6 */
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);    // enable GPIOB if not already enabled
-    GPIOPinConfigure(GPIO_PB6_M0PWM0);              // configure PB6 for PWM0
-    GPIOPinTypePWM(GPIO_PORTB_BASE, GPIO_PIN_6);    // select PWM function for PB6
+    // TODO: need to see if there's a way to make this more generic
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);         // The PWM peripheral must be enabled for use.
+
+    /* init GPIO pin */
+    SysCtlPeripheralEnable(motor.STEP.base);            // enable GPIO port if not already enabled
+    GPIOPinConfigure(motor.PWM_Pin_Map);                // configure pin for PWM
+    GPIOPinTypePWM(motor.STEP.base, motor.STEP.pin);
 
     /* Count down without synchronization */
-    PWMGenConfigure(PWM0_BASE, PWM_GEN_0, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
+    PWMGenConfigure(motor.PWM_Base, PWM_GEN_0, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
 
     /* Set PWM period to: 0.02ms or 50kHz */
-    PWMGenPeriodSet(PWM0_BASE, PWM_GEN_0, CALC_PERIOD(PWM0_FREQUENCY));
+    PWMGenPeriodSet(motor.PWM_Base, PWM_GEN_0, CALC_PERIOD(PWM0_FREQUENCY));
 
     /* initialize to no output */
-    PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, 0);
+    PWMPulseWidthSet(motor.PWM_Base, PWM_OUT_0, 0);
 }
 
 /* @param uint8_t duty_cycle: 0-100 */
 void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle) {
-    PWMPulseWidthSet(PWM0_BASE, PWM_OUT_0, ((duty_cycle * CALC_PERIOD(PWM0_FREQUENCY))/100));
+    PWMPulseWidthSet(motor.PWM_Base, PWM_OUT_0, ((duty_cycle * CALC_PERIOD(PWM0_FREQUENCY))/100));
 }
 
 
@@ -136,14 +149,14 @@ void motor_init_gpio(void) {
 
 void motor_enable(Motor_t motor) {
     GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, motor.ENABLE.pin);    // set ENABLE pin HIGH
-    PWMOutputState(PWM0_BASE, PWM_OUT_0_BIT, true);         // enables PWM output
-    PWMGenEnable(PWM0_BASE, PWM_GEN_0);                     // enables PWM
+    PWMOutputState(motor.PWM_Base, (1 << motor.PWM_Channel), true);    // disables PWM output
+    PWMGenEnable(motor.PWM_Base, PWM_GEN_0);                     // enables PWM
 }
 
 void motor_disable(Motor_t motor) {
-    GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, 0);          // set ENABLE pin LOW
-    PWMOutputState(PWM0_BASE, PWM_OUT_0_BIT, false);        // disables PWM output
-    PWMGenDisable(PWM0_BASE, PWM_GEN_0);                    // disable PWM
+    GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, 0);               // set ENABLE pin LOW
+    PWMOutputState(motor.PWM_Base, (1 << motor.PWM_Channel), false);    // disables PWM output
+    PWMGenDisable(motor.PWM_Base, PWM_GEN_0);                                // disable PWM
 }
 
 void motor_set_to_sleep(Motor_t motor) {
@@ -185,7 +198,15 @@ void set_motor_step_size(Motor_t motor, uint8_t direction){
     }
 }
 
+/*
+ * TODO:
+ *  - use LOAD register to count Pulses
+ *  - set PWM duty cycle for X/Y/Z to 0 in this handler
+ *  - notify motors task once an interrupt flag for each motor has been raised
+ */
 
-// if needed
-void PWM0IntHandler(void) {}
+// static bool x_step_flag;
+void PWM0IntHandler(void) {
+
+}
 

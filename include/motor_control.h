@@ -47,7 +47,9 @@ typedef struct {
     Motor_Pin_t     NSLEEP;
     Motor_Pin_t     NFAULT;
     Motor_Pin_t     STEP;
+    uint32_t        PWM_Base;
     uint32_t        PWM_Channel;
+    uint32_t        PWM_Pin_Map;
 } Motor_t;
 
 /*  T A S K S   */
