@@ -20,6 +20,18 @@
 #define PWM_FREQUENCY       50000       // 50kHz, DRV8886 f_pwm range is 0-100kHz
 #define CALC_PERIOD(X)          (SOURCE_FREQUENCY / X)
 
+//STEP CONVERSION PARAMETERS
+//Steps in the motor 
+#define STEPS_PER_ROTATION (200)
+#define SELECTED_MICROSTEP ( 16)
+
+//Distance per full revolution in micrometeres (780 mm => 780 000 um) (Hoefully wrong?!?!?!?)
+#define DIST_PER_REV       (780000)
+
+//Functional relationships:
+#define DIST_PER_USTEP	   ((DIST_PER_REV/(STEPS_PER_ROTATION*SELECTED_MICROSTEP)))
+#define USTEP_PER_DIST	   (1/DIST_PER_USTEP)
+
 /*  E N U M S   */
 typedef enum {
     Forward = 0,
@@ -78,5 +90,8 @@ void motor_set_to_sleep(Motor_t motor);
 void motor_set_direction(Motor_t motor, eMotor_Direction direction);
 void set_motor_step_size(Motor_t motor, uint8_t direction);
 
+//This header file contains the functions needed to converte the steps and distances of our motor drivers
+uint32_t StepsToDist(uint32_t stepCount);
+uint32_t DistToSteps(uint32_t  distance);
 
 #endif /* MOTOR_CONTROL_H_ */
