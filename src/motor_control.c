@@ -8,6 +8,7 @@
 /*  I N C L U D E S   */
 #include <stdbool.h>
 #include <stdint.h>
+#include "bsp.h"
 
 /*  A P P L I C A T I O N   I N C L U D E S   */
 #include <motor_control.h>
@@ -64,28 +65,28 @@ void prv_Motor(void *pvParameters) {
 
 void init_x_motor(void) {
     // TODO: assign values to the x_motor struct
-    motor_init_gpio(x_motor);
+    motor_init_x_gpio();
     motor_init_pwm(x_motor);
     motor_disable(x_motor);
 }
 
 void init_y_motor(void) {
     // TODO: assign values to the y_motor struct
-    motor_init_gpio(y_motor);
+    motor_init_y_gpio();
     motor_init_pwm(y_motor);
     motor_disable(y_motor);
 }
 
 void init_z_motor(void) {
     // TODO: assign values to the z_motor struct
-    motor_init_gpio(z_motor);
+    motor_init_z_gpio();
     motor_init_pwm(z_motor);
     motor_disable(z_motor);
 }
 
 void init_ex_motor(void) {
     // TODO: assign values to the y_motor struct
-    motor_init_gpio(ex_motor);
+    motor_init_ex_gpio();
     motor_init_pwm(ex_motor);
     motor_disable(ex_motor);
 }
@@ -118,11 +119,19 @@ void motor_init_pwm(Motor_t motor) {
 
     /* initialize to no output */
     PWMPulseWidthSet(motor.PWM_Base, PWM_OUT_0, 0);
+
+    /* Enable Interrupts */
+    PWMGenIntRegister(motor.PWM_Base, PWM_GEN_0, PWM0IntHandler);
 }
 
 /* @param uint8_t duty_cycle: 0-100 */
 void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle) {
     PWMPulseWidthSet(motor.PWM_Base, PWM_OUT_0, ((duty_cycle * CALC_PERIOD(PWM0_FREQUENCY))/100));
+}
+
+void set_pwm_load_reg(uint32_t val)
+{
+
 }
 
 
@@ -138,31 +147,211 @@ void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle) {
  *  DECAY - ?
  *  TRQ - ?
  */
-void motor_init_gpio(Motor_t motor) {
-    // Enable GPIO port(s) for motor driver control
-    MAP_SysCtlPeripheralEnable(motor.M0.base);
-    MAP_SysCtlPeripheralEnable(motor.M1.base);
-    MAP_SysCtlPeripheralEnable(motor.DIR.base);
-    MAP_SysCtlPeripheralEnable(motor.ENABLE.base);
-    MAP_SysCtlPeripheralEnable(motor.STEP.base);
-    MAP_SysCtlPeripheralEnable(motor.NSLEEP.base);
-    MAP_SysCtlPeripheralEnable(motor.NFAULT.base);
+
+void motor_init_x_gpio(void)
+{
+    // Assign Struct members to definitions
+    x_motor.M0.base   =    X_M0_PORT;
+    x_motor.M0.pin    =    X_M0_PIN;
+
+    x_motor.M1.base   =    X_M1_PORT;
+    x_motor.M1.pin    =    X_M1_PIN;
+
+    x_motor.DIR.base  =    X_DIR_PORT;
+    x_motor.DIR.pin   =    X_DIR_PIN;
+
+    x_motor.ENABLE.base =  X_ENABLE_PORT;
+    x_motor.ENABLE.pin  =  X_ENABLE_PIN;
+
+    x_motor.NSLEEP.base =  X_NSLEEP_PORT;
+    x_motor.NSLEEP.pin  =  X_NSLEEP_PIN;
+
+    x_motor.NFAULT.base =  X_NFAULT_PORT;
+    x_motor.NFAULT.pin  =  X_NFAULT_PIN;
+
+    x_motor.STEP.base   =  X_STEP_PORT;
+    x_motor.STEP.pin    =  X_STEP_PIN;
+
+    // Enable Ports
+
+    MAP_SysCtlPeripheralEnable(x_motor.M0.base);      // Port E
+    MAP_SysCtlPeripheralEnable(x_motor.M1.base);      // Port J
+    MAP_SysCtlPeripheralEnable(x_motor.NFAULT.base);  // Port H
 
     /* Set GPIO output pins */
-    MAP_GPIODirModeSet(motor.M0.base, motor.M0.pin, GPIO_DIR_MODE_OUT);
-    MAP_GPIODirModeSet(motor.M1.base, motor.M1.pin, GPIO_DIR_MODE_OUT);
-    MAP_GPIODirModeSet(motor.DIR.base, motor.DIR.pin, GPIO_DIR_MODE_OUT);
-    MAP_GPIODirModeSet(motor.ENABLE.base, motor.ENABLE.pin, GPIO_DIR_MODE_OUT);
-    MAP_GPIODirModeSet(motor.STEP.base, motor.STEP.pin, GPIO_DIR_MODE_OUT);
-    MAP_GPIODirModeSet(motor.NSLEEP.base, motor.NSLEEP.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(x_motor.M0.base, x_motor.M0.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(x_motor.M1.base, x_motor.M1.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(x_motor.DIR.base, x_motor.DIR.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(x_motor.ENABLE.base, x_motor.ENABLE.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(x_motor.STEP.base, x_motor.STEP.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(x_motor.NSLEEP.base, x_motor.NSLEEP.pin, GPIO_DIR_MODE_OUT);
 
     /* Set GPIO Input pins */
-    MAP_GPIODirModeSet(motor.NFAULT.base, motor.NFAULT.pin, GPIO_DIR_MODE_IN);
+    MAP_GPIODirModeSet(x_motor.NFAULT.base, x_motor.NFAULT.pin, GPIO_DIR_MODE_IN);
 
     /* Set Drive Strength */
-    MAP_GPIOPadConfigSet(); // used to set drive strength
-
+    MAP_GPIOPadConfigSet(x_motor.M0.base, x_motor.M0.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD); // used to set drive strength
+    MAP_GPIOPadConfigSet(x_motor.M1.base, x_motor.M1.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(x_motor.DIR.base, x_motor.DIR.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(x_motor.ENABLE.base, x_motor.ENABLE.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(x_motor.STEP.base, x_motor.STEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(x_motor.NSLEEP.base, x_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(x_motor.NFAULT.base, x_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
 }
+
+void motor_init_y_gpio(void)
+{
+    // Assign Struct members to definitions
+    y_motor.M0.base   =    Y_M0_PORT;
+    y_motor.M0.pin    =    Y_M0_PIN;
+
+    y_motor.M1.base   =    Y_M1_PORT;
+    y_motor.M1.pin    =    Y_M1_PIN;
+
+    y_motor.DIR.base  =    Y_DIR_PORT;
+    y_motor.DIR.pin   =    Y_DIR_PIN;
+
+    y_motor.ENABLE.base =  Y_ENABLE_PORT;
+    y_motor.ENABLE.pin  =  Y_ENABLE_PIN;
+
+    y_motor.NSLEEP.base =  Y_NSLEEP_PORT;
+    y_motor.NSLEEP.pin  =  Y_NSLEEP_PIN;
+
+    y_motor.NFAULT.base =  Y_NFAULT_PORT;
+    y_motor.NFAULT.pin  =  Y_NFAULT_PIN;
+
+    y_motor.STEP.base   =  Y_STEP_PORT;
+    y_motor.STEP.pin    =  Y_STEP_PIN;
+
+    // Enable Ports
+
+    MAP_SysCtlPeripheralEnable(y_motor.M0.base);      // Port E
+    MAP_SysCtlPeripheralEnable(y_motor.M1.base);      // Port J
+    MAP_SysCtlPeripheralEnable(y_motor.NFAULT.base);  // Port H
+
+    /* Set GPIO output pins */
+    MAP_GPIODirModeSet(y_motor.M0.base, y_motor.M0.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(y_motor.M1.base, y_motor.M1.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(y_motor.DIR.base, y_motor.DIR.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(y_motor.ENABLE.base, y_motor.ENABLE.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(y_motor.STEP.base, y_motor.STEP.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(y_motor.NSLEEP.base, y_motor.NSLEEP.pin, GPIO_DIR_MODE_OUT);
+
+    /* Set GPIO Input pins */
+    MAP_GPIODirModeSet(y_motor.NFAULT.base, y_motor.NFAULT.pin, GPIO_DIR_MODE_IN);
+
+    /* Set Drive Strength */
+    MAP_GPIOPadConfigSet(y_motor.M0.base, y_motor.M0.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD); // used to set drive strength
+    MAP_GPIOPadConfigSet(y_motor.M1.base, y_motor.M1.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(y_motor.DIR.base, y_motor.DIR.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(y_motor.ENABLE.base, y_motor.ENABLE.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(y_motor.STEP.base, y_motor.STEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(y_motor.NSLEEP.base, y_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(y_motor.NFAULT.base, y_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+}
+
+void motor_init_z_gpio(void)
+{
+    // Assign Struct members to definitions
+    z_motor.M0.base   =    Z_M0_PORT;
+    z_motor.M0.pin    =    Z_M0_PIN;
+
+    z_motor.M1.base   =    Z_M1_PORT;
+    z_motor.M1.pin    =    Z_M1_PIN;
+
+    z_motor.DIR.base  =    Z_DIR_PORT;
+    z_motor.DIR.pin   =    Z_DIR_PIN;
+
+    z_motor.ENABLE.base =  Z_ENABLE_PORT;
+    z_motor.ENABLE.pin  =  Z_ENABLE_PIN;
+
+    z_motor.NSLEEP.base =  Z_NSLEEP_PORT;
+    z_motor.NSLEEP.pin  =  Z_NSLEEP_PIN;
+
+    z_motor.NFAULT.base =  Z_NFAULT_PORT;
+    z_motor.NFAULT.pin  =  Z_NFAULT_PIN;
+
+    z_motor.STEP.base   =  Z_STEP_PORT;
+    z_motor.STEP.pin    =  Z_STEP_PIN;
+
+    // Enable Ports
+
+    MAP_SysCtlPeripheralEnable(z_motor.M0.base);      // Port E
+    MAP_SysCtlPeripheralEnable(z_motor.M1.base);      // Port J
+    MAP_SysCtlPeripheralEnable(z_motor.NFAULT.base);  // Port H
+
+    /* Set GPIO output pins */
+    MAP_GPIODirModeSet(z_motor.M0.base, z_motor.M0.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(z_motor.M1.base, z_motor.M1.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(z_motor.DIR.base, z_motor.DIR.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(z_motor.ENABLE.base, z_motor.ENABLE.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(z_motor.STEP.base, z_motor.STEP.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(z_motor.NSLEEP.base, z_motor.NSLEEP.pin, GPIO_DIR_MODE_OUT);
+
+    /* Set GPIO Input pins */
+    MAP_GPIODirModeSet(z_motor.NFAULT.base, z_motor.NFAULT.pin, GPIO_DIR_MODE_IN);
+
+    /* Set Drive Strength */
+    MAP_GPIOPadConfigSet(z_motor.M0.base, z_motor.M0.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD); // used to set drive strength
+    MAP_GPIOPadConfigSet(z_motor.M1.base, z_motor.M1.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(z_motor.DIR.base, z_motor.DIR.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(z_motor.ENABLE.base, z_motor.ENABLE.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(z_motor.STEP.base, z_motor.STEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(z_motor.NSLEEP.base, z_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(z_motor.NFAULT.base, z_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+}
+
+void motor_init_ex_gpio(void)
+{
+    // Assign Struct members to definitions
+    ex_motor.M0.base   =    EX_M0_PORT;
+    ex_motor.M0.pin    =    EX_M0_PIN;
+
+    ex_motor.M1.base   =    EX_M1_PORT;
+    ex_motor.M1.pin    =    EX_M1_PIN;
+
+    ex_motor.DIR.base  =    EX_DIR_PORT;
+    ex_motor.DIR.pin   =    EX_DIR_PIN;
+
+    ex_motor.ENABLE.base =  EX_ENABLE_PORT;
+    ex_motor.ENABLE.pin  =  EX_ENABLE_PIN;
+
+    ex_motor.NSLEEP.base =  EX_NSLEEP_PORT;
+    ex_motor.NSLEEP.pin  =  EX_NSLEEP_PIN;
+
+    ex_motor.NFAULT.base =  EX_NFAULT_PORT;
+    ex_motor.NFAULT.pin  =  EX_NFAULT_PIN;
+
+    ex_motor.STEP.base   =  EX_STEP_PORT;
+    ex_motor.STEP.pin    =  EX_STEP_PIN;
+
+    // Enable Ports
+
+    MAP_SysCtlPeripheralEnable(ex_motor.M0.base);      // Port E
+    MAP_SysCtlPeripheralEnable(ex_motor.M1.base);      // Port J
+    MAP_SysCtlPeripheralEnable(ex_motor.NFAULT.base);  // Port H
+
+    /* Set GPIO output pins */
+    MAP_GPIODirModeSet(ex_motor.M0.base, ex_motor.M0.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(ex_motor.M1.base, ex_motor.M1.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(ex_motor.DIR.base, ex_motor.DIR.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(ex_motor.ENABLE.base, ex_motor.ENABLE.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(ex_motor.STEP.base, ex_motor.STEP.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(ex_motor.NSLEEP.base, ex_motor.NSLEEP.pin, GPIO_DIR_MODE_OUT);
+
+    /* Set GPIO Input pins */
+    MAP_GPIODirModeSet(ex_motor.NFAULT.base, ex_motor.NFAULT.pin, GPIO_DIR_MODE_IN);
+
+    /* Set Drive Strength */
+    MAP_GPIOPadConfigSet(ex_motor.M0.base, ex_motor.M0.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD); // used to set drive strength
+    MAP_GPIOPadConfigSet(ex_motor.M1.base, ex_motor.M1.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(ex_motor.DIR.base, ex_motor.DIR.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(ex_motor.ENABLE.base, ex_motor.ENABLE.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(ex_motor.STEP.base, ex_motor.STEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(ex_motor.NSLEEP.base, ex_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(ex_motor.NFAULT.base, ex_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+}
+
 
 void motor_enable(Motor_t motor) {
     GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, motor.ENABLE.pin);    // set ENABLE pin HIGH
@@ -224,6 +413,7 @@ void set_motor_step_size(Motor_t motor, uint8_t direction){
 
 // static bool x_step_flag;
 void PWM0IntHandler(void) {
+
 
 }
 
