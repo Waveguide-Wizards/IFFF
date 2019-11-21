@@ -90,8 +90,4 @@ void motor_set_to_sleep(Motor_t motor);
 void motor_set_direction(Motor_t motor, eMotor_Direction direction);
 void set_motor_step_size(Motor_t motor, uint8_t direction);
 
-//This header file contains the functions needed to converte the steps and distances of our motor drivers
-uint32_t StepsToDist(uint32_t stepCount);
-uint32_t DistToSteps(uint32_t  distance);
-
 #endif /* MOTOR_CONTROL_H_ */

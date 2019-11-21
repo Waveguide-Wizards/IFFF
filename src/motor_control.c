@@ -279,17 +279,4 @@ void PWM0IntHandler(void) {
     configASSERT(xMotorTask != NULL);
     vTaskNotifyGiveFromISR(xMotorTask, &xHigherPriorityTaskWoken);
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-
 }
-
-
-//This is used to convert the numer of steps taken into a distance in micrometers.
-uint32_t StepsToDist(uint32_t stepCount){
-    return stepCount*DIST_PER_USTEP;
-}
-
-//This is used to convert the desired distance into a step count.
-uint32_t DistToSteps(uint32_t  distance){
-    return distance*USTEP_PER_DIST;
-}
-
