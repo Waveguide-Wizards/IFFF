@@ -46,18 +46,17 @@
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compilerID.DIAG_WRAP.158380806" name="Wrap diagnostic messages (--diag_wrap)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compilerID.DIAG_WRAP" useByScannerDiscovery="false" value="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compilerID.DIAG_WRAP.off" valueType="enumerated"/>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compilerID.INCLUDE_PATH.1603903925" name="Add dir to #include search path (--include_path, -I)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compilerID.INCLUDE_PATH" valueType="includePath">
 									<listOptionValue builtIn="false" value="${PROJECT_ROOT}"/>
+									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/tivaware_c_series_2_1_4_178}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/littlefs}"/>
-									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/drivers/include}"/>
-									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/drivers/source}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/FreeRTOS/Source/include}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/FreeRTOS/Source/portable/CCS/ARM_CM4F}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/FreeRTOS/Source/portable/MemMang}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/include}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/src}"/>
-									<listOptionValue builtIn="false" value="/home/jack/ti/tivaware_c_series_2_1_4_178"/>
 									<listOptionValue builtIn="false" value="${CG_TOOL_ROOT}/include"/>
 								</option>
 								<option id="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compilerID.LITTLE_ENDIAN.1380250960" name="Little endian code [See 'General' page to edit] (--little_endian, -me)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compilerID.LITTLE_ENDIAN" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="true" id="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compilerID.PREINCLUDE.435564604" name="Specify a preinclude file (--preinclude)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compilerID.PREINCLUDE" valueType="includeFiles"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compiler.inputType__C_SRCS.992158706" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compiler.inputType__C_SRCS"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compiler.inputType__CPP_SRCS.1405534617" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compiler.inputType__CPP_SRCS"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compiler.inputType__ASM_SRCS.1851751795" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.TMS470_18.12.compiler.inputType__ASM_SRCS"/>
@@ -76,8 +75,8 @@
 									<listOptionValue builtIn="false" value="${CG_TOOL_ROOT}/include"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.ti.ccstudio.buildDefinitions.TMS470_18.12.linkerID.LIBRARY.347010976" name="Include library file or command file as input (--library, -l)" superClass="com.ti.ccstudio.buildDefinitions.TMS470_18.12.linkerID.LIBRARY" useByScannerDiscovery="false" valueType="libs">
+									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/driverlib.lib}"/>
 									<listOptionValue builtIn="false" value="libc.a"/>
-									<listOptionValue builtIn="false" value="/home/jack/ti/tivaware_c_series_2_1_4_178/driverlib/ccs/Debug/driverlib.lib"/>
 								</option>
 								<inputType id="com.ti.ccstudio.buildDefinitions.TMS470_18.12.exeLinker.inputType__CMD_SRCS.1324876318" name="Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.TMS470_18.12.exeLinker.inputType__CMD_SRCS"/>
 								<inputType id="com.ti.ccstudio.buildDefinitions.TMS470_18.12.exeLinker.inputType__CMD2_SRCS.1676450868" name="Linker Command Files" superClass="com.ti.ccstudio.buildDefinitions.TMS470_18.12.exeLinker.inputType__CMD2_SRCS"/>
@@ -87,7 +86,248 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="include|src|FreeRTOS|littlefs" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="tivaware_c_series_2_1_4_178/usblib|tivaware_c_series_2_1_4_178/tools|tivaware_c_series_2_1_4_178/grlib|tivaware_c_series_2_1_4_178/sensorlib|tivaware_c_series_2_1_4_178/third_party|tivaware_c_series_2_1_4_178/utils|tivaware_c_series_2_1_4_178/IQmath|tivaware_c_series_2_1_4_178/examples|tivaware_c_series_2_1_4_178/docs|tivaware_c_series_2_1_4_178/boot_loader|include|src|FreeRTOS|littlefs" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x-boostxl-senshub"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_otg_mouse/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_otg_mouse/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_otg_mouse/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_msc/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_msc/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_msc/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_msc/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_mouse/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_mouse/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_mouse/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_mouse/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_keyboard/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_keyboard/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_keyboard/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_keyboard/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_hub/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_hub/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_hub/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_hub/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_audio_in/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_audio_in/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_audio_in/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_audio_in/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_audio/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_audio/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_audio/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_host_audio/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_serial/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_serial/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_serial/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_serial/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_msc/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_msc/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_msc/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_msc/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_keyboard/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_keyboard/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_keyboard/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_keyboard/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_gamepad/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_gamepad/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_gamepad/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_gamepad/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_chid/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_chid/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_chid/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_chid/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_bulk/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_bulk/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_bulk/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/usb_dev_bulk/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/udma_demo/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/udma_demo/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/udma_demo/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/udma_demo/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/uart_echo/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/uart_echo/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/uart_echo/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/uart_echo/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/timers/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/timers/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/timers/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/timers/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/tdes_cbc_encrypt/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/tdes_cbc_encrypt/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/tdes_cbc_encrypt/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/tdes_cbc_encrypt/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/tdes_cbc_decrypt/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/tdes_cbc_decrypt/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/tdes_cbc_decrypt/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/tdes_cbc_decrypt/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/tamper/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/tamper/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/tamper/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/tamper/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/synth/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/synth/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/synth/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/synth/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/sha1_hmac/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/sha1_hmac/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/sha1_hmac/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/sha1_hmac/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/sha1_hash/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/sha1_hash/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/sha1_hash/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/sha1_hash/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/sd_card/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/sd_card/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/sd_card/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/sd_card/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/scribble/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/scribble/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/scribble/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/scribble/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/qs_weather/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/qs_weather/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/qs_weather/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/qs_weather/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/project0/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/project0/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/project0/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/project0/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/mpu_fault/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/mpu_fault/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/mpu_fault/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/mpu_fault/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/lang_demo/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/lang_demo/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/lang_demo/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/lang_demo/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/interrupts/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/interrupts/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/interrupts/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/interrupts/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/hibernate/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/hibernate/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/hibernate/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/hibernate/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/hello_widget/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/hello_widget/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/hello_widget/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/hello_widget/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/hello/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/hello/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/hello/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/hello/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/grlib_driver_test/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/grlib_driver_test/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/grlib_driver_test/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/grlib_driver_test/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/grlib_demo/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/grlib_demo/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/grlib_demo/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/grlib_demo/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/gpio_jtag/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/gpio_jtag/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/gpio_jtag/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/gpio_jtag/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/freertos_demo/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/freertos_demo/html"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/freertos_demo/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/freertos_demo/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/freertos_demo/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/fontview/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/fontview/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/fontview/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/fontview/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/enet_uip/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/enet_uip/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/enet_uip/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/enet_uip/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/enet_lwip/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/enet_lwip/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/enet_lwip/fs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/enet_lwip/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/enet_lwip/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/enet_io/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/enet_io/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/enet_io/fs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/enet_io/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/enet_io/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/crc32/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/crc32/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/crc32/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/crc32/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/calibrate/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/calibrate/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/calibrate/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/calibrate/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_emac_flash/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_emac_flash/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_emac_flash/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_emac_flash/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_usb/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_usb/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_usb/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_usb/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_uart/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_uart/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_uart/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_uart/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_flash/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_flash/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_flash/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_flash/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_emac_flash/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_emac_flash/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_emac_flash/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/boot_demo_emac_flash/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/blinky/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/blinky/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/blinky/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/blinky/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/ble_central/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/ble_central/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/ble_central/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/ble_central/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/ble_btool/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/ble_btool/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/ble_btool/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/ble_btool/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/bitband/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/bitband/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/bitband/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/bitband/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_gcm_encrypt/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_gcm_encrypt/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_gcm_encrypt/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_gcm_encrypt/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_gcm_decrypt/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_gcm_decrypt/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_gcm_decrypt/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_gcm_decrypt/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ecb_encrypt/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ecb_encrypt/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ecb_encrypt/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ecb_encrypt/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ecb_decrypt/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ecb_decrypt/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ecb_decrypt/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ecb_decrypt/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_cmac/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_cmac/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_cmac/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_cmac/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ccm_encrypt/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ccm_encrypt/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ccm_encrypt/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ccm_encrypt/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ccm_decrypt/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ccm_decrypt/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ccm_decrypt/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_ccm_decrypt/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_cbc_encrypt/rvmdk"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_cbc_encrypt/gcc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_cbc_encrypt/ewarm"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_cbc_encrypt/ccs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c129x/aes_cbc_decrypt"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/examples/boards/dk-tm4c123g"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="FreeRTOS"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="include"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>

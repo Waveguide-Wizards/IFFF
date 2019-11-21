@@ -21,6 +21,7 @@ OBJS += \
 ./src/motor_control.obj 
 
 OBJS__QUOTED += \
+<<<<<<< Updated upstream
 "src\drv888.obj" \
 "src\led.obj" \
 "src\motor_control.obj" 
@@ -28,6 +29,15 @@ OBJS__QUOTED += \
 C_DEPS__QUOTED += \
 "src\drv888.d" \
 "src\led.d" \
+=======
+"src\led.obj" \
+"src\main_motor_control.obj" \
+"src\motor_control.obj" 
+
+C_DEPS__QUOTED += \
+"src\led.d" \
+"src\main_motor_control.d" \
+>>>>>>> Stashed changes
 "src\motor_control.d" 
 
 C_SRCS__QUOTED += \

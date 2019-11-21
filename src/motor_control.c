@@ -12,9 +12,17 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+<<<<<<< Updated upstream
 
 /*  A P P L I C A T I O N   I N C L U D E S   */
 #include "driver_motor_control.h"
+=======
+/*  P R I V A T E   V A R I A B L E S   */
+static Motor_t x_motor;
+static Motor_t y_motor;
+static Motor_t z_motor;
+static Motor_t ex_motor;
+>>>>>>> Stashed changes
 
 
 /*  T A S K S   */
@@ -46,3 +54,185 @@ void prvX_Motor(void *pvParameters) {
 
 
 /*  F U N C T I O N S   */
+<<<<<<< Updated upstream
+=======
+
+void init_x_motor(void) {
+    // TODO: assign values to the x_motor struct
+    motor_init_gpio(x_motor);
+    motor_init_pwm(x_motor);
+    motor_disable(x_motor);
+}
+
+void init_y_motor(void) {
+    // TODO: assign values to the y_motor struct
+    motor_init_gpio(y_motor);
+    motor_init_pwm(y_motor);
+    motor_disable(y_motor);
+}
+
+void init_z_motor(void) {
+    // TODO: assign values to the z_motor struct
+    motor_init_gpio(z_motor);
+    motor_init_pwm(z_motor);
+    motor_disable(z_motor);
+}
+
+void init_ex_motor(void) {
+    // TODO: assign values to the y_motor struct
+    motor_init_gpio(ex_motor);
+    motor_init_pwm(ex_motor);
+    motor_disable(ex_motor);
+}
+
+void init_all_motors(void) {
+    init_x_motor();
+    init_y_motor();
+    init_z_motor();
+    init_ex_motor();
+}
+
+/*  M O T O R   P W M   */
+void motor_init_pwm(Motor_t motor) {
+    /* setup and enable clock */
+    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
+
+    // TODO: need to see if there's a way to make this more generic
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);         // The PWM peripheral must be enabled for use.
+
+    /* init GPIO pin */
+    SysCtlPeripheralEnable(motor.STEP.base);            // enable GPIO port if not already enabled
+    GPIOPinConfigure(motor.PWM_Pin_Map);                // configure pin for PWM
+    GPIOPinTypePWM(motor.STEP.base, motor.STEP.pin);
+
+    /* Count down without synchronization */
+    PWMGenConfigure(motor.PWM_Base, PWM_GEN_0, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
+
+    /* Set PWM period to: 0.02ms or 50kHz */
+    PWMGenPeriodSet(motor.PWM_Base, PWM_GEN_0, CALC_PERIOD(PWM0_FREQUENCY));
+
+    /* initialize to no output */
+    PWMPulseWidthSet(motor.PWM_Base, PWM_OUT_0, 0);
+}
+
+/* @param uint8_t duty_cycle: 0-100 */
+void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle) {
+    PWMPulseWidthSet(motor.PWM_Base, PWM_OUT_0, ((duty_cycle * CALC_PERIOD(PWM0_FREQUENCY))/100));
+}
+
+
+/*  X   M O T O R   G P I O   */
+
+/* Configure GPIO pins for DRV8886
+ *
+ *  DIR - direction input,
+ *  ENABLE - input, HIGH is enabled, LOW is disabled
+ *  M0 and M1 - inputs, microstepping mode, M1=0 and M0=1 for 1/16 step
+ *  nFAULT - Fault indication output from DRV8886
+ *  nSLEEP - sleep mode input, LOW to enter low-power
+ *  DECAY - ?
+ *  TRQ - ?
+ */
+void motor_init_gpio(Motor_t motor) {
+    // Enable GPIO port(s) for motor driver control
+    MAP_SysCtlPeripheralEnable(motor.M0.base);
+    MAP_SysCtlPeripheralEnable(motor.M1.base);
+    MAP_SysCtlPeripheralEnable(motor.DIR.base);
+    MAP_SysCtlPeripheralEnable(motor.ENABLE.base);
+    MAP_SysCtlPeripheralEnable(motor.STEP.base);
+    MAP_SysCtlPeripheralEnable(motor.NSLEEP.base);
+    MAP_SysCtlPeripheralEnable(motor.NFAULT.base);
+
+    /* Set GPIO output pins */
+    MAP_GPIODirModeSet(motor.M0.base, motor.M0.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(motor.M1.base, motor.M1.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(motor.DIR.base, motor.DIR.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(motor.ENABLE.base, motor.ENABLE.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(motor.STEP.base, motor.STEP.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(motor.NSLEEP.base, motor.NSLEEP.pin, GPIO_DIR_MODE_OUT);
+
+    /* Set GPIO Input pins */
+    MAP_GPIODirModeSet(motor.NFAULT.base, motor.NFAULT.pin, GPIO_DIR_MODE_IN);
+
+    /* Set Drive Strength */
+    MAP_GPIOPadConfigSet(); // used to set drive strength
+
+}
+
+void motor_enable(Motor_t motor) {
+    GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, motor.ENABLE.pin);    // set ENABLE pin HIGH
+    PWMOutputState(motor.PWM_Base, (1 << motor.PWM_Channel), true);    // disables PWM output
+    PWMGenEnable(motor.PWM_Base, PWM_GEN_0);                     // enables PWM
+}
+
+void motor_disable(Motor_t motor) {
+    GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, 0);               // set ENABLE pin LOW
+    PWMOutputState(motor.PWM_Base, (1 << motor.PWM_Channel), false);    // disables PWM output
+    PWMGenDisable(motor.PWM_Base, PWM_GEN_0);                                // disable PWM
+}
+
+void motor_set_to_sleep(Motor_t motor) {
+    GPIOPinWrite(motor.NSLEEP.base, motor.NSLEEP.pin, 0);   // set nSLEEP pin LOW
+}
+
+void motor_set_direction(Motor_t motor, eMotor_Direction direction) {
+    if(direction == Forward) {
+        GPIOPinWrite(motor.DIR.base, motor.DIR.pin, motor.DIR.pin);
+    }
+    else if(direction == Backward) {
+        GPIOPinWrite(motor.DIR.base, motor.DIR.pin, 0);
+    }
+}
+
+void set_motor_step_size(Motor_t motor, uint8_t direction){
+    switch(direction)
+    {
+    case STEP_FULL:
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, 0);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, 0);
+        break;
+    case STEP_16:
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, 1);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, 0);
+        break;
+    case STEP_2:
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, 0);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, 1);
+        break;
+    case STEP_4:
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, 1);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, 1);
+        break;
+    case STEP_8:
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, 1);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, 1);
+        break;
+    }
+}
+
+/*
+ * TODO:
+ *  - use LOAD register to count Pulses
+ *  - set PWM duty cycle for X/Y/Z to 0 in this handler
+ *  - notify motors task once an interrupt flag for each motor has been raised
+ */
+
+// static bool x_step_flag;
+void PWM0IntHandler(void) {
+
+}
+
+//This is used to convert the number of steps taken into a distance in micrometers.
+//This function will be primarily used for debug purposes.
+int StepsToDist(uint32_t stepCount){
+    return stepCount*DIST_PER_USTEP;
+}
+
+//This is used to convert the distance requested to the number of steps required to get there
+//This function will be primarily used for debug purposes.
+int DistToSteps(uint32_t distance){
+    return distance*USTEP_PER_DIST;
+}
+
+
+>>>>>>> Stashed changes
