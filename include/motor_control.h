@@ -83,7 +83,7 @@ void motor_init_pwm(Motor_t motor);
 void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle);
 
 /*  X   M O T O R   G P I O   */
-void motor_init_gpio(void);
+void motor_init_gpio(Motor_t motor);
 void motor_enable(Motor_t motor);
 void motor_disable(Motor_t motor);
 void motor_set_to_sleep(Motor_t motor);

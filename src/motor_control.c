@@ -210,7 +210,7 @@ void motor_init_gpio(Motor_t motor) {
     MAP_GPIODirModeSet(motor.NFAULT.base, motor.NFAULT.pin, GPIO_DIR_MODE_IN);
 
     /* Set Drive Strength */
-    MAP_GPIOPadConfigSet(); // used to set drive strength
+//    MAP_GPIOPadConfigSet(); // used to set drive strength
 
 }
 
