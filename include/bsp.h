@@ -15,6 +15,13 @@
 #include "inc/hw_memmap.h"
 #include "inc/hw_pwm.h"
 
+typedef enum {
+    Error = -1,
+    Idle,
+    Printing,
+    MemoryTransfer,
+} eState;
+
 /*
  * TODO: Change these to real pins and ports
  */

@@ -10,7 +10,8 @@
 #include <stdint.h>
 
 /*  A P P L I C A T I O N   I N C L U D E S   */
-#include <motor_control.h>
+#include "bsp.h"
+#include "motor_control.h"
 
 /*  D R I V E R   L I B   */
 #include "driverlib/gpio.h"
@@ -30,6 +31,13 @@
 /*  F R E E R T O S   I N C L U D E S   */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
+
+
+/*  G L O B A L   V A R I A B L E S   */
+extern eState printer_state;
+extern QueueHandle_t motor_instruction_queue;
+extern TaskHandle_t xMotorTask;
 
 
 /*  P R I V A T E   V A R I A B L E S   */
@@ -41,26 +49,68 @@ static Motor_t ex_motor;
 
 /*  T A S K S   */
 void prv_Motor(void *pvParameters) {
-    static TickType_t delay_time = pdMS_TO_TICKS(1000);     // 1s
-    static eMotor_Direction direction = Forward;
+    const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 200 );  // TODO: switch to max port delay
+    uint32_t ulNotificationValue;
 
+    // init motors
     init_all_motors();
 
     for( ;; ) {
-        if(direction == Forward) {
-            motor_change_pwm_duty_cycle(x_motor, 0);
-            direction = Backward;
+        /* Wait for current instruction to be completed */
+        ulNotificationValue = ulTaskNotifyTake( pdFALSE, xMaxBlockTime );
+
+        if( (ulNotificationValue == 1)  && (printer_state == Printing)) {
+            // pop from queue
+            Motor_Instruction_t * current_instruction;
+            xQueueReceive(motor_instruction_queue, (void *)&current_instruction, (TickType_t)5);
+
+            // set up motors
+            find_direction(current_instruction->x_pos, x_motor);
+            find_direction(current_instruction->y_pos, y_motor);
+            find_direction(current_instruction->z_pos, z_motor);
+            find_direction(current_instruction->x_pos, ex_motor);
+
+            // update positions
+            x_motor.position = current_instruction->x_pos;
+            y_motor.position = current_instruction->y_pos;
+            z_motor.position = current_instruction->z_pos;
+            ex_motor.position = current_instruction->extruder_pos;
+
+            // find step counts
+
+            // load step counts into PWM registers
+
+            // start PWM on all motors
+
         }
-        if(direction == Backward) {
-            motor_change_pwm_duty_cycle(x_motor, 90);
-            direction = Forward;
+        else {  // taking notification timed out, indicate error occurred
+            printer_state = Error;
         }
-        vTaskDelay(delay_time);
+
     }
 }
 
 
 /*  F U N C T I O N S   */
+void find_direction(uint32_t instruction, Motor_t motor) {
+    if(instruction >= motor.position) {
+        motor.direction = Backward;
+    }
+    else {
+        motor.direction = Forward;
+    }
+}
+
+//This is used to convert the numer of steps taken into a distance in micrometers.
+uint32_t StepsToDist(uint32_t stepCount){
+    return stepCount*DIST_PER_USTEP;
+}
+
+//This is used to convert the desired distance into a step count.
+uint32_t DistToSteps(uint32_t  distance){
+    return distance*USTEP_PER_DIST;
+}
+
 
 void init_x_motor(void) {
     // TODO: assign values to the x_motor struct
@@ -110,7 +160,7 @@ void motor_init_pwm(Motor_t motor) {
     PWMGenConfigure(motor.PWM_Base, PWM_GEN_0, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
 
     /* Set PWM period to: 0.02ms or 50kHz */
-    PWMGenPeriodSet(motor.PWM_Base, PWM_GEN_0, CALC_PERIOD(PWM0_FREQUENCY));
+    PWMGenPeriodSet(motor.PWM_Base, PWM_GEN_0, CALC_PERIOD(PWM_FREQUENCY));
 
     /* initialize to no output */
     PWMPulseWidthSet(motor.PWM_Base, PWM_OUT_0, 0);
@@ -118,7 +168,7 @@ void motor_init_pwm(Motor_t motor) {
 
 /* @param uint8_t duty_cycle: 0-100 */
 void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle) {
-    PWMPulseWidthSet(motor.PWM_Base, PWM_OUT_0, ((duty_cycle * CALC_PERIOD(PWM0_FREQUENCY))/100));
+    PWMPulseWidthSet(motor.PWM_Base, PWM_OUT_0, ((duty_cycle * CALC_PERIOD(PWM_FREQUENCY))/100));
 }
 
 
@@ -207,6 +257,11 @@ void set_motor_step_size(Motor_t motor, uint8_t direction){
 
 // static bool x_step_flag;
 void PWM0IntHandler(void) {
+    // TODO: if step count met for all motors execute this
+    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    configASSERT(xMotorTask != NULL);
+    vTaskNotifyGiveFromISR(xMotorTask, &xHigherPriorityTaskWoken);
+    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 
 }
 

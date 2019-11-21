@@ -21,8 +21,10 @@
 #include "queue.h"
 
 /*  A P P L I C A T I O N    I N C L U D E S   */
+#include "bsp.h"
 #include "motor_control.h"
 #include "led.h"
+#include "error_checking.h"
 
 /*  F R E E R T O S   H O O K S   */
 void vApplicationMallocFailedHook( void );
@@ -34,7 +36,11 @@ void *malloc( size_t xSize );
 
 
 /*  G L O B A L S   */
+volatile eState printer_state;
 QueueHandle_t motor_instruction_queue;
+
+/*  T A S K   N O T I F I C A T I O N S   */
+TaskHandle_t xMotorTask = NULL;
 
 /* main.c */
 void main(void)
@@ -48,9 +54,61 @@ void main(void)
     /* Q U E U E S */
     motor_instruction_queue = xQueueCreate(10, sizeof(Motor_Instruction_t));
 
+    // Add elements to queue for PoC
+    Motor_Instruction_t PoC_Instruction_1 = {
+         .x_pos = 5000,
+         .y_pos = 5000,
+         .z_pos = 0,
+         .speed = 50
+    };
+
+    Motor_Instruction_t PoC_Instruction_2 = {
+         .x_pos = 15000,
+         .y_pos = 5000,
+         .z_pos = 0,
+         .speed = 50
+    };
+
+    Motor_Instruction_t PoC_Instruction_3 = {
+         .x_pos = 15000,
+         .y_pos = 15000,
+         .z_pos = 0,
+         .speed = 50
+    };
+
+    Motor_Instruction_t PoC_Instruction_4 = {
+         .x_pos = 5000,
+         .y_pos = 15000,
+         .z_pos = 0,
+         .speed = 50
+    };
+
+    Motor_Instruction_t PoC_Instruction_5 = {
+         .x_pos = 5000,
+         .y_pos = 5000,
+         .z_pos = 0,
+         .speed = 50
+    };
+
+    Motor_Instruction_t PoC_Instruction_6 = {
+         .x_pos = 0,
+         .y_pos = 0,
+         .z_pos = 0,
+         .speed = 0
+    };
+
+    xQueueSend(motor_instruction_queue, &PoC_Instruction_1, portMAX_DELAY);
+    xQueueSend(motor_instruction_queue, &PoC_Instruction_2, portMAX_DELAY);
+    xQueueSend(motor_instruction_queue, &PoC_Instruction_3, portMAX_DELAY);
+    xQueueSend(motor_instruction_queue, &PoC_Instruction_4, portMAX_DELAY);
+    xQueueSend(motor_instruction_queue, &PoC_Instruction_5, portMAX_DELAY);
+    xQueueSend(motor_instruction_queue, &PoC_Instruction_6, portMAX_DELAY);
+
+
     /* T A S K S */
+    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, NULL);
     BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, NULL);
-    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", configMINIMAL_STACK_SIZE, (void *)NULL, 3, NULL); // PB6
+    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 1, &xMotorTask);
 
     /* check that tasks were created successfully */
     configASSERT(BlinkyReturned == pdPASS);
