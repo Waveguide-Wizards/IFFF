@@ -53,24 +53,33 @@ typedef struct {
     uint32_t        PWM_Pin_Map;
 } Motor_t;
 
+///* Motor structs, defined in motor_control.c */
+//extern Motor_t x_motor;
+//extern Motor_t y_motor;
+//extern Motor_t z_motor;
+//extern Motor_t ex_motor;
+
 /*  T A S K S   */
 void prv_Motor(void *pvParameters);
 
 /*  F U N C T I O N S   */
 void init_x_motor(void);
 void init_y_motor(void);
-void init_z_motor(void);
+//void init_z_motor(void);
 void init_all_motors(void);
 
 /*  M O T O R   P W M   */
-void motor_init_pwm(Motor_t motor);
+void motor_init_x_pwm();
+void motor_init_y_pwm();
+//void motor_init_z_pwm();
+//void motor_init_ex_pwm();
 void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle);
 
 /*  X   M O T O R   G P I O   */
 void motor_init_x_gpio(void);
 void motor_init_y_gpio(void);
-void motor_init_z_gpio(void);
-void motor_init_ex_gpio(void);
+//void motor_init_z_gpio(void);
+//void motor_init_ex_gpio(void);
 void motor_enable(Motor_t motor);
 void motor_disable(Motor_t motor);
 void motor_set_to_sleep(Motor_t motor);
