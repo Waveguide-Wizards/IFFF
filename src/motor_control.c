@@ -99,7 +99,12 @@ void init_all_motors(void) {
 }
 
 /*  M O T O R   P W M   */
-void motor_init_pwm(Motor_t motor) {
+void motor_init_x_pwm(void) {
+
+    x_motor.PWM_Base = X_MOTOR_PWM_BASE;
+    x_motor.PWM_Channel = X_MOTOR_PWM_CHANNEL;
+    x_motor.PWM_Pin_Map = X_MOTOR_STEP;
+
     /* setup and enable clock */
     SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
 
@@ -107,21 +112,21 @@ void motor_init_pwm(Motor_t motor) {
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);         // The PWM peripheral must be enabled for use.
 
     /* init GPIO pin */
-    SysCtlPeripheralEnable(motor.STEP.base);            // enable GPIO port if not already enabled
-    GPIOPinConfigure(motor.PWM_Pin_Map);                // configure pin for PWM
-    GPIOPinTypePWM(motor.STEP.base, motor.STEP.pin);
+    SysCtlPeripheralEnable(x_motor.STEP.base);            // enable GPIO port if not already enabled
+    GPIOPinConfigure(x_motor.PWM_Pin_Map);                // configure pin for PWM
+    GPIOPinTypePWM(x_motor.STEP.base, x_motor.STEP.pin);
 
     /* Count down without synchronization */
-    PWMGenConfigure(motor.PWM_Base, PWM_GEN_0, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
+    PWMGenConfigure(x_motor.PWM_Base, X_PWM_BLOCK, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
 
     /* Set PWM period to: 0.02ms or 50kHz */
-    PWMGenPeriodSet(motor.PWM_Base, PWM_GEN_0, CALC_PERIOD(PWM0_FREQUENCY));
+    PWMGenPeriodSet(motor.PWM_Base, X_PWM_BLOCK, CALC_PERIOD(PWM0_FREQUENCY));
 
     /* initialize to no output */
-    PWMPulseWidthSet(motor.PWM_Base, PWM_OUT_0, 0);
+    PWMPulseWidthSet(motor.PWM_Base, X_PWM_OUT, 0);
 
     /* Enable Interrupts */
-    PWMGenIntRegister(motor.PWM_Base, PWM_GEN_0, PWM0IntHandler);
+    PWMGenIntRegister(motor.PWM_Base, X_PWM_BLOCK, PWM0IntHandler);
 }
 
 /* @param uint8_t duty_cycle: 0-100 */
