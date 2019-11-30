@@ -44,17 +44,17 @@
 #define X_NFAULT_PORT       GPIO_PORTB_BASE
 #define X_NFAULT_PIN        GPIO_PIN_4      // input
 
-//#define X_STEP_PORT         GPIO_PORTA_BASE
-//#define X_STEP_PIN          GPIO_PIN_5      // output
+#define X_STEP_PORT         GPIO_PORTB_BASE
+#define X_STEP_PIN          GPIO_PIN_6      // output
 
 #define X_MOTOR_PWM_BASE    PWM0_BASE       //  M0PWM0 (PB6)
 #define X_MOTOR_PWM_CHANNEL 0
 
-#define X_MOTOR_STEP        GPIO_PB6_M0PWM0
+#define X_MOTOR_PWM_OUT     GPIO_PB6_M0PWM0
 
 
 /*  Y - MOTOR   */
-#define Y_PWM_BLOCK         PWM_GEN_0
+#define Y_PWM_BLOCK         PWM_GEN_1
 #define Y_PWM_OUT           PWM_OUT_6
 
 #define Y_M1_PORT           GPIO_PORTF_BASE
@@ -75,13 +75,13 @@
 #define Y_NFAULT_PORT       GPIO_PORTC_BASE
 #define Y_NFAULT_PIN        GPIO_PIN_7      // input
 
-//#define Y_STEP_PORT         GPIO_PORTC_BASE
-//#define Y_STEP_PIN          GPIO_PIN_4      // output
+#define Y_STEP_PORT         GPIO_PORTB_BASE
+#define Y_STEP_PIN          GPIO_PIN_4      // output (same as Y_MOTOR_PWM_OUT)
 
-#define Y_MOTOR_PWM_BASE    PWM0_BASE       //  M0PWM6
+#define Y_MOTOR_PWM_BASE    PWM0_BASE
 #define Y_MOTOR_PWM_CHANNEL 6
 
-#define Y_MOTOR_STEP        GPIO_PB7_M0PWM1
+#define Y_MOTOR_PWM_OUT     GPIO_PB4_M0PWM2
 
 
 #else

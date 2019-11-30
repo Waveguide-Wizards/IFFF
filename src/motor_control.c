@@ -107,7 +107,8 @@ void motor_init_x_pwm(void) {
 
     x_motor.PWM_Base = X_MOTOR_PWM_BASE;
     x_motor.PWM_Channel = X_MOTOR_PWM_CHANNEL;
-    x_motor.PWM_Pin_Map = X_MOTOR_STEP;
+    x_motor.PWM_Block = X_PWM_BLOCK;
+    x_motor.PWM_Pin_Map = X_MOTOR_PWM_OUT;
 
     /* setup and enable clock */
     SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
@@ -124,16 +125,18 @@ void motor_init_x_pwm(void) {
     PWMGenConfigure(x_motor.PWM_Base, X_PWM_BLOCK, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
 
     /* Set PWM period to: 0.02ms or 50kHz */
-    PWMGenPeriodSet(x_motor.PWM_Base, X_PWM_BLOCK, CALC_PERIOD(PWM0_FREQUENCY));
+    PWMGenPeriodSet(x_motor.PWM_Base, x_motor.PWM_Block, CALC_PERIOD(PWM0_FREQUENCY));
 
     /* initialize to no output */
     PWMPulseWidthSet(x_motor.PWM_Base, X_PWM_OUT, 0);
 
     /* Enable Interrupts */
-    PWMGenIntRegister(x_motor.PWM_Base, X_PWM_BLOCK, PWM0IntHandler);
+    PWMGenIntRegister(x_motor.PWM_Base, x_motor.PWM_Block, PWM0IntHandler);
 
-    /* Enable the generator block */
-    PWMGenEnable(x_motor.PWM_Base, x_motor.PWM_Pin_Map);
+    /* Enable the generator block to start timer */
+    PWMGenEnable(x_motor.PWM_Base, x_motor.PWM_Block);
+
+
 }
 
 
@@ -141,30 +144,36 @@ void motor_init_y_pwm(void) {
 
     y_motor.PWM_Base = Y_MOTOR_PWM_BASE;
     y_motor.PWM_Channel = Y_MOTOR_PWM_CHANNEL;
-    y_motor.PWM_Pin_Map = Y_MOTOR_STEP;
+    y_motor.PWM_Block = Y_PWM_BLOCK;
+    y_motor.PWM_Pin_Map = Y_MOTOR_PWM_OUT;
 
     /* setup and enable clock */
     SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
 
     // TODO: need to see if there's a way to make this more generic
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);         // The PWM peripheral must be enabled for use.
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
 
     /* init GPIO pin */
+    /* Should be done in gpio_init */
     SysCtlPeripheralEnable(y_motor.STEP.base);            // enable GPIO port if not already enabled
-    GPIOPinConfigure(y_motor.PWM_Pin_Map);                // configure pin for PWM
+
+    GPIOPinConfigure(y_motor.PWM_Pin_Map);                // configure pin for PWM rather than for GPIO
     GPIOPinTypePWM(y_motor.STEP.base, y_motor.STEP.pin);
 
     /* Count down without synchronization */
-    PWMGenConfigure(y_motor.PWM_Base, Y_PWM_BLOCK, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
+    PWMGenConfigure(y_motor.PWM_Base, y_motor.PWM_Block, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
 
     /* Set PWM period to: 0.02ms or 50kHz */
-    PWMGenPeriodSet(y_motor.PWM_Base, Y_PWM_BLOCK, CALC_PERIOD(PWM0_FREQUENCY));
+    PWMGenPeriodSet(y_motor.PWM_Base, y_motor.PWM_Block, CALC_PERIOD(PWM0_FREQUENCY));
 
     /* initialize to no output */
     PWMPulseWidthSet(y_motor.PWM_Base, Y_PWM_OUT, 0);
 
     /* Enable Interrupts */
-    PWMGenIntRegister(y_motor.PWM_Base, Y_PWM_BLOCK, PWM0IntHandler);
+    PWMGenIntRegister(y_motor.PWM_Base, y_motor.PWM_Block, PWM0IntHandler);
+
+    /* Enable the generator block to start timer */
+    PWMGenEnable(y_motor.PWM_Base, y_motor.PWM_Block);
 }
 
 /* Commented for test */
@@ -275,14 +284,13 @@ void motor_init_x_gpio(void)
     x_motor.NFAULT.base =  X_NFAULT_PORT;
     x_motor.NFAULT.pin  =  X_NFAULT_PIN;
 
-//    x_motor.STEP.base   =  X_STEP_PORT;
-//    x_motor.STEP.pin    =  X_STEP_PIN;
+    x_motor.STEP.base   =  X_STEP_PORT;
+    x_motor.STEP.pin    =  X_STEP_PIN;
 
     // Enable Ports
 
-    MAP_SysCtlPeripheralEnable(x_motor.M0.base);      // Port E
-    MAP_SysCtlPeripheralEnable(x_motor.M1.base);      // Port J
-    MAP_SysCtlPeripheralEnable(x_motor.NFAULT.base);  // Port H
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
 
     /* Set GPIO output pins */
     MAP_GPIODirModeSet(x_motor.M0.base, x_motor.M0.pin, GPIO_DIR_MODE_OUT);
@@ -326,14 +334,14 @@ void motor_init_y_gpio(void)
     y_motor.NFAULT.base =  Y_NFAULT_PORT;
     y_motor.NFAULT.pin  =  Y_NFAULT_PIN;
 
-//    y_motor.STEP.base   =  Y_STEP_PORT;
-//    y_motor.STEP.pin    =  Y_STEP_PIN;
+    y_motor.STEP.base   =  Y_STEP_PORT;
+    y_motor.STEP.pin    =  Y_STEP_PIN;
 
     // Enable Ports
 
-    MAP_SysCtlPeripheralEnable(y_motor.M0.base);      // Port E
-    MAP_SysCtlPeripheralEnable(y_motor.M1.base);      // Port J
-    MAP_SysCtlPeripheralEnable(y_motor.NFAULT.base);  // Port H
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);  // Port B
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);  // Port F
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);  // Port C
 
     /* Set GPIO output pins */
     MAP_GPIODirModeSet(y_motor.M0.base, y_motor.M0.pin, GPIO_DIR_MODE_OUT);
@@ -522,6 +530,11 @@ void set_motor_step_size(Motor_t motor, uint8_t direction){
 // static bool x_step_flag;
 void PWM0IntHandler(void) {
 
+
+}
+
+// Y motor is tied to PWM1
+void PWM1IntHandler(void) {
 
 }
 
