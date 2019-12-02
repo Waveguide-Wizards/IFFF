@@ -21,6 +21,7 @@
 #include "driverlib/debug.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/pwm.h"
+#include "inc/hw_gpio.h"
 #include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_pwm.h"
@@ -46,13 +47,14 @@ void prv_Motor(void *pvParameters) {
     static eMotor_Direction direction = Forward;
 
     init_all_motors();
+    motor_enable(x_motor);
 
     for( ;; ) {
         if(direction == Forward) {
-            motor_change_pwm_duty_cycle(x_motor, 0);
+            motor_change_pwm_duty_cycle(x_motor, 10);
             direction = Backward;
         }
-        if(direction == Backward) {
+        else if(direction == Backward) {
             motor_change_pwm_duty_cycle(x_motor, 90);
             direction = Forward;
         }
@@ -68,7 +70,7 @@ void init_x_motor(void) {
     motor_init_x_gpio();
     motor_init_x_pwm();
     motor_disable(x_motor);
-    motor_change_pwm_duty_cycle(x_motor, 50);
+//    motor_change_pwm_duty_cycle(x_motor, 50);
 //    motor_enable(x_motor);
 }
 
@@ -110,14 +112,23 @@ void motor_init_x_pwm(void) {
     x_motor.PWM_Block = X_PWM_BLOCK;
     x_motor.PWM_Pin_Map = X_MOTOR_PWM_OUT;
 
-    /* setup and enable clock */
-    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
 
     // TODO: need to see if there's a way to make this more generic
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);         // The PWM peripheral must be enabled for use.
 
     /* init GPIO pin */
     SysCtlPeripheralEnable(x_motor.STEP.base);            // enable GPIO port if not already enabled
+
+    /* setup and enable clock */
+    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
+
+    HWREG(GPIO_PORTB_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+    HWREG(GPIO_PORTE_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+
+    // Port B pins that are locked are 3 and 2, so unlock them by writing 1100 into the CR reg
+    HWREG(GPIO_PORTB_BASE + GPIO_O_CR)  |= 0xC;
+
+
     GPIOPinConfigure(x_motor.PWM_Pin_Map);                // configure pin for PWM
     GPIOPinTypePWM(x_motor.STEP.base, x_motor.STEP.pin);
 
@@ -136,6 +147,7 @@ void motor_init_x_pwm(void) {
     /* Enable the generator block to start timer */
     PWMGenEnable(x_motor.PWM_Base, x_motor.PWM_Block);
 
+    PWMOutputState(x_motor.PWM_Base, (1 << x_motor.PWM_Channel), true);
 
 }
 
@@ -241,7 +253,7 @@ void motor_init_y_pwm(void) {
 
 /* @param uint8_t duty_cycle: 0-100 */
 void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle) {
-    PWMPulseWidthSet(motor.PWM_Base, PWM_OUT_0, ((duty_cycle * CALC_PERIOD(PWM0_FREQUENCY))/100));
+    PWMPulseWidthSet(motor.PWM_Base, motor.PWM_Block, ((duty_cycle * CALC_PERIOD(PWM0_FREQUENCY))/100));
 }
 
 void set_pwm_load_reg(uint32_t val)
