@@ -49,6 +49,7 @@ void main(void)
 
     /* Q U E U E S */
     motor_instruction_queue = xQueueCreate(10, sizeof(Motor_Instruction_t));
+    configASSERT(motor_instruction_queue != NULL);
 
     // Add elements to queue for PoC
     Motor_Instruction_t PoC_Instruction_1 = {

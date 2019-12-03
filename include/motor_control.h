@@ -39,6 +39,12 @@ typedef enum {
 } eMotor_Direction;
 
 typedef struct {
+  bool x_ready;
+  bool y_ready;
+  bool z_ready;
+} Motor_Count_Ready_t;
+
+typedef struct {
     uint32_t        base;
     uint8_t         pin;
 } Motor_Pin_t;
