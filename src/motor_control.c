@@ -8,6 +8,7 @@
 /*  I N C L U D E S   */
 #include <stdbool.h>
 #include <stdint.h>
+#include <math.h>
 
 /*  A P P L I C A T I O N   I N C L U D E S   */
 #include "bsp.h"
@@ -145,7 +146,7 @@ uint32_t steps_to_dist(uint32_t stepCount) {
 
 //This is used to convert the desired distance into a step count.
 uint32_t dist_to_steps(uint32_t distance) {
-    return distance*USTEP_PER_DIST;
+    return uint32_t((distance * USTEP_PER_DIST) + 0.5);
 }
 
 

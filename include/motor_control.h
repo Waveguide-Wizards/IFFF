@@ -23,9 +23,9 @@
 //STEP CONVERSION PARAMETERS
 //Steps in the motor 
 #define STEPS_PER_ROTATION (200)
-#define SELECTED_MICROSTEP ( 16)
+#define SELECTED_MICROSTEP (16)
 
-//Distance per full revolution in micrometeres (780 mm => 780 000 um) (Hoefully wrong?!?!?!?)
+//Distance per full revolution in micrometeres (780 mm => 780 000 um) (Hopefully wrong?!?!?!?)
 #define DIST_PER_REV       (780000)
 
 //Functional relationships:
