@@ -34,6 +34,7 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
+#include "inc/hw_ints.h"
 
 /* redirect FreeRTOS port interrupts */
 //#define vPortSVCHandler         SVC_Handler
@@ -67,6 +68,7 @@
 #define configUSE_TASK_NOTIFICATIONS    1       // use Task Notifications
 #define configUSE_TICKLESS_IDLE         0       // TODO: use Tickless Idle for long periods of sleep
 #define configUSE_CO_ROUTINES           0
+#define configUSE_PORT_OPTIMISED_TASK_SELECTION 0
 
 #define configQUEUE_REGISTRY_SIZE       8
 #define configCHECK_FOR_STACK_OVERFLOW  2
@@ -110,7 +112,7 @@ header file. */
 #ifdef __NVIC_PRIO_BITS
 	#define configPRIO_BITS       __NVIC_PRIO_BITS
 #else
-	#define configPRIO_BITS       3     /* 8 priority levels */
+	#define configPRIO_BITS       NUM_PRIORITY_BITS     /* 8 priority levels */
 #endif
 
 /* The lowest interrupt priority that can be used in a call to a "set priority"
