@@ -16,11 +16,21 @@
 #define STEP_4              3U
 #define STEP_8              4U
 
+#define SOURCE_FREQUENCY        20000000        // 20MHz
+#define PWM_FREQUENCY       50000       // 50kHz, DRV8886 f_pwm range is 0-100kHz
+#define CALC_PERIOD(X)          (SOURCE_FREQUENCY / X)
 
-#define SOURCE_FREQUENCY    20000000    // 20MHz
-#define PWM0_FREQUENCY      50000       // 50kHz, DRV8886 f_pwm range is 0-100kHz
-#define CALC_PERIOD(X)      (SOURCE_FREQUENCY / X)
+//STEP CONVERSION PARAMETERS
+//Steps in the motor 
+#define STEPS_PER_ROTATION (200)
+#define SELECTED_MICROSTEP ( 16)
 
+//Distance per full revolution in micrometeres (780 mm => 780 000 um) (Hoefully wrong?!?!?!?)
+#define DIST_PER_REV       (780000)
+
+//Functional relationships:
+#define DIST_PER_USTEP	   ((DIST_PER_REV/(STEPS_PER_ROTATION*SELECTED_MICROSTEP)))
+#define USTEP_PER_DIST	   (1/DIST_PER_USTEP)
 
 /*  E N U M S   */
 typedef enum {
@@ -34,9 +44,10 @@ typedef struct {
 } Motor_Pin_t;
 
 typedef struct {
-    uint16_t x_pos;
-    uint16_t y_pos;
-    uint16_t z_pos;
+    uint32_t x_pos;
+    uint32_t y_pos;
+    uint32_t z_pos;
+    uint32_t extruder_pos;
     uint8_t speed; // 0-100
 } Motor_Instruction_t;
 
@@ -52,6 +63,8 @@ typedef struct {
     uint32_t        PWM_Base;
     uint32_t        PWM_Channel;
     uint32_t        PWM_Pin_Map;
+    uint32_t        position;
+    eMotor_Direction    direction;
 } Motor_t;
 
 
@@ -59,6 +72,9 @@ typedef struct {
 void prv_Motor(void *pvParameters);
 
 /*  F U N C T I O N S   */
+void find_direction(uint32_t instruction, Motor_t motor);
+uint32_t StepsToDist(uint32_t stepCount);
+uint32_t DistToSteps(uint32_t distance);
 void init_x_motor(void);
 void init_y_motor(void);
 //void init_z_motor(void);

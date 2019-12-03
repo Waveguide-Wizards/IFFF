@@ -6,33 +6,33 @@ SHELL = cmd.exe
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../src/error_checking.c \
 ../src/led.c \
-../src/main_motor_control.c \
 ../src/motor_control.c 
 
 C_DEPS += \
+./src/error_checking.d \
 ./src/led.d \
-./src/main_motor_control.d \
 ./src/motor_control.d 
 
 OBJS += \
+./src/error_checking.obj \
 ./src/led.obj \
-./src/main_motor_control.obj \
 ./src/motor_control.obj 
 
 OBJS__QUOTED += \
-"src\led.obj" \
-"src\main_motor_control.obj" \
-"src\motor_control.obj" 
+"src/error_checking.obj" \
+"src/led.obj" \
+"src/motor_control.obj" 
 
 C_DEPS__QUOTED += \
-"src\led.d" \
-"src\main_motor_control.d" \
-"src\motor_control.d" 
+"src/error_checking.d" \
+"src/led.d" \
+"src/motor_control.d" 
 
 C_SRCS__QUOTED += \
+"../src/error_checking.c" \
 "../src/led.c" \
-"../src/main_motor_control.c" \
 "../src/motor_control.c" 
 
 
