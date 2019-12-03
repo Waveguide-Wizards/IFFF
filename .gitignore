@@ -61,3 +61,6 @@ targetConfigs/
 .ccsproject
 .settings
 
+Debug/IFFF_linkInfo.xml
+*.prefs
+*.xml

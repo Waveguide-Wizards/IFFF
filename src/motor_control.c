@@ -54,6 +54,10 @@ static uint32_t y_pwm_count = 0;
 //static uint32_t z_pwm_count = 0;
 //static uint32_t ex_pwm_count = 0;
 
+static uint32_t x_needed_step_count = 0;
+static uint32_t y_needed_step_count = 0;
+
+volatile Motor_Status_t Task_Status;
 
 /*  T A S K S   */
 void prv_Motor(void *pvParameters) {
@@ -71,30 +75,30 @@ void prv_Motor(void *pvParameters) {
 //        if( (ulNotificationValue == 1)  && (printer_state == Printing)) {
             // pop from queue
         if(do_it == true) {
-            Motor_Instruction_t * current_instruction;
-            xQueueReceive(motor_instruction_queue, (void *)&current_instruction, (TickType_t)5);
+            Motor_Instruction_t current_instruction;
+            xQueueReceive(motor_instruction_queue,  &current_instruction, (TickType_t)5);
 
 //            // set up motors
-            find_direction(current_instruction->x_pos, x_motor);
-            find_direction(current_instruction->y_pos, y_motor);
+            find_direction(current_instruction.x_pos, x_motor);
+            find_direction(current_instruction.y_pos, y_motor);
 //            find_direction(current_instruction->z_pos, z_motor);
 //            find_direction(current_instruction->x_pos, ex_motor);
 
             // update positions
-            x_motor.position = current_instruction->x_pos;
-            y_motor.position = current_instruction->y_pos;
+            x_motor.position = current_instruction.x_pos;
+            y_motor.position = current_instruction.y_pos;
 //            z_motor.position = current_instruction->z_pos;
 //            ex_motor.position = current_instruction->extruder_pos;
 
             // find step counts
-            x_pwm_count = dist_to_steps(current_instruction->x_pos);
-            y_pwm_count = dist_to_steps(current_instruction->y_pos);
+            x_needed_step_count = dist_to_steps(current_instruction.x_pos);
+            y_needed_step_count = dist_to_steps(current_instruction.y_pos);
 //            z_pwm_count = dist_to_steps(current_instruction->z_pos);
 //            ex_pwm_count = dist_to_steps(current_instruction->ex_pos);
 
 
             // start PWM on all motors
-            motor_enable(x_motor);
+            motor_x_start(current_instruction.x_pos, 0);
             motor_change_pwm_duty_cycle(x_motor, 50);
 
             motor_enable(y_motor);
@@ -183,6 +187,12 @@ void init_all_motors(void) {
     init_z_motor();
     init_ex_motor();
 #endif
+}
+
+void init_motor_status(uint8_t x_init_status,uint8_t y_init_status,uint8_t z_init_status){
+    Task_Status.x_done = x_init_status;
+    Task_Status.y_done = y_init_status;
+    Task_Status.z_done = z_init_status;
 }
 
 /*  M O T O R   P W M   */
@@ -563,6 +573,9 @@ void motor_init_ex_gpio(void)
 
 #endif
 
+
+/* M O T O R    C O N F I G U R A T I O N     F U N C T I O N S */
+
 void motor_enable(Motor_t motor) {
     GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, motor.ENABLE.pin);    // set ENABLE pin HIGH
     PWMOutputState(motor.PWM_Base, (1 << motor.PWM_Channel), true);    // disables PWM output
@@ -614,6 +627,52 @@ void set_motor_step_size(Motor_t motor, uint8_t direction){
     }
 }
 
+void motor_x_start(uint32_t distance, uint32_t direction)
+{
+    x_needed_step_count = motor_dist_to_steps(distance);
+
+    PWMIntEnable(PWM0_BASE, PWM_INT_GEN_0);
+    PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_0, PWM_INT_CNT_ZERO);
+
+    motor_enable(x_motor);
+}
+
+//This is used to convert the numer of steps taken into a distance in micrometers.
+uint32_t motor_steps_to_dist(uint32_t stepCount){
+    return stepCount*DIST_PER_USTEP;
+}
+
+//This is used to convert the desired distance into a step count.
+uint32_t motor_dist_to_steps(uint32_t  distance){
+    return distance*USTEP_PER_DIST;
+}
+
+uint8_t update_x_status(){
+    Task_Status.x_done = 1;
+    if(Task_Status.x_done && Task_Status.y_done && Task_Status.z_done){
+        init_motor_status(0,0,0);
+        return 1;
+    }
+    return 0;
+}
+
+uint8_t update_y_status(){
+    Task_Status.y_done = 1;
+    if(Task_Status.x_done && Task_Status.y_done && Task_Status.z_done){
+        init_motor_status(0,0,0);
+        return 1;
+    }
+    return 0;
+}
+
+uint8_t update_z_status(){
+    Task_Status.z_done = 1;
+    if(Task_Status.x_done && Task_Status.y_done && Task_Status.z_done){
+        init_motor_status(0,0,0);
+        return 1;
+    }
+    return 0;
+}
 /*
  * TODO:
  *  - use LOAD register to count Pulses
@@ -623,10 +682,34 @@ void set_motor_step_size(Motor_t motor, uint8_t direction){
 
 // static bool x_step_flag;
 void PWM0IntHandler(void) {
+
+    PWMIntDisable(PWM0_BASE, PWM_INT_GEN_0);
+    int flags = PWMGenIntStatus(PWM0_BASE, PWM_GEN_0, true);       // Get status of interrupts
+    PWMGenIntClear(PWM0_BASE, PWM_GEN_0, flags);     // Clear interrupts
+
+    if(flags & PWM_INT_CNT_ZERO)
+    {
+        x_pwm_count++;
+    }
+
+    if(x_pwm_count == x_needed_step_count)
+    {
+        x_pwm_count = 0;
+        motor_disable(x_motor);
+        if(update_x_status())
+        {
+            // Task complete
+        }
+    }
+    PWMIntEnable(PWM0_BASE, PWM_INT_GEN_0);
+
+
+
+
     // TODO: if step count met for all motors execute this
 
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    configASSERT(xMotorTask != NULL);
-    vTaskNotifyGiveFromISR(xMotorTask, &xHigherPriorityTaskWoken);
-    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+//    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+//    configASSERT(xMotorTask != NULL);
+//    vTaskNotifyGiveFromISR(xMotorTask, &xHigherPriorityTaskWoken);
+//    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }

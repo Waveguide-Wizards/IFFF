@@ -67,6 +67,13 @@ typedef struct {
     eMotor_Direction    direction;
 } Motor_t;
 
+//Struct to indicate the current status of each of the motor tasks
+typedef struct {
+    uint8_t x_done;
+    uint8_t y_done;
+    uint8_t z_done;
+} Motor_Status_t;
+
 /*  T A S K S   */
 void prv_Motor(void *pvParameters);
 
@@ -78,6 +85,7 @@ void init_x_motor(void);
 void init_y_motor(void);
 void init_z_motor(void);
 void init_all_motors(void);
+void init_motor_status(uint8_t x_init_status,uint8_t y_init_status,uint8_t z_init_status);
 
 /*  M O T O R   P W M   */
 void motor_init_x_pwm();
@@ -85,17 +93,25 @@ void motor_init_y_pwm();
 void motor_init_z_pwm();
 void motor_init_ex_pwm();
 void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle);
+void motor_x_start(uint32_t distance, uint32_t direction);
+uint32_t motor_steps_to_dist(uint32_t stepCount);
+uint32_t motor_dist_to_steps(uint32_t distance);
 
 /*  X   M O T O R   G P I O   */
 void motor_init_x_gpio(void);
 void motor_init_y_gpio(void);
 void motor_init_z_gpio(void);
 void motor_init_ex_gpio(void);
+
+/* C O N F I G U R A T I O N */
 void motor_enable(Motor_t motor);
 void motor_disable(Motor_t motor);
 void motor_set_to_sleep(Motor_t motor);
 void motor_set_direction(Motor_t motor, eMotor_Direction direction);
 void set_motor_step_size(Motor_t motor, uint8_t direction);
+uint8_t update_x_status();
+uint8_t update_y_status();
+uint8_t update_z_status();
 
 void PWM0IntHandler(void);
 

@@ -86,7 +86,45 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="tivaware_c_series_2_1_4_178/usblib|tivaware_c_series_2_1_4_178/tools|tivaware_c_series_2_1_4_178/grlib|tivaware_c_series_2_1_4_178/sensorlib|tivaware_c_series_2_1_4_178/utils|tivaware_c_series_2_1_4_178/IQmath|tivaware_c_series_2_1_4_178/examples|tivaware_c_series_2_1_4_178/docs|tivaware_c_series_2_1_4_178/boot_loader|include|src|FreeRTOS|littlefs" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="tivaware_c_series_2_1_4_178/usblib|tivaware_c_series_2_1_4_178/tools|tivaware_c_series_2_1_4_178/grlib|tivaware_c_series_2_1_4_178/sensorlib|tivaware_c_series_2_1_4_178/third_party|tivaware_c_series_2_1_4_178/utils|tivaware_c_series_2_1_4_178/IQmath|tivaware_c_series_2_1_4_178/examples|tivaware_c_series_2_1_4_178/docs|tivaware_c_series_2_1_4_178/boot_loader|include|src|FreeRTOS|littlefs" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/zlib"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/watcom"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/visualc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/vcnet"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/vc2005"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/test/pixmaps"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/test/desktop"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/src"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/png"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/makefiles"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/jpeg"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/fluid"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/documentation"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/borlandc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/autom4te.cache"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/FL"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/CMake"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/uip-1.0"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/ptpd-1.1.0"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fatfs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/exosite"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/bget"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Source"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/License"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Demo/Common"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Demo/CORTEX_MPU_LM3Sxxxx_Rowley"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Demo/CORTEX_LM3Sxxxx_Rowley"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Demo/CORTEX_LM3Sxxxx_IAR_Keil"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Demo/CORTEX_LM3Sxxxx_Eclipse/RTOSDemo/ParTest"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Demo/CORTEX_LM3S811_KEIL"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Demo/CORTEX_LM3S811_IAR"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Demo/CORTEX_LM3S811_GCC"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Demo/CORTEX_LM3S316_IAR"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Demo/CORTEX_LM3S102_Rowley"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Demo/CORTEX_LM3S102_GCC"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Demo/CORTEX_LM3Sxxxx_Eclipse/RTOSDemo/webserver/httpd-fs"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="FreeRTOS"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="include"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>

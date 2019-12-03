@@ -36,6 +36,7 @@ static void IntDefaultHandler(void);
 extern void xPortPendSVHandler(void);
 extern void vPortSVCHandler(void);
 extern void xPortSysTickHandler(void);
+extern void PWM0IntHandler(void);
 
 
 //*****************************************************************************
@@ -97,7 +98,7 @@ void (* const g_pfnVectors[])(void) =
      IntDefaultHandler,                      // SSI0 Rx and Tx
      IntDefaultHandler,                      // I2C0 Master and Slave
      IntDefaultHandler,                      // PWM Fault
-     IntDefaultHandler,                      // PWM Generator 0
+     PWM0IntHandler,                      // PWM Generator 0
      IntDefaultHandler,                      // PWM Generator 1
      IntDefaultHandler,                      // PWM Generator 2
      IntDefaultHandler,                      // Quadrature Encoder 0
