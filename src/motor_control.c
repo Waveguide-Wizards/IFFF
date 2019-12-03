@@ -46,13 +46,13 @@ extern TaskHandle_t xMotorTask;
 /*  P R I V A T E   V A R I A B L E S   */
 static Motor_t x_motor;
 static Motor_t y_motor;
-static Motor_t z_motor;
-static Motor_t ex_motor;
+//static Motor_t z_motor;
+//static Motor_t ex_motor;
 
 static uint32_t x_pwm_count = 0;
 static uint32_t y_pwm_count = 0;
-static uint32_t z_pwm_count = 0;
-static uint32_t ex_pwm_count = 0;
+//static uint32_t z_pwm_count = 0;
+//static uint32_t ex_pwm_count = 0;
 
 
 /*  T A S K S   */
@@ -62,6 +62,7 @@ void prv_Motor(void *pvParameters) {
 
 //    // init motors
     init_all_motors();
+    bool do_it = false;
 
     for( ;; ) {
         /* Wait for current instruction to be completed */
@@ -69,6 +70,7 @@ void prv_Motor(void *pvParameters) {
 
 //        if( (ulNotificationValue == 1)  && (printer_state == Printing)) {
             // pop from queue
+        if(do_it == true) {
             Motor_Instruction_t * current_instruction;
             xQueueReceive(motor_instruction_queue, (void *)&current_instruction, (TickType_t)5);
 
@@ -97,11 +99,20 @@ void prv_Motor(void *pvParameters) {
 
             motor_enable(y_motor);
             motor_change_pwm_duty_cycle(y_motor, 50);
-//        }
+
+            do_it = false;
+        }
+        else if(do_it == false) {
+            motor_disable(x_motor);
+            motor_disable(y_motor);
+            motor_change_pwm_duty_cycle(x_motor, 0);
+            motor_change_pwm_duty_cycle(y_motor, 0);
+            do_it = true;
+        }
 //        else {  // taking notification timed out, indicate error occurred
 //            printer_state = Error;
 //        }
-
+        vTaskDelay(xMaxBlockTime);
     }
 }
 
@@ -613,6 +624,7 @@ void set_motor_step_size(Motor_t motor, uint8_t direction){
 // static bool x_step_flag;
 void PWM0IntHandler(void) {
     // TODO: if step count met for all motors execute this
+
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     configASSERT(xMotorTask != NULL);
     vTaskNotifyGiveFromISR(xMotorTask, &xHigherPriorityTaskWoken);
