@@ -5,7 +5,6 @@
  */
 
 /*  I N C L U D E S   */
-#include <motor_control.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -47,9 +46,6 @@ void main(void)
 {
     // set clock source to 16MHz external oscillator, use PLL and divide by 10 to get 20MHz
     SysCtlClockSet(SYSCTL_SYSDIV_10 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
-
-    /* I N I T */
-    init_all_motors();
 
     /* Q U E U E S */
     motor_instruction_queue = xQueueCreate(10, sizeof(Motor_Instruction_t));
@@ -111,8 +107,8 @@ void main(void)
     BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 1, &xMotorTask);
 
     /* check that tasks were created successfully */
-    configASSERT(BlinkyReturned == pdPASS);
-    configASSERT(XMotorReturned == pdPASS);
+//    configASSERT(BlinkyReturned == pdPASS);
+//    configASSERT(XMotorReturned == pdPASS);
 
     /* start scheduler */
     vTaskStartScheduler();
