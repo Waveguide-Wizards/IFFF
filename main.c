@@ -5,7 +5,6 @@
  */
 
 /*  I N C L U D E S   */
-//#include <motor_control.h>
 #include <stdint.h>
 #include <stdbool.h>
 
