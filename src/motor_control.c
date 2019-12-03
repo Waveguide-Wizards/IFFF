@@ -40,6 +40,9 @@ static Motor_t y_motor;
 static Motor_t z_motor;
 static Motor_t ex_motor;
 
+/* Used to test program or run full code */
+
+#define TEST
 
 /*  T A S K S   */
 void prv_Motor(void *pvParameters) {
@@ -81,27 +84,34 @@ void init_y_motor(void) {
     motor_disable(y_motor);
 }
 
-//void init_z_motor(void) {
-//    // TODO: assign values to the z_motor struct
-//    motor_init_z_gpio();
-//    motor_init_z_pwm();
-//    motor_disable(z_motor);
-//}
-//
-//void init_ex_motor(void) {
-//    // TODO: assign values to the y_motor struct
-//    motor_init_ex_gpio();
-//    motor_init_ex_pwm();
-//    motor_disable(ex_motor);
-//}
+#ifndef TEST
+
+
+void init_z_motor(void) {
+    // TODO: assign values to the z_motor struct
+    motor_init_z_gpio();
+    motor_init_z_pwm();
+    motor_disable(z_motor);
+}
+
+void init_ex_motor(void) {
+    // TODO: assign values to the y_motor struct
+    motor_init_ex_gpio();
+    motor_init_ex_pwm();
+    motor_disable(ex_motor);
+}
+
+#endif
 
 void init_all_motors(void) {
     init_x_motor();
     init_y_motor();
 
     // Commented for POC testing
-//    init_z_motor();
-//    init_ex_motor();
+#ifndef TEST
+    init_z_motor();
+    init_ex_motor();
+#endif
 }
 
 /*  M O T O R   P W M   */
@@ -188,67 +198,67 @@ void motor_init_y_pwm(void) {
     PWMGenEnable(y_motor.PWM_Base, y_motor.PWM_Block);
 }
 
-/* Commented for test */
-//void motor_init_z_pwm(void) {
-//
-//    z_motor.PWM_Base = Z_MOTOR_PWM_BASE;
-//    z_motor.PWM_Channel = Z_MOTOR_PWM_CHANNEL;
-//    z_motor.PWM_Pin_Map = Z_MOTOR_STEP;
-//
-//    /* setup and enable clock */
-//    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
-//
-//    // TODO: need to see if there's a way to make this more generic
-//    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
-//
-//    /* init GPIO pin */
-//    SysCtlPeripheralEnable(z_motor.STEP.base);            // enable GPIO port if not already enabled
-//    GPIOPinConfigure(z_motor.PWM_Pin_Map);                // configure pin for PWM
-//    GPIOPinTypePWM(z_motor.STEP.base, z_motor.STEP.pin);
-//
-//    /* Count down without synchronization */
-//    PWMGenConfigure(z_motor.PWM_Base, Z_PWM_BLOCK, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
-//
-//    /* Set PWM period to: 0.02ms or 50kHz */
-//    PWMGenPeriodSet(z_motor.PWM_Base, Z_PWM_BLOCK, CALC_PERIOD(PWM0_FREQUENCY));
-//
-//    /* initialize to no output */
-//    PWMPulseWidthSet(z_motor.PWM_Base, Z_PWM_OUT, 0);
-//
-//    /* Enable Interrupts */
-//    PWMGenIntRegister(z_motor.PWM_Base, Z_PWM_BLOCK, PWM0IntHandler);
-//}
-//
-//void motor_init_ex_pwm(void) {
-//
-//    ex_motor.PWM_Base = EX_MOTOR_PWM_BASE;
-//    ex_motor.PWM_Channel = EX_MOTOR_PWM_CHANNEL;
-//    ex_motor.PWM_Pin_Map = EX_MOTOR_STEP;
-//
-//    /* setup and enable clock */
-//    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
-//
-//    // TODO: need to see if there's a way to make this more generic
-//    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
-//
-//    /* init GPIO pin */
-//    SysCtlPeripheralEnable(ex_motor.STEP.base);            // enable GPIO port if not already enabled
-//    GPIOPinConfigure(ex_motor.PWM_Pin_Map);                // configure pin for PWM
-//    GPIOPinTypePWM(ex_motor.STEP.base, ex_motor.STEP.pin);
-//
-//    /* Count down without synchronization */
-//    PWMGenConfigure(ex_motor.PWM_Base, EX_PWM_BLOCK, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
-//
-//    /* Set PWM period to: 0.02ms or 50kHz */
-//    PWMGenPeriodSet(ex_motor.PWM_Base, EX_PWM_BLOCK, CALC_PERIOD(PWM0_FREQUENCY));
-//
-//    /* initialize to no output */
-//    PWMPulseWidthSet(ex_motor.PWM_Base, EX_PWM_OUT, 0);
-//
-//    /* Enable Interrupts */
-//    PWMGenIntRegister(ex_motor.PWM_Base, EX_PWM_BLOCK, PWM0IntHandler);
-//}
+#ifndef TEST
+void motor_init_z_pwm(void) {
 
+    z_motor.PWM_Base = Z_MOTOR_PWM_BASE;
+    z_motor.PWM_Channel = Z_MOTOR_PWM_CHANNEL;
+    z_motor.PWM_Pin_Map = Z_MOTOR_STEP;
+
+    /* setup and enable clock */
+    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
+
+    // TODO: need to see if there's a way to make this more generic
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
+
+    /* init GPIO pin */
+    SysCtlPeripheralEnable(z_motor.STEP.base);            // enable GPIO port if not already enabled
+    GPIOPinConfigure(z_motor.PWM_Pin_Map);                // configure pin for PWM
+    GPIOPinTypePWM(z_motor.STEP.base, z_motor.STEP.pin);
+
+    /* Count down without synchronization */
+    PWMGenConfigure(z_motor.PWM_Base, Z_PWM_BLOCK, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
+
+    /* Set PWM period to: 0.02ms or 50kHz */
+    PWMGenPeriodSet(z_motor.PWM_Base, Z_PWM_BLOCK, CALC_PERIOD(PWM0_FREQUENCY));
+
+    /* initialize to no output */
+    PWMPulseWidthSet(z_motor.PWM_Base, Z_PWM_OUT, 0);
+
+    /* Enable Interrupts */
+    PWMGenIntRegister(z_motor.PWM_Base, Z_PWM_BLOCK, PWM0IntHandler);
+}
+
+void motor_init_ex_pwm(void) {
+
+    ex_motor.PWM_Base = EX_MOTOR_PWM_BASE;
+    ex_motor.PWM_Channel = EX_MOTOR_PWM_CHANNEL;
+    ex_motor.PWM_Pin_Map = EX_MOTOR_STEP;
+
+    /* setup and enable clock */
+    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
+
+    // TODO: need to see if there's a way to make this more generic
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
+
+    /* init GPIO pin */
+    SysCtlPeripheralEnable(ex_motor.STEP.base);            // enable GPIO port if not already enabled
+    GPIOPinConfigure(ex_motor.PWM_Pin_Map);                // configure pin for PWM
+    GPIOPinTypePWM(ex_motor.STEP.base, ex_motor.STEP.pin);
+
+    /* Count down without synchronization */
+    PWMGenConfigure(ex_motor.PWM_Base, EX_PWM_BLOCK, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
+
+    /* Set PWM period to: 0.02ms or 50kHz */
+    PWMGenPeriodSet(ex_motor.PWM_Base, EX_PWM_BLOCK, CALC_PERIOD(PWM0_FREQUENCY));
+
+    /* initialize to no output */
+    PWMPulseWidthSet(ex_motor.PWM_Base, EX_PWM_OUT, 0);
+
+    /* Enable Interrupts */
+    PWMGenIntRegister(ex_motor.PWM_Base, EX_PWM_BLOCK, PWM0IntHandler);
+}
+#endif
 
 
 /* @param uint8_t duty_cycle: 0-100 */
@@ -378,107 +388,110 @@ void motor_init_y_gpio(void)
 
 
 /* Commented for Test */
-//void motor_init_z_gpio(void)
-//{
-//    // Assign Struct members to definitions
-//    z_motor.M0.base   =    Z_M0_PORT;
-//    z_motor.M0.pin    =    Z_M0_PIN;
-//
-//    z_motor.M1.base   =    Z_M1_PORT;
-//    z_motor.M1.pin    =    Z_M1_PIN;
-//
-//    z_motor.DIR.base  =    Z_DIR_PORT;
-//    z_motor.DIR.pin   =    Z_DIR_PIN;
-//
-//    z_motor.ENABLE.base =  Z_ENABLE_PORT;
-//    z_motor.ENABLE.pin  =  Z_ENABLE_PIN;
-//
-//    z_motor.NSLEEP.base =  Z_NSLEEP_PORT;
-//    z_motor.NSLEEP.pin  =  Z_NSLEEP_PIN;
-//
-//    z_motor.NFAULT.base =  Z_NFAULT_PORT;
-//    z_motor.NFAULT.pin  =  Z_NFAULT_PIN;
-//
-//    z_motor.STEP.base   =  Z_STEP_PORT;
-//    z_motor.STEP.pin    =  Z_STEP_PIN;
-//
-//    // Enable Ports
-//
-//    MAP_SysCtlPeripheralEnable(z_motor.M0.base);      // Port E
-//    MAP_SysCtlPeripheralEnable(z_motor.M1.base);      // Port J
-//    MAP_SysCtlPeripheralEnable(z_motor.NFAULT.base);  // Port H
-//
-//    /* Set GPIO output pins */
-//    MAP_GPIODirModeSet(z_motor.M0.base, z_motor.M0.pin, GPIO_DIR_MODE_OUT);
-//    MAP_GPIODirModeSet(z_motor.M1.base, z_motor.M1.pin, GPIO_DIR_MODE_OUT);
-//    MAP_GPIODirModeSet(z_motor.DIR.base, z_motor.DIR.pin, GPIO_DIR_MODE_OUT);
-//    MAP_GPIODirModeSet(z_motor.ENABLE.base, z_motor.ENABLE.pin, GPIO_DIR_MODE_OUT);
-//    MAP_GPIODirModeSet(z_motor.STEP.base, z_motor.STEP.pin, GPIO_DIR_MODE_OUT);
-//    MAP_GPIODirModeSet(z_motor.NSLEEP.base, z_motor.NSLEEP.pin, GPIO_DIR_MODE_OUT);
-//
-//    /* Set GPIO Input pins */
-//    MAP_GPIODirModeSet(z_motor.NFAULT.base, z_motor.NFAULT.pin, GPIO_DIR_MODE_IN);
-//
-//    /* Set Drive Strength */
-//    MAP_GPIOPadConfigSet(z_motor.M0.base, z_motor.M0.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD); // used to set drive strength
-//    MAP_GPIOPadConfigSet(z_motor.M1.base, z_motor.M1.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-//    MAP_GPIOPadConfigSet(z_motor.DIR.base, z_motor.DIR.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-//    MAP_GPIOPadConfigSet(z_motor.ENABLE.base, z_motor.ENABLE.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-//    MAP_GPIOPadConfigSet(z_motor.STEP.base, z_motor.STEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-//    MAP_GPIOPadConfigSet(z_motor.NSLEEP.base, z_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-//    MAP_GPIOPadConfigSet(z_motor.NFAULT.base, z_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-//}
-//
-//void motor_init_ex_gpio(void)
-//{
-//    // Assign Struct members to definitions
-//    ex_motor.M0.base   =    EX_M0_PORT;
-//    ex_motor.M0.pin    =    EX_M0_PIN;
-//
-//    ex_motor.M1.base   =    EX_M1_PORT;
-//    ex_motor.M1.pin    =    EX_M1_PIN;
-//
-//    ex_motor.DIR.base  =    EX_DIR_PORT;
-//    ex_motor.DIR.pin   =    EX_DIR_PIN;
-//
-//    ex_motor.ENABLE.base =  EX_ENABLE_PORT;
-//    ex_motor.ENABLE.pin  =  EX_ENABLE_PIN;
-//
-//    ex_motor.NSLEEP.base =  EX_NSLEEP_PORT;
-//    ex_motor.NSLEEP.pin  =  EX_NSLEEP_PIN;
-//
-//    ex_motor.NFAULT.base =  EX_NFAULT_PORT;
-//    ex_motor.NFAULT.pin  =  EX_NFAULT_PIN;
-//
-//    ex_motor.STEP.base   =  EX_STEP_PORT;
-//    ex_motor.STEP.pin    =  EX_STEP_PIN;
-//
-//    // Enable Ports
-//
-//    MAP_SysCtlPeripheralEnable(ex_motor.M0.base);      // Port E
-//    MAP_SysCtlPeripheralEnable(ex_motor.M1.base);      // Port J
-//    MAP_SysCtlPeripheralEnable(ex_motor.NFAULT.base);  // Port H
-//
-//    /* Set GPIO output pins */
-//    MAP_GPIODirModeSet(ex_motor.M0.base, ex_motor.M0.pin, GPIO_DIR_MODE_OUT);
-//    MAP_GPIODirModeSet(ex_motor.M1.base, ex_motor.M1.pin, GPIO_DIR_MODE_OUT);
-//    MAP_GPIODirModeSet(ex_motor.DIR.base, ex_motor.DIR.pin, GPIO_DIR_MODE_OUT);
-//    MAP_GPIODirModeSet(ex_motor.ENABLE.base, ex_motor.ENABLE.pin, GPIO_DIR_MODE_OUT);
-//    MAP_GPIODirModeSet(ex_motor.STEP.base, ex_motor.STEP.pin, GPIO_DIR_MODE_OUT);
-//    MAP_GPIODirModeSet(ex_motor.NSLEEP.base, ex_motor.NSLEEP.pin, GPIO_DIR_MODE_OUT);
-//
-//    /* Set GPIO Input pins */
-//    MAP_GPIODirModeSet(ex_motor.NFAULT.base, ex_motor.NFAULT.pin, GPIO_DIR_MODE_IN);
-//
-//    /* Set Drive Strength */
-//    MAP_GPIOPadConfigSet(ex_motor.M0.base, ex_motor.M0.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD); // used to set drive strength
-//    MAP_GPIOPadConfigSet(ex_motor.M1.base, ex_motor.M1.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-//    MAP_GPIOPadConfigSet(ex_motor.DIR.base, ex_motor.DIR.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-//    MAP_GPIOPadConfigSet(ex_motor.ENABLE.base, ex_motor.ENABLE.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-//    MAP_GPIOPadConfigSet(ex_motor.STEP.base, ex_motor.STEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-//    MAP_GPIOPadConfigSet(ex_motor.NSLEEP.base, ex_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-//    MAP_GPIOPadConfigSet(ex_motor.NFAULT.base, ex_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-//}
+#ifndef TEST
+void motor_init_z_gpio(void)
+{
+    // Assign Struct members to definitions
+    z_motor.M0.base   =    Z_M0_PORT;
+    z_motor.M0.pin    =    Z_M0_PIN;
+
+    z_motor.M1.base   =    Z_M1_PORT;
+    z_motor.M1.pin    =    Z_M1_PIN;
+
+    z_motor.DIR.base  =    Z_DIR_PORT;
+    z_motor.DIR.pin   =    Z_DIR_PIN;
+
+    z_motor.ENABLE.base =  Z_ENABLE_PORT;
+    z_motor.ENABLE.pin  =  Z_ENABLE_PIN;
+
+    z_motor.NSLEEP.base =  Z_NSLEEP_PORT;
+    z_motor.NSLEEP.pin  =  Z_NSLEEP_PIN;
+
+    z_motor.NFAULT.base =  Z_NFAULT_PORT;
+    z_motor.NFAULT.pin  =  Z_NFAULT_PIN;
+
+    z_motor.STEP.base   =  Z_STEP_PORT;
+    z_motor.STEP.pin    =  Z_STEP_PIN;
+
+    // Enable Ports
+
+    MAP_SysCtlPeripheralEnable(z_motor.M0.base);      // Port E
+    MAP_SysCtlPeripheralEnable(z_motor.M1.base);      // Port J
+    MAP_SysCtlPeripheralEnable(z_motor.NFAULT.base);  // Port H
+
+    /* Set GPIO output pins */
+    MAP_GPIODirModeSet(z_motor.M0.base, z_motor.M0.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(z_motor.M1.base, z_motor.M1.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(z_motor.DIR.base, z_motor.DIR.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(z_motor.ENABLE.base, z_motor.ENABLE.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(z_motor.STEP.base, z_motor.STEP.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(z_motor.NSLEEP.base, z_motor.NSLEEP.pin, GPIO_DIR_MODE_OUT);
+
+    /* Set GPIO Input pins */
+    MAP_GPIODirModeSet(z_motor.NFAULT.base, z_motor.NFAULT.pin, GPIO_DIR_MODE_IN);
+
+    /* Set Drive Strength */
+    MAP_GPIOPadConfigSet(z_motor.M0.base, z_motor.M0.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD); // used to set drive strength
+    MAP_GPIOPadConfigSet(z_motor.M1.base, z_motor.M1.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(z_motor.DIR.base, z_motor.DIR.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(z_motor.ENABLE.base, z_motor.ENABLE.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(z_motor.STEP.base, z_motor.STEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(z_motor.NSLEEP.base, z_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(z_motor.NFAULT.base, z_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+}
+
+void motor_init_ex_gpio(void)
+{
+    // Assign Struct members to definitions
+    ex_motor.M0.base   =    EX_M0_PORT;
+    ex_motor.M0.pin    =    EX_M0_PIN;
+
+    ex_motor.M1.base   =    EX_M1_PORT;
+    ex_motor.M1.pin    =    EX_M1_PIN;
+
+    ex_motor.DIR.base  =    EX_DIR_PORT;
+    ex_motor.DIR.pin   =    EX_DIR_PIN;
+
+    ex_motor.ENABLE.base =  EX_ENABLE_PORT;
+    ex_motor.ENABLE.pin  =  EX_ENABLE_PIN;
+
+    ex_motor.NSLEEP.base =  EX_NSLEEP_PORT;
+    ex_motor.NSLEEP.pin  =  EX_NSLEEP_PIN;
+
+    ex_motor.NFAULT.base =  EX_NFAULT_PORT;
+    ex_motor.NFAULT.pin  =  EX_NFAULT_PIN;
+
+    ex_motor.STEP.base   =  EX_STEP_PORT;
+    ex_motor.STEP.pin    =  EX_STEP_PIN;
+
+    // Enable Ports
+
+    MAP_SysCtlPeripheralEnable(ex_motor.M0.base);      // Port E
+    MAP_SysCtlPeripheralEnable(ex_motor.M1.base);      // Port J
+    MAP_SysCtlPeripheralEnable(ex_motor.NFAULT.base);  // Port H
+
+    /* Set GPIO output pins */
+    MAP_GPIODirModeSet(ex_motor.M0.base, ex_motor.M0.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(ex_motor.M1.base, ex_motor.M1.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(ex_motor.DIR.base, ex_motor.DIR.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(ex_motor.ENABLE.base, ex_motor.ENABLE.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(ex_motor.STEP.base, ex_motor.STEP.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(ex_motor.NSLEEP.base, ex_motor.NSLEEP.pin, GPIO_DIR_MODE_OUT);
+
+    /* Set GPIO Input pins */
+    MAP_GPIODirModeSet(ex_motor.NFAULT.base, ex_motor.NFAULT.pin, GPIO_DIR_MODE_IN);
+
+    /* Set Drive Strength */
+    MAP_GPIOPadConfigSet(ex_motor.M0.base, ex_motor.M0.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD); // used to set drive strength
+    MAP_GPIOPadConfigSet(ex_motor.M1.base, ex_motor.M1.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(ex_motor.DIR.base, ex_motor.DIR.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(ex_motor.ENABLE.base, ex_motor.ENABLE.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(ex_motor.STEP.base, ex_motor.STEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(ex_motor.NSLEEP.base, ex_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(ex_motor.NFAULT.base, ex_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+}
+
+#endif
 
 
 void motor_enable(Motor_t motor) {

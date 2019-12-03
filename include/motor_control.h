@@ -54,11 +54,6 @@ typedef struct {
     uint32_t        PWM_Pin_Map;
 } Motor_t;
 
-///* Motor structs, defined in motor_control.c */
-//extern Motor_t x_motor;
-//extern Motor_t y_motor;
-//extern Motor_t z_motor;
-//extern Motor_t ex_motor;
 
 /*  T A S K S   */
 void prv_Motor(void *pvParameters);
