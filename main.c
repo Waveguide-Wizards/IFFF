@@ -40,6 +40,8 @@ QueueHandle_t motor_instruction_queue;
 
 /*  T A S K   N O T I F I C A T I O N S   */
 TaskHandle_t xMotorTask = NULL;
+TaskHandle_t xBlinkyTask = NULL;
+TaskHandle_t xErrorTask = NULL;
 
 /* main.c */
 void main(void)
@@ -103,8 +105,8 @@ void main(void)
 
 
     /* T A S K S */
-    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, NULL);
-    BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, NULL);
+    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, &xErrorTask);
+    BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, &xBlinkyTask);
     BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 1, &xMotorTask);
 
     /* check that tasks were created successfully */

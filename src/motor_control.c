@@ -152,7 +152,6 @@ uint32_t dist_to_steps(uint32_t distance) {
 /*  F U N C T I O N S   */
 
 void init_x_motor(void) {
-    // TODO: assign values to the x_motor struct
     motor_init_x_gpio();
     motor_init_x_pwm();
     motor_disable(x_motor);
@@ -161,7 +160,6 @@ void init_x_motor(void) {
 }
 
 void init_y_motor(void) {
-    // TODO: assign values to the y_motor struct
     motor_init_y_gpio();
     motor_init_y_pwm();
     motor_disable(y_motor);
@@ -170,14 +168,12 @@ void init_y_motor(void) {
 #ifndef TEST
 
 void init_z_motor(void) {
-    // TODO: assign values to the z_motor struct
     motor_init_z_gpio();
     motor_init_z_pwm();
     motor_disable(z_motor);
 }
 
 void init_ex_motor(void) {
-    // TODO: assign values to the y_motor struct
     motor_init_ex_gpio();
     motor_init_ex_pwm();
     motor_disable(ex_motor);
@@ -204,8 +200,6 @@ void motor_init_x_pwm(void) {
     x_motor.PWM_Block = X_PWM_BLOCK;
     x_motor.PWM_Pin_Map = X_MOTOR_PWM_OUT;
 
-
-    // TODO: need to see if there's a way to make this more generic
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);         // The PWM peripheral must be enabled for use.
 
     /* init GPIO pin */
@@ -253,8 +247,6 @@ void motor_init_y_pwm(void) {
 
     /* setup and enable clock */
     SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
-
-    // TODO: need to see if there's a way to make this more generic
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
 
     /* init GPIO pin */
@@ -288,8 +280,6 @@ void motor_init_z_pwm(void) {
 
     /* setup and enable clock */
     SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
-
-    // TODO: need to see if there's a way to make this more generic
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
 
     /* init GPIO pin */
@@ -318,8 +308,6 @@ void motor_init_ex_pwm(void) {
 
     /* setup and enable clock */
     SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
-
-    // TODO: need to see if there's a way to make this more generic
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
 
     /* init GPIO pin */

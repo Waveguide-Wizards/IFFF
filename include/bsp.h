@@ -28,7 +28,6 @@ typedef enum {
 #define POC
 
 #ifdef POC
-
 /* X motor Uses PWM Generator block 0 and the output is PWM out 0 */
 #define X_PWM_BLOCK         PWM_GEN_0
 #define X_PWM_OUT           PWM_OUT_0
