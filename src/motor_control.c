@@ -644,7 +644,8 @@ uint32_t motor_steps_to_dist(uint32_t stepCount){
 
 //This is used to convert the desired distance into a step count.
 uint32_t motor_dist_to_steps(uint32_t  distance){
-    return distance*USTEP_PER_DIST;
+//    return distance*USTEP_PER_DIST;
+    return distance * (float) (1/DIST_PER_USTEP);
 }
 
 uint8_t update_x_status(){
