@@ -105,6 +105,9 @@ void prv_Motor(void *pvParameters) {
                 y_pwm_count = dist_to_steps(5000);
             }
 
+            set_motor_step_size(x_motor, STEP_16);
+            set_motor_step_size(y_motor, STEP_16);
+
             // start PWM on all motors
             motor_enable(x_motor);
             motor_change_pwm_duty_cycle(x_motor, 50);
@@ -146,7 +149,7 @@ uint32_t steps_to_dist(uint32_t stepCount) {
 
 //This is used to convert the desired distance into a step count.
 uint32_t dist_to_steps(uint32_t distance) {
-    return uint32_t((distance * USTEP_PER_DIST) + 0.5);
+    return (uint32_t)((distance * USTEP_PER_DIST) + 0.5);
 }
 
 
@@ -156,6 +159,7 @@ void init_x_motor(void) {
     motor_init_x_gpio();
     motor_init_x_pwm();
     motor_disable(x_motor);
+
 //    motor_change_pwm_duty_cycle(x_motor, 50);
 //    motor_enable(x_motor);
 }
@@ -565,6 +569,7 @@ void motor_init_ex_gpio(void)
 
 void motor_enable(Motor_t motor) {
     GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, motor.ENABLE.pin);    // set ENABLE pin HIGH
+    GPIOPinWrite(motor.NSLEEP.base, motor.NSLEEP.pin, motor.NSLEEP.pin);
     PWMOutputState(motor.PWM_Base, (1 << motor.PWM_Channel), true);    // disables PWM output
     PWMGenEnable(motor.PWM_Base, PWM_GEN_0);                     // enables PWM
 }
