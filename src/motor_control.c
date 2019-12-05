@@ -36,6 +36,7 @@
 #include "queue.h"
 
 #define TEST
+//#define BACKNFORTH
 
 
 /*  G L O B A L   V A R I A B L E S   */
@@ -61,7 +62,7 @@ static uint32_t ex_pwm_count = 0;
 
 /*  T A S K S   */
 void prv_Motor(void *pvParameters) {
-    const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 1000 );  // TODO: switch to max port delay
+    const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 10000 );  // TODO: switch to max port delay
     uint32_t ulNotificationValue;
     BaseType_t queue_receive_status;
     uint8_t instruction = 1;
@@ -71,39 +72,6 @@ void prv_Motor(void *pvParameters) {
     bool do_it = false;
 
     for( ;; ) {
-        /* Wait for current instruction to be completed */
-//        ulNotificationValue = ulTaskNotifyTake( pdFALSE, xMaxBlockTime );
-
-//        if( (ulNotificationValue == 1)  && (printer_state == Printing)) {
-            // pop from queue
-//        if(do_it == true) {
-//            Motor_Instruction_t current_instruction;
-//            queue_receive_status = xQueueReceive(motor_instruction_queue, &current_instruction, (TickType_t)5);
-//
-//            if(queue_receive_status == pdPASS) {
-//                // set up motors
-//                find_direction(current_instruction.x_pos, x_motor);
-//                find_direction(current_instruction.y_pos, y_motor);
-//    //            find_direction(current_instruction->z_pos, z_motor);
-//    //            find_direction(current_instruction->x_pos, ex_motor);
-//
-//                // update positions
-////                x_motor.position = current_instruction.x_pos;
-////                y_motor.position = current_instruction.y_pos;
-//    //            z_motor.position = current_instruction->z_pos;
-//    //            ex_motor.position = current_instruction->extruder_pos;
-//
-//                x_motor.direction = Forward;
-//                y_motor.direction = Forward;
-//
-//                // find step counts
-//                x_pwm_count = dist_to_steps(current_instruction.x_pos);
-//                y_pwm_count = dist_to_steps(current_instruction.y_pos);
-//    //            z_pwm_count = dist_to_steps(current_instruction->z_pos);
-//    //            ex_pwm_count = dist_to_steps(current_instruction->ex_pos);
-//            }
-//            else {
-
         if(do_it == true) {
 #ifdef BACKNFORTH
             if(x_motor.direction == Forward)
@@ -117,7 +85,8 @@ void prv_Motor(void *pvParameters) {
             set_motor_step_size(x_motor, STEP_16);
             set_motor_step_size(y_motor, STEP_16);
 
-            motor_set_direction(x_motor, x_motor.direction);
+            motor_set_direction(x_motor, x_mo
+                                tor.direction);
             motor_set_direction(y_motor, y_motor.direction);
 
             // start PWM on all motors
@@ -131,43 +100,59 @@ void prv_Motor(void *pvParameters) {
 #else
             switch(instruction) {
                 case(1): {      // move x motor
+                    motor_disable(y_motor);
+                    motor_change_pwm_duty_cycle(y_motor, 0);
+
                     x_motor.direction = Forward;
                     motor_set_direction(x_motor, x_motor.direction);
                     set_motor_step_size(x_motor, STEP_16);
                     motor_enable(x_motor);
-                    motor_disable(y_motor);
                     motor_change_pwm_duty_cycle(x_motor, 50);
-                    motor_change_pwm_duty_cycle(y_motor, 0);
                     break;
                 }
                 case(2): {      // move y motor
-                    y_motor.direction = Forward;
-                    motor_set_direction(y_motor, y_motor.direction);
-                    set_motor_step_size(y_motor, STEP_16);
-                    motor_enable(y_motor);
-                    motor_disable(x_motor);
-                    motor_change_pwm_duty_cycle(y_motor, 50);
-                    motor_change_pwm_duty_cycle(x_motor, 0);
+//                    motor_disable(x_motor);
+//                    motor_change_pwm_duty_cycle(x_motor, 0);
+//                    y_motor.direction = Forward;
+//                    motor_set_direction(y_motor, y_motor.direction);
+//                    set_motor_step_size(y_motor, STEP_16);
+//                    motor_enable(y_motor);
+//                    motor_change_pwm_duty_cycle(y_motor, 50);
+                    motor_disable(y_motor);
+                    motor_change_pwm_duty_cycle(y_motor, 0);
+
+                    x_motor.direction = Forward;
+                    motor_set_direction(x_motor, x_motor.direction);
+                    set_motor_step_size(x_motor, STEP_16);
+                    motor_enable(x_motor);
+                    motor_change_pwm_duty_cycle(x_motor, 50);
                     break;
                 }
                 case(3): {
+                    motor_disable(y_motor);
+                    motor_change_pwm_duty_cycle(y_motor, 0);
                     x_motor.direction = Backward;
                     motor_set_direction(x_motor, x_motor.direction);
                     set_motor_step_size(x_motor, STEP_16);
                     motor_enable(x_motor);
-                    motor_disable(y_motor);
                     motor_change_pwm_duty_cycle(x_motor, 50);
-                    motor_change_pwm_duty_cycle(y_motor, 0);
                     break;
                 }
                 case(4): {
-                    y_motor.direction = Backward;
-                    motor_set_direction(y_motor, y_motor.direction);
-                    set_motor_step_size(y_motor, STEP_16);
-                    motor_enable(y_motor);
-                    motor_disable(x_motor);
-                    motor_change_pwm_duty_cycle(y_motor, 50);
-                    motor_change_pwm_duty_cycle(x_motor, 0);
+//                    motor_disable(x_motor);
+//                    motor_change_pwm_duty_cycle(x_motor, 0);
+//                    y_motor.direction = Backward;
+//                    motor_set_direction(y_motor, y_motor.direction);
+//                    set_motor_step_size(y_motor, STEP_16);
+//                    motor_enable(y_motor);
+//                    motor_change_pwm_duty_cycle(y_motor, 50);
+                    motor_disable(y_motor);
+                    motor_change_pwm_duty_cycle(y_motor, 0);
+                    x_motor.direction = Backward;
+                    motor_set_direction(x_motor, x_motor.direction);
+                    set_motor_step_size(x_motor, STEP_16);
+                    motor_enable(x_motor);
+                    motor_change_pwm_duty_cycle(x_motor, 50);
                     break;
                 }
                 default: {
@@ -259,7 +244,6 @@ void init_z_motor(void) {
     motor_disable(z_motor);
 }
 
-#endif
 
 
 void init_ex_motor(void) {
@@ -267,6 +251,8 @@ void init_ex_motor(void) {
     motor_init_ex_pwm();
     motor_disable(ex_motor);
 }
+#endif
+
 
 void init_all_motors(void) {
     init_x_motor();
@@ -281,7 +267,6 @@ void init_all_motors(void) {
 
 /*  M O T O R   P W M   */
 void motor_init_x_pwm(void) {
-
     x_motor.PWM_Base = X_MOTOR_PWM_BASE;
     x_motor.PWM_Channel = X_MOTOR_PWM_CHANNEL;
     x_motor.PWM_Block = X_PWM_BLOCK;
@@ -332,19 +317,26 @@ void motor_init_y_pwm(void) {
     y_motor.PWM_Block = Y_PWM_BLOCK;
     y_motor.PWM_Pin_Map = Y_MOTOR_PWM_OUT;
 
-    /* setup and enable clock */
-    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);         // The PWM peripheral must be enabled for use.
 
     /* init GPIO pin */
-    /* Should be done in gpio_init */
     SysCtlPeripheralEnable(y_motor.STEP.base);            // enable GPIO port if not already enabled
 
-    GPIOPinConfigure(y_motor.PWM_Pin_Map);                // configure pin for PWM rather than for GPIO
+    /* setup and enable clock */
+    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
+
+    HWREG(GPIO_PORTF_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+    HWREG(GPIO_PORTB_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+    HWREG(GPIO_PORTC_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+
+    // Port B pins that are locked are 3 and 2, so unlock them by writing 1100 into the CR reg
+    HWREG(GPIO_PORTB_BASE + GPIO_O_CR)  |= 0xC;
+
+    GPIOPinConfigure(y_motor.PWM_Pin_Map);                // configure pin for PWM
     GPIOPinTypePWM(y_motor.STEP.base, y_motor.STEP.pin);
 
     /* Count down without synchronization */
-    PWMGenConfigure(y_motor.PWM_Base, y_motor.PWM_Block, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
+    PWMGenConfigure(y_motor.PWM_Base, Y_PWM_BLOCK, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
 
     /* Set PWM period to: 0.02ms or 50kHz */
     PWMGenPeriodSet(y_motor.PWM_Base, y_motor.PWM_Block, CALC_PERIOD(PWM_FREQUENCY));
@@ -357,6 +349,8 @@ void motor_init_y_pwm(void) {
 
     /* Enable the generator block to start timer */
     PWMGenEnable(y_motor.PWM_Base, y_motor.PWM_Block);
+
+    PWMOutputState(y_motor.PWM_Base, (1 << y_motor.PWM_Channel), true);
 }
 
 #ifndef TEST
@@ -518,9 +512,9 @@ void motor_init_y_gpio(void)
 
     // Enable Ports
 
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);  // Port B
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);  // Port F
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);  // Port C
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
 
     /* Set GPIO output pins */
     MAP_GPIODirModeSet(y_motor.M0.base, y_motor.M0.pin, GPIO_DIR_MODE_OUT);
@@ -596,7 +590,6 @@ void motor_init_z_gpio(void)
     MAP_GPIOPadConfigSet(z_motor.NSLEEP.base, z_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
     MAP_GPIOPadConfigSet(z_motor.NFAULT.base, z_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
 }
-#endif
 
 
 void motor_init_ex_gpio(void) {
@@ -648,6 +641,8 @@ void motor_init_ex_gpio(void) {
     MAP_GPIOPadConfigSet(ex_motor.NSLEEP.base, ex_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
     MAP_GPIOPadConfigSet(ex_motor.NFAULT.base, ex_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
 }
+#endif
+
 
 void motor_enable(Motor_t motor) {
     GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, motor.ENABLE.pin);    // set ENABLE pin HIGH
@@ -683,20 +678,20 @@ void set_motor_step_size(Motor_t motor, uint8_t direction){
         GPIOPinWrite(motor.M1.base, motor.M1.pin, 0);
         break;
     case STEP_16:
-        GPIOPinWrite(motor.M0.base, motor.M0.pin, 1);
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, motor.M0.pin);
         GPIOPinWrite(motor.M1.base, motor.M1.pin, 0);
         break;
     case STEP_2:
         GPIOPinWrite(motor.M0.base, motor.M0.pin, 0);
-        GPIOPinWrite(motor.M1.base, motor.M1.pin, 1);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, motor.M1.pin);
         break;
     case STEP_4:
-        GPIOPinWrite(motor.M0.base, motor.M0.pin, 1);
-        GPIOPinWrite(motor.M1.base, motor.M1.pin, 1);
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, motor.M0.pin);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, motor.M1.pin);
         break;
     case STEP_8:
-        GPIOPinWrite(motor.M0.base, motor.M0.pin, 1);
-        GPIOPinWrite(motor.M1.base, motor.M1.pin, 1);
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, motor.M0.pin);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, motor.M1.pin);
         break;
     }
 }

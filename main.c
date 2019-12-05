@@ -56,57 +56,6 @@ void main(void)
     motor_instruction_queue = xQueueCreate(10, sizeof(Motor_Instruction_t));
     configASSERT(motor_instruction_queue != NULL);
 
-    // Add elements to queue for PoC
-    Motor_Instruction_t PoC_Instruction_1 = {
-         .x_pos = 5000,
-         .y_pos = 5000,
-         .z_pos = 0,
-         .speed = 50
-    };
-
-    Motor_Instruction_t PoC_Instruction_2 = {
-         .x_pos = 15000,
-         .y_pos = 5000,
-         .z_pos = 0,
-         .speed = 50
-    };
-
-    Motor_Instruction_t PoC_Instruction_3 = {
-         .x_pos = 15000,
-         .y_pos = 15000,
-         .z_pos = 0,
-         .speed = 50
-    };
-
-    Motor_Instruction_t PoC_Instruction_4 = {
-         .x_pos = 5000,
-         .y_pos = 15000,
-         .z_pos = 0,
-         .speed = 50
-    };
-
-    Motor_Instruction_t PoC_Instruction_5 = {
-         .x_pos = 5000,
-         .y_pos = 5000,
-         .z_pos = 0,
-         .speed = 50
-    };
-
-    Motor_Instruction_t PoC_Instruction_6 = {
-         .x_pos = 0,
-         .y_pos = 0,
-         .z_pos = 0,
-         .speed = 0
-    };
-
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_1, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_2, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_3, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_4, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_5, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_6, portMAX_DELAY);
-
-
     /* T A S K S */
 //    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", 500, (void *)NULL, 2, &xErrorTask);
     BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, &xBlinkyTask);
