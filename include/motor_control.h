@@ -34,8 +34,8 @@
 
 /*  E N U M S   */
 typedef enum {
-    Forward = 0,
-    Backward = 1
+    Forward = 0,    // Downward for extruder
+    Backward = 1    // Upward for extruder
 } eMotor_Direction;
 
 typedef struct {
@@ -75,6 +75,7 @@ typedef struct {
 
 /*  T A S K S   */
 void prv_Motor(void *pvParameters);
+void prv_Extruder_Motor(void *pvParameters);
 
 /*  F U N C T I O N S   */
 void find_direction(uint32_t instruction, Motor_t motor);

@@ -42,18 +42,19 @@
 extern eState printer_state;
 extern QueueHandle_t motor_instruction_queue;
 extern TaskHandle_t xMotorTask;
+extern TaskHandle_t xExtruderTask;
 
 
 /*  P R I V A T E   V A R I A B L E S   */
 static Motor_t x_motor;
 static Motor_t y_motor;
 //static Motor_t z_motor;
-//static Motor_t ex_motor;
+static Motor_t ex_motor;
 
 static uint32_t x_pwm_count = 0;
 static uint32_t y_pwm_count = 0;
 //static uint32_t z_pwm_count = 0;
-//static uint32_t ex_pwm_count = 0;
+static uint32_t ex_pwm_count = 0;
 
 //static Motor_Count_Ready_t motors_ready;
 
@@ -124,10 +125,26 @@ void prv_Motor(void *pvParameters) {
             motor_change_pwm_duty_cycle(y_motor, 0);
             do_it = true;
         }
-    //        else {  // taking notification timed out, indicate error occurred
-    //            printer_state = Error;
-    //        }
+        else {  // taking notification timed out, indicate error occurred
+            printer_state = Error;
+        }
         vTaskDelay(xMaxBlockTime);
+    }
+}
+
+void prv_Extruder_Motor(void *pvParameters) {
+    // configure motor to run
+    ex_motor.direction = Forward;           // Downward
+    ex_pwm_count = dist_to_steps((uint32_t)pvParameters);    // extrude 2cm
+    set_motor_step_size(ex_motor, STEP_16);
+    motor_enable(ex_motor);
+    motor_change_pwm_duty_cycle(ex_motor, 50);
+
+    // wait for notification from interrupt
+    uint32_t ulNotificationValue;
+    ulNotificationValue = ulTaskNotifyTake( pdFALSE, portMAX_DELAY );
+    if(ulNotificationValue == 1) {
+        vTaskDelete(xExtruderTask);
     }
 }
 
@@ -178,13 +195,14 @@ void init_z_motor(void) {
     motor_disable(z_motor);
 }
 
+#endif
+
+
 void init_ex_motor(void) {
     motor_init_ex_gpio();
     motor_init_ex_pwm();
     motor_disable(ex_motor);
 }
-
-#endif
 
 void init_all_motors(void) {
     init_x_motor();
@@ -305,6 +323,8 @@ void motor_init_z_pwm(void) {
     PWMGenIntRegister(z_motor.PWM_Base, Z_PWM_BLOCK, PWM0IntHandler);
 }
 
+#endif
+
 void motor_init_ex_pwm(void) {
 
     ex_motor.PWM_Base = EX_MOTOR_PWM_BASE;
@@ -332,7 +352,6 @@ void motor_init_ex_pwm(void) {
     /* Enable Interrupts */
     PWMGenIntRegister(ex_motor.PWM_Base, EX_PWM_BLOCK, PWM0IntHandler);
 }
-#endif
 
 
 /* @param uint8_t duty_cycle: 0-100 */
@@ -513,9 +532,10 @@ void motor_init_z_gpio(void)
     MAP_GPIOPadConfigSet(z_motor.NSLEEP.base, z_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
     MAP_GPIOPadConfigSet(z_motor.NFAULT.base, z_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
 }
+#endif
 
-void motor_init_ex_gpio(void)
-{
+
+void motor_init_ex_gpio(void) {
     // Assign Struct members to definitions
     ex_motor.M0.base   =    EX_M0_PORT;
     ex_motor.M0.pin    =    EX_M0_PIN;
@@ -564,8 +584,6 @@ void motor_init_ex_gpio(void)
     MAP_GPIOPadConfigSet(ex_motor.NSLEEP.base, ex_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
     MAP_GPIOPadConfigSet(ex_motor.NFAULT.base, ex_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
 }
-
-#endif
 
 void motor_enable(Motor_t motor) {
     GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, motor.ENABLE.pin);    // set ENABLE pin HIGH

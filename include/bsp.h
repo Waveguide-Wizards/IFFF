@@ -123,6 +123,9 @@ typedef enum {
 
 
 /*  EXTRUDER - MOTOR   */
+#define EX_PWM_BLOCK         PWM_GEN_1
+#define EX_PWM_OUT           PWM_OUT_6
+
 #define EX_M1_PORT           GPIO_PORTB_BASE
 #define EX_M1_PIN            GPIO_PIN_5      // output
 
@@ -147,8 +150,8 @@ typedef enum {
 #define EX_MOTOR_PWM_BASE    PWM0_BASE       //  M0PWM5
 #define EX_MOTOR_PWM_CHANNEL 5
 
-#define EX_MOTOR_STEP        GPIOH_PE5_M0PWM5
-
+// TODO: update this, placeholder
+#define EX_MOTOR_STEP        GPIO_PA7_M1PWM3
 #else
 
 
