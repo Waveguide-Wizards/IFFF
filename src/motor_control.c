@@ -64,6 +64,7 @@ void prv_Motor(void *pvParameters) {
     const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 1000 );  // TODO: switch to max port delay
     uint32_t ulNotificationValue;
     BaseType_t queue_receive_status;
+    uint8_t instruction = 1;
 
 //    // init motors
     init_all_motors();
@@ -75,39 +76,49 @@ void prv_Motor(void *pvParameters) {
 
 //        if( (ulNotificationValue == 1)  && (printer_state == Printing)) {
             // pop from queue
+//        if(do_it == true) {
+//            Motor_Instruction_t current_instruction;
+//            queue_receive_status = xQueueReceive(motor_instruction_queue, &current_instruction, (TickType_t)5);
+//
+//            if(queue_receive_status == pdPASS) {
+//                // set up motors
+//                find_direction(current_instruction.x_pos, x_motor);
+//                find_direction(current_instruction.y_pos, y_motor);
+//    //            find_direction(current_instruction->z_pos, z_motor);
+//    //            find_direction(current_instruction->x_pos, ex_motor);
+//
+//                // update positions
+////                x_motor.position = current_instruction.x_pos;
+////                y_motor.position = current_instruction.y_pos;
+//    //            z_motor.position = current_instruction->z_pos;
+//    //            ex_motor.position = current_instruction->extruder_pos;
+//
+//                x_motor.direction = Forward;
+//                y_motor.direction = Forward;
+//
+//                // find step counts
+//                x_pwm_count = dist_to_steps(current_instruction.x_pos);
+//                y_pwm_count = dist_to_steps(current_instruction.y_pos);
+//    //            z_pwm_count = dist_to_steps(current_instruction->z_pos);
+//    //            ex_pwm_count = dist_to_steps(current_instruction->ex_pos);
+//            }
+//            else {
+
         if(do_it == true) {
-            Motor_Instruction_t current_instruction;
-            queue_receive_status = xQueueReceive(motor_instruction_queue, &current_instruction, (TickType_t)5);
-
-            if(queue_receive_status == pdPASS) {
-                // set up motors
-                find_direction(current_instruction.x_pos, x_motor);
-                find_direction(current_instruction.y_pos, y_motor);
-    //            find_direction(current_instruction->z_pos, z_motor);
-    //            find_direction(current_instruction->x_pos, ex_motor);
-
-                // update positions
-                x_motor.position = current_instruction.x_pos;
-                y_motor.position = current_instruction.y_pos;
-    //            z_motor.position = current_instruction->z_pos;
-    //            ex_motor.position = current_instruction->extruder_pos;
-
-                // find step counts
-                x_pwm_count = dist_to_steps(current_instruction.x_pos);
-                y_pwm_count = dist_to_steps(current_instruction.y_pos);
-    //            z_pwm_count = dist_to_steps(current_instruction->z_pos);
-    //            ex_pwm_count = dist_to_steps(current_instruction->ex_pos);
-            }
-            else {
+#ifdef BACKNFORTH
+            if(x_motor.direction == Forward)
+                x_motor.direction = Backward;
+            else if(x_motor.direction == Backward)
                 x_motor.direction = Forward;
-                y_motor.direction = Forward;
 
-                x_pwm_count = dist_to_steps(5000);
-                y_pwm_count = dist_to_steps(5000);
-            }
+            x_pwm_count = dist_to_steps(5000);
+            y_pwm_count = dist_to_steps(5000);
 
             set_motor_step_size(x_motor, STEP_16);
             set_motor_step_size(y_motor, STEP_16);
+
+            motor_set_direction(x_motor, x_motor.direction);
+            motor_set_direction(y_motor, y_motor.direction);
 
             // start PWM on all motors
             motor_enable(x_motor);
@@ -117,6 +128,59 @@ void prv_Motor(void *pvParameters) {
             motor_change_pwm_duty_cycle(y_motor, 50);
 
             do_it = false;
+#else
+            switch(instruction) {
+                case(1): {      // move x motor
+                    x_motor.direction = Forward;
+                    motor_set_direction(x_motor, x_motor.direction);
+                    set_motor_step_size(x_motor, STEP_16);
+                    motor_enable(x_motor);
+                    motor_disable(y_motor);
+                    motor_change_pwm_duty_cycle(x_motor, 50);
+                    motor_change_pwm_duty_cycle(y_motor, 0);
+                    break;
+                }
+                case(2): {      // move y motor
+                    y_motor.direction = Forward;
+                    motor_set_direction(y_motor, y_motor.direction);
+                    set_motor_step_size(y_motor, STEP_16);
+                    motor_enable(y_motor);
+                    motor_disable(x_motor);
+                    motor_change_pwm_duty_cycle(y_motor, 50);
+                    motor_change_pwm_duty_cycle(x_motor, 0);
+                    break;
+                }
+                case(3): {
+                    x_motor.direction = Backward;
+                    motor_set_direction(x_motor, x_motor.direction);
+                    set_motor_step_size(x_motor, STEP_16);
+                    motor_enable(x_motor);
+                    motor_disable(y_motor);
+                    motor_change_pwm_duty_cycle(x_motor, 50);
+                    motor_change_pwm_duty_cycle(y_motor, 0);
+                    break;
+                }
+                case(4): {
+                    y_motor.direction = Backward;
+                    motor_set_direction(y_motor, y_motor.direction);
+                    set_motor_step_size(y_motor, STEP_16);
+                    motor_enable(y_motor);
+                    motor_disable(x_motor);
+                    motor_change_pwm_duty_cycle(y_motor, 50);
+                    motor_change_pwm_duty_cycle(x_motor, 0);
+                    break;
+                }
+                default: {
+                    motor_disable(x_motor);
+                    motor_change_pwm_duty_cycle(x_motor, 0);
+                    motor_disable(y_motor);
+                    motor_change_pwm_duty_cycle(y_motor, 0);
+                    break;
+                }
+            }
+            instruction++;
+            do_it = false;
+#endif
         }
         else if(do_it == false) {
             motor_disable(x_motor);

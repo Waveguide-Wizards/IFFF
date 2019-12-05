@@ -108,7 +108,7 @@ void main(void)
 
 
     /* T A S K S */
-    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", 500, (void *)NULL, 2, &xErrorTask);
+//    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", 500, (void *)NULL, 2, &xErrorTask);
     BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, &xBlinkyTask);
     BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 1, &xMotorTask);
 
