@@ -38,8 +38,13 @@ void *malloc( size_t xSize );
 volatile eState printer_state;
 QueueHandle_t motor_instruction_queue;
 
+#define EXTRUDER_LENGTH         20000   // 2cm
+
 /*  T A S K   N O T I F I C A T I O N S   */
 TaskHandle_t xMotorTask = NULL;
+TaskHandle_t xBlinkyTask = NULL;
+TaskHandle_t xErrorTask = NULL;
+TaskHandle_t xExtruderTask = NULL;
 
 /* main.c */
 void main(void)
@@ -51,61 +56,14 @@ void main(void)
     motor_instruction_queue = xQueueCreate(10, sizeof(Motor_Instruction_t));
     configASSERT(motor_instruction_queue != NULL);
 
-    // Add elements to queue for PoC
-    Motor_Instruction_t PoC_Instruction_1 = {
-         .x_pos = 5000,
-         .y_pos = 5000,
-         .z_pos = 0,
-         .speed = 50
-    };
-
-    Motor_Instruction_t PoC_Instruction_2 = {
-         .x_pos = 15000,
-         .y_pos = 5000,
-         .z_pos = 0,
-         .speed = 50
-    };
-
-    Motor_Instruction_t PoC_Instruction_3 = {
-         .x_pos = 15000,
-         .y_pos = 15000,
-         .z_pos = 0,
-         .speed = 50
-    };
-
-    Motor_Instruction_t PoC_Instruction_4 = {
-         .x_pos = 5000,
-         .y_pos = 15000,
-         .z_pos = 0,
-         .speed = 50
-    };
-
-    Motor_Instruction_t PoC_Instruction_5 = {
-         .x_pos = 5000,
-         .y_pos = 5000,
-         .z_pos = 0,
-         .speed = 50
-    };
-
-    Motor_Instruction_t PoC_Instruction_6 = {
-         .x_pos = 0,
-         .y_pos = 0,
-         .z_pos = 0,
-         .speed = 0
-    };
-
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_1, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_2, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_3, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_4, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_5, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_6, portMAX_DELAY);
-
-
     /* T A S K S */
-    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, NULL);
-    BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, NULL);
+//    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", 500, (void *)NULL, 2, &xErrorTask);
+//    BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, &xBlinkyTask);
     BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 1, &xMotorTask);
+
+#ifdef  EXTRUDER_POC
+    BaseType_t ExtruderReturned = xTaskCreate(prv_Extruder_Motor, "Extruder", 500, (void *)EXTRUDER_LENGTH, 1, &xExtruderTask);;
+#endif
 
     /* check that tasks were created successfully */
 //    configASSERT(BlinkyReturned == pdPASS);

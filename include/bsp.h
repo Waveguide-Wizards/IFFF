@@ -16,7 +16,8 @@
 #include "inc/hw_pwm.h"
 
 typedef enum {
-    Error = -1,
+    Error,
+    Bumper_Error,
     Idle,
     Printing,
     MemoryTransfer,
@@ -28,7 +29,6 @@ typedef enum {
 #define POC
 
 #ifdef POC
-
 /* X motor Uses PWM Generator block 0 and the output is PWM out 0 */
 #define X_PWM_BLOCK         PWM_GEN_0
 #define X_PWM_OUT           PWM_OUT_0
@@ -48,8 +48,8 @@ typedef enum {
 #define X_NSLEEP_PORT       GPIO_PORTE_BASE
 #define X_NSLEEP_PIN        GPIO_PIN_5      // output
 
-#define X_NFAULT_PORT       GPIO_PORTB_BASE
-#define X_NFAULT_PIN        GPIO_PIN_4      // input
+#define X_NFAULT_PORT       GPIO_PORTE_BASE
+#define X_NFAULT_PIN        GPIO_PIN_1      // input
 
 #define X_STEP_PORT         GPIO_PORTB_BASE
 #define X_STEP_PIN          GPIO_PIN_6      // output
@@ -86,7 +86,7 @@ typedef enum {
 #define Y_STEP_PIN          GPIO_PIN_4      // output (same as Y_MOTOR_PWM_OUT)
 
 #define Y_MOTOR_PWM_BASE    PWM0_BASE
-#define Y_MOTOR_PWM_CHANNEL 6
+#define Y_MOTOR_PWM_CHANNEL 2
 
 #define Y_MOTOR_PWM_OUT     GPIO_PB4_M0PWM2
 
@@ -124,6 +124,9 @@ typedef enum {
 
 
 /*  EXTRUDER - MOTOR   */
+#define EX_PWM_BLOCK         PWM_GEN_1
+#define EX_PWM_OUT           PWM_OUT_6
+
 #define EX_M1_PORT           GPIO_PORTB_BASE
 #define EX_M1_PIN            GPIO_PIN_5      // output
 
@@ -148,8 +151,8 @@ typedef enum {
 #define EX_MOTOR_PWM_BASE    PWM0_BASE       //  M0PWM5
 #define EX_MOTOR_PWM_CHANNEL 5
 
-#define EX_MOTOR_STEP        GPIOH_PE5_M0PWM5
-
+// TODO: update this, placeholder
+#define EX_MOTOR_STEP        GPIO_PA7_M1PWM3
 #else
 
 

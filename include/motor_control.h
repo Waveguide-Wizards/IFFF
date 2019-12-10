@@ -17,15 +17,15 @@
 #define STEP_8              4U
 
 #define SOURCE_FREQUENCY    20000000        // 20MHz
-#define PWM_FREQUENCY       5000       // 5kHz, DRV8886 f_pwm range is 0-100kHz
+#define PWM_FREQUENCY       400       // 5kHz, DRV8886 f_pwm range is 0-100kHz
 #define CALC_PERIOD(X)          (SOURCE_FREQUENCY / X)
 
 //STEP CONVERSION PARAMETERS
 //Steps in the motor 
 #define STEPS_PER_ROTATION (200)
-#define SELECTED_MICROSTEP ( 16)
+#define SELECTED_MICROSTEP (16)
 
-//Distance per full revolution in micrometeres (780 mm => 780 000 um) (Hoefully wrong?!?!?!?)
+//Distance per full revolution in micrometeres (780 mm => 780 000 um) (Hopefully wrong?!?!?!?)
 #define DIST_PER_REV       (780000)
 
 //Functional relationships:
@@ -34,8 +34,8 @@
 
 /*  E N U M S   */
 typedef enum {
-    Forward = 0,
-    Backward = 1
+    Forward = 0,    // Downward for extruder
+    Backward = 1    // Upward for extruder
 } eMotor_Direction;
 
 typedef struct {
@@ -75,6 +75,7 @@ typedef struct {
 
 /*  T A S K S   */
 void prv_Motor(void *pvParameters);
+void prv_Extruder_Motor(void *pvParameters);
 
 /*  F U N C T I O N S   */
 void find_direction(uint32_t instruction, Motor_t motor);
