@@ -111,21 +111,20 @@ void prv_Motor(void *pvParameters) {
                     break;
                 }
                 case(2): {      // move y motor
-//                    motor_disable(x_motor);
-//                    motor_change_pwm_duty_cycle(x_motor, 0);
-//                    y_motor.direction = Forward;
-//                    motor_set_direction(y_motor, y_motor.direction);
-//                    set_motor_step_size(y_motor, STEP_16);
-//                    motor_enable(y_motor);
-//                    motor_change_pwm_duty_cycle(y_motor, 50);
-                    motor_disable(y_motor);
-                    motor_change_pwm_duty_cycle(y_motor, 0);
-
-                    x_motor.direction = Forward;
-                    motor_set_direction(x_motor, x_motor.direction);
-                    set_motor_step_size(x_motor, STEP_16);
-                    motor_enable(x_motor);
-                    motor_change_pwm_duty_cycle(x_motor, 50);
+                    motor_disable(x_motor);
+                    motor_change_pwm_duty_cycle(x_motor, 0);
+                    y_motor.direction = Forward;
+                    motor_set_direction(y_motor, y_motor.direction);
+                    set_motor_step_size(y_motor, STEP_16);
+                    motor_enable(y_motor);
+                    motor_change_pwm_duty_cycle(y_motor, 50);
+//                    motor_disable(y_motor);
+//                    motor_change_pwm_duty_cycle(y_motor, 0);
+//                    x_motor.direction = Forward;
+//                    motor_set_direction(x_motor, x_motor.direction);
+//                    set_motor_step_size(x_motor, STEP_16);
+//                    motor_enable(x_motor);
+//                    motor_change_pwm_duty_cycle(x_motor, 50);
                     break;
                 }
                 case(3): {
@@ -139,20 +138,20 @@ void prv_Motor(void *pvParameters) {
                     break;
                 }
                 case(4): {
-//                    motor_disable(x_motor);
-//                    motor_change_pwm_duty_cycle(x_motor, 0);
-//                    y_motor.direction = Backward;
-//                    motor_set_direction(y_motor, y_motor.direction);
-//                    set_motor_step_size(y_motor, STEP_16);
-//                    motor_enable(y_motor);
-//                    motor_change_pwm_duty_cycle(y_motor, 50);
-                    motor_disable(y_motor);
-                    motor_change_pwm_duty_cycle(y_motor, 0);
-                    x_motor.direction = Backward;
-                    motor_set_direction(x_motor, x_motor.direction);
-                    set_motor_step_size(x_motor, STEP_16);
-                    motor_enable(x_motor);
-                    motor_change_pwm_duty_cycle(x_motor, 50);
+                    motor_disable(x_motor);
+                    motor_change_pwm_duty_cycle(x_motor, 0);
+                    y_motor.direction = Backward;
+                    motor_set_direction(y_motor, y_motor.direction);
+                    set_motor_step_size(y_motor, STEP_16);
+                    motor_enable(y_motor);
+                    motor_change_pwm_duty_cycle(y_motor, 50);
+//                    motor_disable(y_motor);
+//                    motor_change_pwm_duty_cycle(y_motor, 0);
+//                    x_motor.direction = Backward;
+//                    motor_set_direction(x_motor, x_motor.direction);
+//                    set_motor_step_size(x_motor, STEP_16);
+//                    motor_enable(x_motor);
+//                    motor_change_pwm_duty_cycle(x_motor, 50);
                     break;
                 }
                 default: {

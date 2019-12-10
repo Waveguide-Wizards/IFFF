@@ -16,7 +16,8 @@
 #include "inc/hw_pwm.h"
 
 typedef enum {
-    Error = -1,
+    Error,
+    Bumper_Error,
     Idle,
     Printing,
     MemoryTransfer,

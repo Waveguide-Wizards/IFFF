@@ -53,37 +53,37 @@ void prv_ErrorCheck(void *pvParameters) {
     static TickType_t use_delay_time;
     use_delay_time = delay_time;
     for( ;; ) {
-       if(printer_state == Error) {
-//           vTaskSuspend( xBlinkyTask );     // Stop the Blinky task from controlling LED
+        if((printer_state == Error) || (printer_state == Bumper_Error)) {
+           // vTaskSuspend( xBlinkyTask );     // Stop the Blinky task from controlling LED
            // TODO: LCD screen error
            // LED indicator error
            GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
            vTaskDelay(use_delay_time);
            GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
            vTaskDelay(use_delay_time);
-       }
-       else {   // Check nFAULT pins, if any are low, set printer_state = Error
+        }
+        else {   // Check nFAULT pins, if any are low, set printer_state = Error
             uint32_t fault_status = 0;
 
             // Check X Motor
             fault_status = GPIOPinRead(X_NFAULT_PORT, X_NFAULT_PIN);
             if(!(fault_status & X_NFAULT_PIN)) {
-                printer_state = Error;      // X Motor has a Fault
+                printer_state = Bumper_Error;      // X Motor has a Fault
                 use_delay_time = flash_delay_time;
             }
 
             // Check Y Motor
             fault_status = GPIOPinRead(Y_NFAULT_PORT, Y_NFAULT_PIN);
             if(!(fault_status & Y_NFAULT_PIN)) {
-                printer_state = Error;      // Y Motor has a Fault
+                printer_state = Bumper_Error;      // Y Motor has a Fault
                 use_delay_time = flash_delay_time;
             }
 
-            if(printer_state == Error) {
+            if((printer_state == Error) || (printer_state == Bumper_Error)) {
                 vTaskSuspend( xBlinkyTask );    // Stop the Blinky task from controlling LED
                 vTaskSuspend( xMotorTask );     // Stop the motor control task so nothing bad happens
             }
             vTaskDelay(use_delay_time);
-       }
+        }
     }
 }
