@@ -118,13 +118,6 @@ void prv_Motor(void *pvParameters) {
                     set_motor_step_size(y_motor, STEP_16);
                     motor_enable(y_motor);
                     motor_change_pwm_duty_cycle(y_motor, 50);
-//                    motor_disable(y_motor);
-//                    motor_change_pwm_duty_cycle(y_motor, 0);
-//                    x_motor.direction = Forward;
-//                    motor_set_direction(x_motor, x_motor.direction);
-//                    set_motor_step_size(x_motor, STEP_16);
-//                    motor_enable(x_motor);
-//                    motor_change_pwm_duty_cycle(x_motor, 50);
                     break;
                 }
                 case(3): {
@@ -145,13 +138,6 @@ void prv_Motor(void *pvParameters) {
                     set_motor_step_size(y_motor, STEP_16);
                     motor_enable(y_motor);
                     motor_change_pwm_duty_cycle(y_motor, 50);
-//                    motor_disable(y_motor);
-//                    motor_change_pwm_duty_cycle(y_motor, 0);
-//                    x_motor.direction = Backward;
-//                    motor_set_direction(x_motor, x_motor.direction);
-//                    set_motor_step_size(x_motor, STEP_16);
-//                    motor_enable(x_motor);
-//                    motor_change_pwm_duty_cycle(x_motor, 50);
                     break;
                 }
                 default: {
@@ -182,18 +168,36 @@ void prv_Motor(void *pvParameters) {
 
 void prv_Extruder_Motor(void *pvParameters) {
     // configure motor to run
-    ex_motor.direction = Forward;           // Downward
-    ex_pwm_count = dist_to_steps((uint32_t)pvParameters);    // extrude 2cm
-    set_motor_step_size(ex_motor, STEP_16);
-    motor_enable(ex_motor);
-    motor_change_pwm_duty_cycle(ex_motor, 50);
+//    x_motor.direction = Forward;
+    //    ex_pwm_count = dist_to_steps((uint32_t)pvParameters);    // extrude 2cm
+    init_all_motors();
+//    x_motor.direction = Forward;
+    x_motor.direction = Backward;
+     motor_set_direction(x_motor, x_motor.direction);
+     set_motor_step_size(x_motor, STEP_16);
+     motor_enable(x_motor);
+     motor_change_pwm_duty_cycle(x_motor, 50);
 
     // wait for notification from interrupt
-    uint32_t ulNotificationValue;
-    ulNotificationValue = ulTaskNotifyTake( pdFALSE, portMAX_DELAY );
-    if(ulNotificationValue == 1) {
-        vTaskDelete(xExtruderTask);
-    }
+//    uint32_t ulNotificationValue;
+//    ulNotificationValue = ulTaskNotifyTake( pdFALSE, portMAX_DELAY );
+//    if(ulNotificationValue == 1) {
+//        vTaskDelete(xExtruderTask);
+//    }
+//    vTaskDelay(pdMS_TO_TICKS( 1500 ));
+      vTaskDelay(pdMS_TO_TICKS( 4760 ));
+//    vTaskDelay(pdMS_TO_TICKS( 20000 ));
+//     motor_disable(x_motor);
+//     x_motor.direction = Forward;
+//     motor_set_direction(x_motor, x_motor.direction);
+//     set_motor_step_size(x_motor, STEP_16);
+//     motor_enable(x_motor);
+//     motor_change_pwm_duty_cycle(x_motor, 50);
+//     vTaskDelay(pdMS_TO_TICKS( 100 ));
+//     vTaskDelay(pdMS_TO_TICKS( 1000 ));
+     motor_disable(x_motor);
+
+    vTaskSuspend(xExtruderTask);
 }
 
 
@@ -224,9 +228,6 @@ void init_x_motor(void) {
     motor_init_x_gpio();
     motor_init_x_pwm();
     motor_disable(x_motor);
-
-//    motor_change_pwm_duty_cycle(x_motor, 50);
-//    motor_enable(x_motor);
 }
 
 void init_y_motor(void) {
