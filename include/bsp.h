@@ -62,7 +62,7 @@ typedef enum {
 
 /*  Y - MOTOR   */
 #define Y_PWM_BLOCK         PWM_GEN_1
-#define Y_PWM_OUT           PWM_OUT_6
+#define Y_PWM_OUT           PWM_OUT_2
 
 #define Y_M1_PORT           GPIO_PORTF_BASE
 #define Y_M1_PIN            GPIO_PIN_3      // output
@@ -86,7 +86,7 @@ typedef enum {
 #define Y_STEP_PIN          GPIO_PIN_4      // output (same as Y_MOTOR_PWM_OUT)
 
 #define Y_MOTOR_PWM_BASE    PWM0_BASE
-#define Y_MOTOR_PWM_CHANNEL 6
+#define Y_MOTOR_PWM_CHANNEL 2
 
 #define Y_MOTOR_PWM_OUT     GPIO_PB4_M0PWM2
 

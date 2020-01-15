@@ -57,6 +57,10 @@ static uint32_t y_pwm_count = 0;
 static uint32_t x_needed_step_count = 0;
 static uint32_t y_needed_step_count = 0;
 
+static uint32_t x_complete = 0;
+static uint32_t y_complete = 0;
+static uint32_t task_complete = 0;
+
 volatile Motor_Status_t Task_Status;
 
 /*  T A S K S   */
@@ -91,18 +95,23 @@ void prv_Motor(void *pvParameters) {
 //            ex_motor.position = current_instruction->extruder_pos;
 
             // find step counts
+            /* Step Count calculations still return 0, Hardcoding for interrupt testing purposes */
             x_needed_step_count = dist_to_steps(current_instruction.x_pos);
             y_needed_step_count = dist_to_steps(current_instruction.y_pos);
 //            z_pwm_count = dist_to_steps(current_instruction->z_pos);
 //            ex_pwm_count = dist_to_steps(current_instruction->ex_pos);
 
 
-            // start PWM on all motors
-            motor_x_start(current_instruction.x_pos, 0);
-            motor_change_pwm_duty_cycle(x_motor, 50);
+            x_needed_step_count = 5000;
+            y_needed_step_count = 1000;
 
-            motor_enable(y_motor);
+            // start PWM on all motors
+            motor_change_pwm_duty_cycle(x_motor, 50);
+            motor_start(current_instruction.x_pos, 0, X_MOTOR);
+
             motor_change_pwm_duty_cycle(y_motor, 50);
+            motor_start(current_instruction.y_pos, 0, Y_MOTOR);
+
 
             do_it = false;
         }
@@ -233,12 +242,13 @@ void motor_init_x_pwm(void) {
     PWMPulseWidthSet(x_motor.PWM_Base, X_PWM_OUT, 0);
 
     /* Enable Interrupts */
-    PWMGenIntRegister(x_motor.PWM_Base, x_motor.PWM_Block, PWM0IntHandler);
+    PWMGenIntRegister(x_motor.PWM_Base, x_motor.PWM_Block, PWM0Gen0IntHandler);
 
-    /* Enable the generator block to start timer */
-    PWMGenEnable(x_motor.PWM_Base, x_motor.PWM_Block);
+    /* Enable PWM Signal output */
+    PWMOutputState(x_motor.PWM_Base, (1 << x_motor.PWM_Channel), false);
 
-    PWMOutputState(x_motor.PWM_Base, (1 << x_motor.PWM_Channel), true);
+//    /* Enable the generator block to start timer */
+//    PWMGenEnable(x_motor.PWM_Base, x_motor.PWM_Block);
 
 }
 
@@ -272,11 +282,14 @@ void motor_init_y_pwm(void) {
     /* initialize to no output */
     PWMPulseWidthSet(y_motor.PWM_Base, Y_PWM_OUT, 0);
 
-    /* Enable Interrupts */
-    PWMGenIntRegister(y_motor.PWM_Base, y_motor.PWM_Block, PWM0IntHandler);
+    /* Register Interrupts  to be enabled*/
+    PWMGenIntRegister(y_motor.PWM_Base, y_motor.PWM_Block, PWM0Gen1IntHandler);
 
-    /* Enable the generator block to start timer */
-    PWMGenEnable(y_motor.PWM_Base, y_motor.PWM_Block);
+    /* Ensure PWM signal output is off */
+    PWMOutputState(y_motor.PWM_Base, (1 << y_motor.PWM_Channel), false);
+
+//    /* Enable the generator block to start timer */
+//    PWMGenEnable(y_motor.PWM_Base, y_motor.PWM_Block);
 }
 
 #ifndef TEST
@@ -399,7 +412,7 @@ void motor_init_x_gpio(void)
     MAP_GPIODirModeSet(x_motor.M1.base, x_motor.M1.pin, GPIO_DIR_MODE_OUT);
     MAP_GPIODirModeSet(x_motor.DIR.base, x_motor.DIR.pin, GPIO_DIR_MODE_OUT);
     MAP_GPIODirModeSet(x_motor.ENABLE.base, x_motor.ENABLE.pin, GPIO_DIR_MODE_OUT);
-//    MAP_GPIODirModeSet(x_motor.STEP.base, x_motor.STEP.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(x_motor.STEP.base, x_motor.STEP.pin, GPIO_DIR_MODE_OUT);
     MAP_GPIODirModeSet(x_motor.NSLEEP.base, x_motor.NSLEEP.pin, GPIO_DIR_MODE_OUT);
 
     /* Set GPIO Input pins */
@@ -410,7 +423,7 @@ void motor_init_x_gpio(void)
     MAP_GPIOPadConfigSet(x_motor.M1.base, x_motor.M1.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
     MAP_GPIOPadConfigSet(x_motor.DIR.base, x_motor.DIR.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
     MAP_GPIOPadConfigSet(x_motor.ENABLE.base, x_motor.ENABLE.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-//    MAP_GPIOPadConfigSet(x_motor.STEP.base, x_motor.STEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(x_motor.STEP.base, x_motor.STEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
     MAP_GPIOPadConfigSet(x_motor.NSLEEP.base, x_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
     MAP_GPIOPadConfigSet(x_motor.NFAULT.base, x_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
 }
@@ -450,7 +463,7 @@ void motor_init_y_gpio(void)
     MAP_GPIODirModeSet(y_motor.M1.base, y_motor.M1.pin, GPIO_DIR_MODE_OUT);
     MAP_GPIODirModeSet(y_motor.DIR.base, y_motor.DIR.pin, GPIO_DIR_MODE_OUT);
     MAP_GPIODirModeSet(y_motor.ENABLE.base, y_motor.ENABLE.pin, GPIO_DIR_MODE_OUT);
-//    MAP_GPIODirModeSet(y_motor.STEP.base, y_motor.STEP.pin, GPIO_DIR_MODE_OUT);
+    MAP_GPIODirModeSet(y_motor.STEP.base, y_motor.STEP.pin, GPIO_DIR_MODE_OUT);
     MAP_GPIODirModeSet(y_motor.NSLEEP.base, y_motor.NSLEEP.pin, GPIO_DIR_MODE_OUT);
 
     /* Set GPIO Input pins */
@@ -461,7 +474,7 @@ void motor_init_y_gpio(void)
     MAP_GPIOPadConfigSet(y_motor.M1.base, y_motor.M1.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
     MAP_GPIOPadConfigSet(y_motor.DIR.base, y_motor.DIR.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
     MAP_GPIOPadConfigSet(y_motor.ENABLE.base, y_motor.ENABLE.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
-//    MAP_GPIOPadConfigSet(y_motor.STEP.base, y_motor.STEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
+    MAP_GPIOPadConfigSet(y_motor.STEP.base, y_motor.STEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
     MAP_GPIOPadConfigSet(y_motor.NSLEEP.base, y_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
     MAP_GPIOPadConfigSet(y_motor.NFAULT.base, y_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
 }
@@ -627,15 +640,32 @@ void set_motor_step_size(Motor_t motor, uint8_t direction){
     }
 }
 
-void motor_x_start(uint32_t distance, uint32_t direction)
+/*
+ *Enables PWM0 interrupts, Enables motors
+ */
+void motor_start(uint32_t distance, uint32_t direction, uint8_t motor)
 {
-    x_needed_step_count = motor_dist_to_steps(distance);
+    switch(motor)
+    {
+    case X_MOTOR:
+        /* Enable PWM Module 0 or 1, and the signal Generation block 0 1 2 or 3 */
+        PWMIntEnable(PWM0_BASE, PWM_INT_GEN_0);
+        PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_0, PWM_INT_CNT_ZERO);
+        motor_enable(x_motor);
+        break;
+    case Y_MOTOR:
+        PWMIntEnable(PWM0_BASE, PWM_INT_GEN_1);
+        PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_1, PWM_INT_CNT_ZERO);
+        motor_enable(y_motor);
+        break;
+    default:
+        /* Motor has not been implemented yet */
 
-    PWMIntEnable(PWM0_BASE, PWM_INT_GEN_0);
-    PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_0, PWM_INT_CNT_ZERO);
-
-    motor_enable(x_motor);
+    }
 }
+
+
+
 
 //This is used to convert the numer of steps taken into a distance in micrometers.
 uint32_t motor_steps_to_dist(uint32_t stepCount){
@@ -648,32 +678,59 @@ uint32_t motor_dist_to_steps(uint32_t  distance){
     return distance * (float) (1/DIST_PER_USTEP);
 }
 
-uint8_t update_x_status(){
-    Task_Status.x_done = 1;
-    if(Task_Status.x_done && Task_Status.y_done && Task_Status.z_done){
+
+uint8_t update_motor_status(uint8_t motor)
+{
+    switch(motor)
+    {
+    case X_MOTOR:
+        Task_Status.x_done = 1;
+        break;
+    case Y_MOTOR:
+        Task_Status.y_done = 1;
+        break;
+    case Z_MOTOR:
+        Task_Status.z_done = 1;
+        break;
+    default:
+        // Motor has not been implemented yet
+        break;
+    }
+
+    if(Task_Status.x_done && Task_Status.y_done){ //&& Task_Status.z_done){
         init_motor_status(0,0,0);
         return 1;
     }
+
     return 0;
 }
 
-uint8_t update_y_status(){
-    Task_Status.y_done = 1;
-    if(Task_Status.x_done && Task_Status.y_done && Task_Status.z_done){
-        init_motor_status(0,0,0);
-        return 1;
-    }
-    return 0;
-}
-
-uint8_t update_z_status(){
-    Task_Status.z_done = 1;
-    if(Task_Status.x_done && Task_Status.y_done && Task_Status.z_done){
-        init_motor_status(0,0,0);
-        return 1;
-    }
-    return 0;
-}
+//uint8_t update_x_status(){
+//    Task_Status.x_done = 1;
+//    if(Task_Status.x_done && Task_Status.y_done && Task_Status.z_done){
+//        init_motor_status(0,0,0);
+//        return 1;
+//    }
+//    return 0;
+//}
+//
+//uint8_t update_y_status(){
+//    Task_Status.y_done = 1;
+//    if(Task_Status.x_done && Task_Status.y_done && Task_Status.z_done){
+//        init_motor_status(0,0,0);
+//        return 1;
+//    }
+//    return 0;
+//}
+//
+//uint8_t update_z_status(){
+//    Task_Status.z_done = 1;
+//    if(Task_Status.x_done && Task_Status.y_done && Task_Status.z_done){
+//        init_motor_status(0,0,0);
+//        return 1;
+//    }
+//    return 0;
+//}
 /*
  * TODO:
  *  - use LOAD register to count Pulses
@@ -682,7 +739,7 @@ uint8_t update_z_status(){
  */
 
 // static bool x_step_flag;
-void PWM0IntHandler(void) {
+void PWM0Gen0IntHandler(void) {
 
     PWMIntDisable(PWM0_BASE, PWM_INT_GEN_0);
     int flags = PWMGenIntStatus(PWM0_BASE, PWM_GEN_0, true);       // Get status of interrupts
@@ -695,14 +752,48 @@ void PWM0IntHandler(void) {
 
     if(x_pwm_count == x_needed_step_count)
     {
+        x_complete++;
         x_pwm_count = 0;
-        motor_disable(x_motor);
-        if(update_x_status())
+        /* TODO Set a flag and do this motor disable */
+//        motor_disable(x_motor);
+        if(update_motor_status(X_MOTOR))
         {
+            task_complete++;
             // Task complete
+            BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+            configASSERT(xMotorTask != NULL);
+            vTaskNotifyGiveFromISR(xMotorTask, &xHigherPriorityTaskWoken);
+            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
         }
     }
+
     PWMIntEnable(PWM0_BASE, PWM_INT_GEN_0);
+}
+
+
+void PWM0Gen1IntHandler(void) {
+
+    PWMIntDisable(PWM0_BASE, PWM_INT_GEN_1);
+    int flags = PWMGenIntStatus(PWM0_BASE, PWM_GEN_1, true);       // Get status of interrupts
+    PWMGenIntClear(PWM0_BASE, PWM_GEN_1, flags);     // Clear interrupts
+
+    if(flags & PWM_INT_CNT_ZERO)
+    {
+        y_pwm_count++;
+    }
+
+    if(y_pwm_count == y_needed_step_count)
+    {
+        y_pwm_count = 0;
+        y_complete++;
+        /* TODO: Set a flag or alert a task to do this */
+//        motor_disable(y_motor);
+        if(update_motor_status(Y_MOTOR))
+        {
+            task_complete++;
+        }
+    }
+    PWMIntEnable(PWM0_BASE, PWM_INT_GEN_1);
 
 
 

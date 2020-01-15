@@ -17,6 +17,12 @@
 #define STEP_4              3U
 #define STEP_8              4U
 
+/* Motor Definitions to pass into motor-independent functions */
+#define X_MOTOR             0U
+#define Y_MOTOR             1U
+#define Z_MOTOR             2U
+#define EX_MOTOR            3U
+
 #define SOURCE_FREQUENCY    20000000        // 20MHz
 #define PWM_FREQUENCY       5000       // 5kHz, DRV8886 f_pwm range is 0-100kHz
 #define CALC_PERIOD(X)          (SOURCE_FREQUENCY / X)
@@ -94,7 +100,7 @@ void motor_init_y_pwm();
 void motor_init_z_pwm();
 void motor_init_ex_pwm();
 void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle);
-void motor_x_start(uint32_t distance, uint32_t direction);
+void motor_start(uint32_t distance, uint32_t direction, uint8_t motor);
 uint32_t motor_steps_to_dist(uint32_t stepCount);
 uint32_t motor_dist_to_steps(uint32_t distance);
 
@@ -110,10 +116,12 @@ void motor_disable(Motor_t motor);
 void motor_set_to_sleep(Motor_t motor);
 void motor_set_direction(Motor_t motor, eMotor_Direction direction);
 void motor_set_step_size(Motor_t motor, uint8_t direction);
-uint8_t update_x_status();
-uint8_t update_y_status();
-uint8_t update_z_status();
+uint8_t update_motor_status(uint8_t motor);
+//uint8_t update_x_status();
+//uint8_t update_y_status();
+//uint8_t update_z_status();
 
-void PWM0IntHandler(void);
+void PWM0Gen0IntHandler(void);
+void PWM0Gen1IntHandler(void);
 
 #endif /* MOTOR_CONTROL_H_ */
