@@ -101,10 +101,6 @@ void prv_Motor(void *pvParameters) {
 //            z_pwm_count = dist_to_steps(current_instruction->z_pos);
 //            ex_pwm_count = dist_to_steps(current_instruction->ex_pos);
 
-
-            x_needed_step_count = 5000;
-            y_needed_step_count = 1000;
-
             // start PWM on all motors
             motor_change_pwm_duty_cycle(x_motor, 50);
             motor_start(current_instruction.x_pos, 0, X_MOTOR);
@@ -147,7 +143,7 @@ uint32_t steps_to_dist(uint32_t stepCount) {
 
 //This is used to convert the desired distance into a step count.
 uint32_t dist_to_steps(uint32_t distance) {
-    return distance*USTEP_PER_DIST;
+    return (uint32_t)((distance * USTEP_PER_DIST) + 0.5);
 }
 
 
@@ -260,15 +256,15 @@ void motor_init_y_pwm(void) {
     y_motor.PWM_Block = Y_PWM_BLOCK;
     y_motor.PWM_Pin_Map = Y_MOTOR_PWM_OUT;
 
-    /* setup and enable clock */
-    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
-
-    // TODO: need to see if there's a way to make this more generic
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);         // The PWM peripheral must be enabled for use.
 
     /* init GPIO pin */
     /* Should be done in gpio_init */
     SysCtlPeripheralEnable(y_motor.STEP.base);            // enable GPIO port if not already enabled
+
+    /* setup and enable clock */
+    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
+
 
     GPIOPinConfigure(y_motor.PWM_Pin_Map);                // configure pin for PWM rather than for GPIO
     GPIOPinTypePWM(y_motor.STEP.base, y_motor.STEP.pin);
@@ -667,16 +663,16 @@ void motor_start(uint32_t distance, uint32_t direction, uint8_t motor)
 
 
 
-//This is used to convert the numer of steps taken into a distance in micrometers.
-uint32_t motor_steps_to_dist(uint32_t stepCount){
-    return stepCount*DIST_PER_USTEP;
-}
-
-//This is used to convert the desired distance into a step count.
-uint32_t motor_dist_to_steps(uint32_t  distance){
-//    return distance*USTEP_PER_DIST;
-    return distance * (float) (1/DIST_PER_USTEP);
-}
+////This is used to convert the numer of steps taken into a distance in micrometers.
+//uint32_t motor_steps_to_dist(uint32_t stepCount){
+//    return stepCount*DIST_PER_USTEP;
+//}
+//
+////This is used to convert the desired distance into a step count.
+//uint32_t motor_dist_to_steps(uint32_t  distance){
+////    return distance*USTEP_PER_DIST;
+//    return distance * (float) (1/DIST_PER_USTEP);
+//}
 
 
 uint8_t update_motor_status(uint8_t motor)
@@ -705,32 +701,6 @@ uint8_t update_motor_status(uint8_t motor)
     return 0;
 }
 
-//uint8_t update_x_status(){
-//    Task_Status.x_done = 1;
-//    if(Task_Status.x_done && Task_Status.y_done && Task_Status.z_done){
-//        init_motor_status(0,0,0);
-//        return 1;
-//    }
-//    return 0;
-//}
-//
-//uint8_t update_y_status(){
-//    Task_Status.y_done = 1;
-//    if(Task_Status.x_done && Task_Status.y_done && Task_Status.z_done){
-//        init_motor_status(0,0,0);
-//        return 1;
-//    }
-//    return 0;
-//}
-//
-//uint8_t update_z_status(){
-//    Task_Status.z_done = 1;
-//    if(Task_Status.x_done && Task_Status.y_done && Task_Status.z_done){
-//        init_motor_status(0,0,0);
-//        return 1;
-//    }
-//    return 0;
-//}
 /*
  * TODO:
  *  - use LOAD register to count Pulses
@@ -772,7 +742,6 @@ void PWM0Gen0IntHandler(void) {
 
 
 void PWM0Gen1IntHandler(void) {
-
     PWMIntDisable(PWM0_BASE, PWM_INT_GEN_1);
     int flags = PWMGenIntStatus(PWM0_BASE, PWM_GEN_1, true);       // Get status of interrupts
     PWMGenIntClear(PWM0_BASE, PWM_GEN_1, flags);     // Clear interrupts
