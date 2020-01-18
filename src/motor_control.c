@@ -127,27 +127,25 @@ void prv_Motor(void *pvParameters) {
 
 
 /*  F U N C T I O N S   */
-void find_direction(uint32_t instruction, Motor_t motor) {
-    if(instruction >= motor.position) {
-        motor.direction = Backward;
-    }
-    else {
-        motor.direction = Forward;
-    }
+
+
+
+
+
+/*  I N I T I A L I Z A T I O N    F U N C T I O N S   */
+
+/* M O T O R S */
+
+void init_all_motors(void) {
+    init_x_motor();
+    init_y_motor();
+
+    // Commented for POC testing
+#ifndef TEST
+    init_z_motor();
+    init_ex_motor();
+#endif
 }
-
-//This is used to convert the numer of steps taken into a distance in micrometers.
-uint32_t steps_to_dist(uint32_t stepCount) {
-    return stepCount*DIST_PER_USTEP;
-}
-
-//This is used to convert the desired distance into a step count.
-uint32_t dist_to_steps(uint32_t distance) {
-    return (uint32_t)((distance * USTEP_PER_DIST) + 0.5);
-}
-
-
-/*  F U N C T I O N S   */
 
 void init_x_motor(void) {
     // TODO: assign values to the x_motor struct
@@ -183,16 +181,7 @@ void init_ex_motor(void) {
 
 #endif
 
-void init_all_motors(void) {
-    init_x_motor();
-    init_y_motor();
 
-    // Commented for POC testing
-#ifndef TEST
-    init_z_motor();
-    init_ex_motor();
-#endif
-}
 
 void init_motor_status(uint8_t x_init_status,uint8_t y_init_status,uint8_t z_init_status){
     Task_Status.x_done = x_init_status;
@@ -264,7 +253,6 @@ void motor_init_y_pwm(void) {
 
     /* setup and enable clock */
     SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
-
 
     GPIOPinConfigure(y_motor.PWM_Pin_Map);                // configure pin for PWM rather than for GPIO
     GPIOPinTypePWM(y_motor.STEP.base, y_motor.STEP.pin);
@@ -361,7 +349,7 @@ void set_pwm_load_reg(uint32_t val)
 }
 
 
-/*  X   M O T O R   G P I O   */
+/*   M O T O R   G P I O   */
 
 /* Configure GPIO pins for DRV8886
  *
@@ -583,18 +571,42 @@ void motor_init_ex_gpio(void)
 #endif
 
 
-/* M O T O R    C O N F I G U R A T I O N     F U N C T I O N S */
+/* M O T O R    C O N F I G U R A T I O N */
 
 void motor_enable(Motor_t motor) {
     GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, motor.ENABLE.pin);    // set ENABLE pin HIGH
     PWMOutputState(motor.PWM_Base, (1 << motor.PWM_Channel), true);    // disables PWM output
-    PWMGenEnable(motor.PWM_Base, PWM_GEN_0);                     // enables PWM
+    PWMGenEnable(motor.PWM_Base, motor.PWM_Block);                     // enables PWM
 }
 
 void motor_disable(Motor_t motor) {
     GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, 0);               // set ENABLE pin LOW
     PWMOutputState(motor.PWM_Base, (1 << motor.PWM_Channel), false);    // disables PWM output
-    PWMGenDisable(motor.PWM_Base, PWM_GEN_0);                                // disable PWM
+    PWMGenDisable(motor.PWM_Base, motor.PWM_Block);                                // disable PWM
+}
+
+/*
+ *Enables PWM0 interrupts, Enables motors
+ */
+void motor_start(uint32_t distance, uint32_t direction, uint8_t motor)
+{
+    switch(motor)
+    {
+    case X_MOTOR:
+        /* Enable PWM Module 0 or 1, and the signal Generation block 0 1 2 or 3 */
+        PWMIntEnable(PWM0_BASE, PWM_INT_GEN_0);
+        PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_0, PWM_INT_CNT_ZERO);
+        motor_enable(x_motor);
+        break;
+    case Y_MOTOR:
+        PWMIntEnable(PWM0_BASE, PWM_INT_GEN_1);
+        PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_1, PWM_INT_CNT_ZERO);
+        motor_enable(y_motor);
+        break;
+    default:
+        /* Motor has not been implemented yet */
+
+    }
 }
 
 void motor_set_to_sleep(Motor_t motor) {
@@ -607,6 +619,15 @@ void motor_set_direction(Motor_t motor, eMotor_Direction direction) {
     }
     else if(direction == Backward) {
         GPIOPinWrite(motor.DIR.base, motor.DIR.pin, 0);
+    }
+}
+
+void find_direction(uint32_t instruction, Motor_t motor) {
+    if(instruction >= motor.position) {
+        motor.direction = Backward;
+    }
+    else {
+        motor.direction = Forward;
     }
 }
 
@@ -636,44 +657,19 @@ void set_motor_step_size(Motor_t motor, uint8_t direction){
     }
 }
 
-/*
- *Enables PWM0 interrupts, Enables motors
- */
-void motor_start(uint32_t distance, uint32_t direction, uint8_t motor)
-{
-    switch(motor)
-    {
-    case X_MOTOR:
-        /* Enable PWM Module 0 or 1, and the signal Generation block 0 1 2 or 3 */
-        PWMIntEnable(PWM0_BASE, PWM_INT_GEN_0);
-        PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_0, PWM_INT_CNT_ZERO);
-        motor_enable(x_motor);
-        break;
-    case Y_MOTOR:
-        PWMIntEnable(PWM0_BASE, PWM_INT_GEN_1);
-        PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_1, PWM_INT_CNT_ZERO);
-        motor_enable(y_motor);
-        break;
-    default:
-        /* Motor has not been implemented yet */
 
-    }
+
+
+/* C O N V E R S I O N      F U N C T I O N  S */
+//This is used to convert the numer of steps taken into a distance in micrometers.
+uint32_t steps_to_dist(uint32_t stepCount) {
+    return stepCount*DIST_PER_USTEP;
 }
 
-
-
-
-////This is used to convert the numer of steps taken into a distance in micrometers.
-//uint32_t motor_steps_to_dist(uint32_t stepCount){
-//    return stepCount*DIST_PER_USTEP;
-//}
-//
-////This is used to convert the desired distance into a step count.
-//uint32_t motor_dist_to_steps(uint32_t  distance){
-////    return distance*USTEP_PER_DIST;
-//    return distance * (float) (1/DIST_PER_USTEP);
-//}
-
+//This is used to convert the desired distance into a step count.
+uint32_t dist_to_steps(uint32_t distance) {
+    return (uint32_t)((distance * USTEP_PER_DIST) + 0.5);
+}
 
 uint8_t update_motor_status(uint8_t motor)
 {
@@ -701,6 +697,8 @@ uint8_t update_motor_status(uint8_t motor)
     return 0;
 }
 
+
+/* I N T E R U P T      H A N D L E R S */
 /*
  * TODO:
  *  - use LOAD register to count Pulses
@@ -760,6 +758,10 @@ void PWM0Gen1IntHandler(void) {
         if(update_motor_status(Y_MOTOR))
         {
             task_complete++;
+            BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+            configASSERT(xMotorTask != NULL);
+            vTaskNotifyGiveFromISR(xMotorTask, &xHigherPriorityTaskWoken);
+            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
         }
     }
     PWMIntEnable(PWM0_BASE, PWM_INT_GEN_1);
@@ -769,8 +771,5 @@ void PWM0Gen1IntHandler(void) {
 
     // TODO: if step count met for all motors execute this
 
-//    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-//    configASSERT(xMotorTask != NULL);
-//    vTaskNotifyGiveFromISR(xMotorTask, &xHigherPriorityTaskWoken);
-//    portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+
 }
