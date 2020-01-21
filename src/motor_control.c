@@ -229,6 +229,8 @@ void motor_init_x_pwm(void) {
     /* Enable Interrupts */
     PWMGenIntRegister(x_motor.PWM_Base, x_motor.PWM_Block, PWM0Gen0IntHandler);
 
+    IntEnable(INT_PWM0_0);
+
     /* Enable PWM Signal output */
     PWMOutputState(x_motor.PWM_Base, (1 << x_motor.PWM_Channel), false);
 
@@ -268,6 +270,8 @@ void motor_init_y_pwm(void) {
 
     /* Register Interrupts  to be enabled*/
     PWMGenIntRegister(y_motor.PWM_Base, y_motor.PWM_Block, PWM0Gen1IntHandler);
+
+    IntEnable(INT_PWM0_1);
 
     /* Ensure PWM signal output is off */
     PWMOutputState(y_motor.PWM_Base, (1 << y_motor.PWM_Channel), false);
@@ -723,7 +727,7 @@ void PWM0Gen0IntHandler(void) {
         x_complete++;
         x_pwm_count = 0;
         /* TODO Set a flag and do this motor disable */
-//        motor_disable(x_motor);
+        motor_disable(x_motor);
         if(update_motor_status(X_MOTOR))
         {
             task_complete++;
@@ -758,18 +762,14 @@ void PWM0Gen1IntHandler(void) {
         if(update_motor_status(Y_MOTOR))
         {
             task_complete++;
+
+            // TODO: if step count met for all motors execute this
             BaseType_t xHigherPriorityTaskWoken = pdFALSE;
             configASSERT(xMotorTask != NULL);
             vTaskNotifyGiveFromISR(xMotorTask, &xHigherPriorityTaskWoken);
             portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
         }
     }
+
     PWMIntEnable(PWM0_BASE, PWM_INT_GEN_1);
-
-
-
-
-    // TODO: if step count met for all motors execute this
-
-
 }
