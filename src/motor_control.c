@@ -36,7 +36,7 @@
 #include "queue.h"
 
 #define TEST
-//#define BACKNFORTH
+#define BACKNFORTH
 
 
 /*  G L O B A L   V A R I A B L E S   */
@@ -85,8 +85,7 @@ void prv_Motor(void *pvParameters) {
             set_motor_step_size(x_motor, STEP_16);
             set_motor_step_size(y_motor, STEP_16);
 
-            motor_set_direction(x_motor, x_mo
-                                tor.direction);
+            motor_set_direction(x_motor, x_motor.direction);
             motor_set_direction(y_motor, y_motor.direction);
 
             // start PWM on all motors

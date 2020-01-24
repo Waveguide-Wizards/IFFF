@@ -39,7 +39,7 @@ volatile eState printer_state;
 QueueHandle_t motor_instruction_queue;
 
 #define EXTRUDER_LENGTH         20000   // 2cm
-#define EXTRUDER_POC
+//#define EXTRUDER_POC
 
 /*  T A S K   N O T I F I C A T I O N S   */
 TaskHandle_t xMotorTask = NULL;
