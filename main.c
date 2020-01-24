@@ -24,6 +24,7 @@
 #include "motor_control.h"
 #include "led.h"
 #include "error_checking.h"
+#include "bumpers.h"
 
 /*  F R E E R T O S   H O O K S   */
 void vApplicationMallocFailedHook( void );
@@ -52,6 +53,9 @@ void main(void)
 {
     // set clock source to 16MHz external oscillator, use PLL and divide by 10 to get 20MHz
     SysCtlClockSet(SYSCTL_SYSDIV_10 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
+
+
+    init_bumper_gpio();
 
     /* Q U E U E S */
     motor_instruction_queue = xQueueCreate(10, sizeof(Motor_Instruction_t));

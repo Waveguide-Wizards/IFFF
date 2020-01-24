@@ -17,7 +17,10 @@
 
 typedef enum {
     Error,
-    Bumper_Error,
+    EFuse_Error,
+    X_Bumper_Error,
+    Y_Bumper_Error,
+    Z_Bumper_Error,
     Idle,
     Printing,
     MemoryTransfer,

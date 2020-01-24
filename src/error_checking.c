@@ -53,7 +53,7 @@ void prv_ErrorCheck(void *pvParameters) {
     static TickType_t use_delay_time;
     use_delay_time = delay_time;
     for( ;; ) {
-        if((printer_state == Error) || (printer_state == Bumper_Error)) {
+        if((printer_state == Error) || (printer_state == X_Bumper_Error) || (printer_state == Y_Bumper_Error) || (printer_state == Z_Bumper_Error)) {
            // vTaskSuspend( xBlinkyTask );     // Stop the Blinky task from controlling LED
            // TODO: LCD screen error
            // LED indicator error
@@ -68,18 +68,18 @@ void prv_ErrorCheck(void *pvParameters) {
             // Check X Motor
             fault_status = GPIOPinRead(X_NFAULT_PORT, X_NFAULT_PIN);
             if(!(fault_status & X_NFAULT_PIN)) {
-                printer_state = Bumper_Error;      // X Motor has a Fault
+                printer_state = EFuse_Error;      // X Motor has a Fault
                 use_delay_time = flash_delay_time;
             }
 
             // Check Y Motor
             fault_status = GPIOPinRead(Y_NFAULT_PORT, Y_NFAULT_PIN);
             if(!(fault_status & Y_NFAULT_PIN)) {
-                printer_state = Bumper_Error;      // Y Motor has a Fault
+                printer_state = EFuse_Error;      // Y Motor has a Fault
                 use_delay_time = flash_delay_time;
             }
 
-            if((printer_state == Error) || (printer_state == Bumper_Error)) {
+            if((printer_state == Error) || (printer_state == EFuse_Error)) {
                 vTaskSuspend( xBlinkyTask );    // Stop the Blinky task from controlling LED
                 vTaskSuspend( xMotorTask );     // Stop the motor control task so nothing bad happens
             }
