@@ -33,18 +33,44 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-
 /*  G L O B A L   V A R I A B L E S   */
 extern eState printer_state;
 
+bool error_list[NUM_ERROR_SOURCES];
+//uint8_t error_count = 0;
+static Error_CircBuf_t error_buffer;
+
 /*  T A S K S   */
 void prv_ErrorCheck(void *pvParameters) {
-    static TickType_t delay_time = pdMS_TO_TICKS(1000);     // 500ms
+//    error_circ_init();
+    error_list_init();
     for( ;; ) {
-        if(printer_state == Error) {
-            // TODO: LCD screen error
-            // TODO: LED indicator error
-        }
-        vTaskDelay(delay_time);
+        // wait for task notification
+        ulTaskNotifyTake(pdTrue, portMAX_DELAY);
+//        int i;
+//        for(i = 0; i < error_buffer.size; i++) {
+//
+//        }
+
     }
 }
+
+void error_list_init(void) {
+    int i;
+    for(i = 0; i < NUM_ERROR_SOURCES; i++) {
+        error_list[i] = false;
+    }
+}
+
+void add_error_to_list(eError_Source error) {
+    error_list[error] = true;
+}
+
+void delete_error_from_list(eError_Source error) {
+    error_list[error] = false;
+}
+
+void get_error_from_id(eError_Source error) {
+
+}
+

@@ -39,8 +39,25 @@ void *malloc( size_t xSize );
 volatile eState printer_state;
 QueueHandle_t motor_instruction_queue;
 
-/*  T A S K   N O T I F I C A T I O N S   */
+/*  T A S K   H A N D L E S   */
 TaskHandle_t xMotorTask = NULL;
+TaskHandle_t xBlinkyTask = NULL;
+TaskHandle_t xErrorTask = NULL;
+TaskHandle_t xExtruderTask = NULL;
+TaskHandle_t thConfig = NULL:
+
+void configTask(void * prvParameter) {
+    /* create tasks */
+    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, NULL);
+    BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, NULL);
+    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 1, &xMotorTask);
+
+    /* check that tasks were created successfully */
+    configASSERT(BlinkyReturned == pdPASS);
+    configASSERT(XMotorReturned == pdPASS);
+
+    vTaskDelete(thConfig);
+}
 
 /* main.c */
 void main(void)
@@ -50,69 +67,14 @@ void main(void)
 
     /* I N I T */
     init_all_motors();
+    init_bumper_gpio();
 
     /* Q U E U E S */
-    motor_instruction_queue = xQueueCreate(10, sizeof(Motor_Instruction_t));
+//    motor_instruction_queue = xQueueCreate(10, sizeof(Motor_Instruction_t));
 
-    // Add elements to queue for PoC
-    Motor_Instruction_t PoC_Instruction_1 = {
-         .x_pos = 5000,
-         .y_pos = 5000,
-         .z_pos = 0,
-         .speed = 50
-    };
+    BaseType_t configReturned = xTaskCreate(configTask, "Config", configMINIMAL_STACK_SIZE, (void *)NULL, 1, &thConfig);
+    configASSERT(configReturned == pdPASS);
 
-    Motor_Instruction_t PoC_Instruction_2 = {
-         .x_pos = 15000,
-         .y_pos = 5000,
-         .z_pos = 0,
-         .speed = 50
-    };
-
-    Motor_Instruction_t PoC_Instruction_3 = {
-         .x_pos = 15000,
-         .y_pos = 15000,
-         .z_pos = 0,
-         .speed = 50
-    };
-
-    Motor_Instruction_t PoC_Instruction_4 = {
-         .x_pos = 5000,
-         .y_pos = 15000,
-         .z_pos = 0,
-         .speed = 50
-    };
-
-    Motor_Instruction_t PoC_Instruction_5 = {
-         .x_pos = 5000,
-         .y_pos = 5000,
-         .z_pos = 0,
-         .speed = 50
-    };
-
-    Motor_Instruction_t PoC_Instruction_6 = {
-         .x_pos = 0,
-         .y_pos = 0,
-         .z_pos = 0,
-         .speed = 0
-    };
-
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_1, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_2, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_3, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_4, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_5, portMAX_DELAY);
-    xQueueSend(motor_instruction_queue, &PoC_Instruction_6, portMAX_DELAY);
-
-
-    /* T A S K S */
-    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, NULL);
-    BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, NULL);
-    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 1, &xMotorTask);
-
-    /* check that tasks were created successfully */
-    configASSERT(BlinkyReturned == pdPASS);
-    configASSERT(XMotorReturned == pdPASS);
 
     /* start scheduler */
     vTaskStartScheduler();
