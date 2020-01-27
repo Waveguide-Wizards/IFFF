@@ -8,9 +8,10 @@
 #ifndef ERROR_CHECKING_H_
 #define ERROR_CHECKING_H_
 
-#define NUM_ERROR_SOURCES       9
+#define NUM_ERROR_SOURCES       12
 
 typedef enum {
+    None = -1,
     X_nFAULT = 0,
     Y_nFAULT,
     Z_nFAULT,
@@ -25,14 +26,11 @@ typedef enum {
     SD_Card,
 }eError_Source;
 
-typedef struct {
-    eError_Source * cbuf;
-    volatile uint8_t head;
-    volatile uint8_t tail;
-    volatile uint8_t size;
-    int max_size;
-} Error_CircBuf_t;
-
 void prv_ErrorCheck(void *pvParameters);
+void error_list_init(void);
+void add_error_to_list(eError_Source error);
+void delete_error_from_list(eError_Source error);
+uint8_t get_error_count(void);
+//void update_error_count(void);
 
 #endif /* ERROR_CHECKING_H_ */

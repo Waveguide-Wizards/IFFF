@@ -44,7 +44,7 @@ TaskHandle_t xMotorTask = NULL;
 TaskHandle_t xBlinkyTask = NULL;
 TaskHandle_t xErrorTask = NULL;
 TaskHandle_t xExtruderTask = NULL;
-TaskHandle_t thConfig = NULL:
+TaskHandle_t thConfig = NULL;
 
 void configTask(void * prvParameter) {
     /* create tasks */

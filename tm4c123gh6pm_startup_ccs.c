@@ -36,6 +36,7 @@ static void IntDefaultHandler(void);
 extern void xPortPendSVHandler(void);
 extern void vPortSVCHandler(void);
 extern void xPortSysTickHandler(void);
+extern void GPIO_A_IntHandler(void);
 
 
 //*****************************************************************************

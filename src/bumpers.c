@@ -44,29 +44,28 @@ void init_bumper_gpio(void){
     IntEnable(INT_GPIOA);
 }
 
-// Interrupt handler for port A, currently used for the port of all three pins. May need to break into many handlers depending on pin mapping
 void GPIO_A_IntHandler(void) {
     // Read the flags
-    // If motor i hit the bumper.  Stop motor, move 10mm towards center for base position
-    // Clear flags
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     configASSERT( xErrorTask != NULL );
 
     uint32_t flags = GPIOIntStatus(GPIO_PORTA_BASE,1);
+
+    /* Disable all motors */
+    emergency_disable_motors();
+
     if(flags && X_BUMPER_PIN){
         add_error_to_list(X_Bumper);
-//        printer_state = X_Bumper;
-
     }
     else if(flags && Y_BUMPER_PIN){
-        printer_state = Y_Bumper_Error;
+        add_error_to_list(Y_Bumper);
     }
     else if(flags && Z_BUMPER_PIN){
-        printer_state = Z_Bumper_Error;
+        add_error_to_list(Z_Bumper);
     }
+
     vTaskNotifyGiveFromISR( xErrorTask, &xHigherPriorityTaskWoken );
     GPIOIntClear(GPIO_PORTA_BASE, flags);
-
     portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 
 }
