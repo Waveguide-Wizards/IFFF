@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  * bumpers.c
  *
  * Created on: Jan 9, 2020
@@ -67,5 +68,4 @@ void GPIO_A_IntHandler(void) {
     vTaskNotifyGiveFromISR( xErrorTask, &xHigherPriorityTaskWoken );
     GPIOIntClear(GPIO_PORTA_BASE, flags);
     portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
-
 }

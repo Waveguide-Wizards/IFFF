@@ -5,7 +5,6 @@
  */
 
 /*  I N C L U D E S   */
-#include <motor_control.h>
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -25,6 +24,7 @@
 #include "motor_control.h"
 #include "led.h"
 #include "error_checking.h"
+#include "bumpers.h"
 
 /*  F R E E R T O S   H O O K S   */
 void vApplicationMallocFailedHook( void );
@@ -40,6 +40,10 @@ volatile eState printer_state;
 QueueHandle_t motor_instruction_queue;
 
 /*  T A S K   H A N D L E S   */
+#define EXTRUDER_LENGTH         20000   // 2cm
+#define EXTRUDER_POC
+
+/*  T A S K   N O T I F I C A T I O N S   */
 TaskHandle_t xMotorTask = NULL;
 TaskHandle_t xBlinkyTask = NULL;
 TaskHandle_t xErrorTask = NULL;
@@ -74,7 +78,6 @@ void main(void)
 
     BaseType_t configReturned = xTaskCreate(configTask, "Config", configMINIMAL_STACK_SIZE, (void *)NULL, 1, &thConfig);
     configASSERT(configReturned == pdPASS);
-
 
     /* start scheduler */
     vTaskStartScheduler();

@@ -34,6 +34,10 @@
 #include "task.h"
 
 /*  G L O B A L   V A R I A B L E S   */
+extern TaskHandle_t xMotorTask;
+extern TaskHandle_t xBlinkyTask;
+extern TaskHandle_t xErrorTask;
+
 extern eState printer_state;
 
 /*  P R I V A T E   V A R I A B L E S   */

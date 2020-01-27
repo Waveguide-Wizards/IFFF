@@ -10,6 +10,8 @@
 
 #define NUM_ERROR_SOURCES       12
 
+#include <stdbool.h>
+
 typedef enum {
     None = -1,
     X_nFAULT = 0,

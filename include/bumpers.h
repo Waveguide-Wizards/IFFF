@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  * bumpers.h
  *
  *  Created on: Jan 24, 2020
@@ -24,3 +25,4 @@
 void init_bumper_gpio(void);
 
 #endif /* BUMPERS_H_ */
+
