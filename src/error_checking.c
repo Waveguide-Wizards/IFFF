@@ -33,57 +33,45 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
-
 /*  G L O B A L   V A R I A B L E S   */
-extern TaskHandle_t xMotorTask;
-extern TaskHandle_t xBlinkyTask;
+extern eState printer_state;
 extern TaskHandle_t xErrorTask;
 
-extern eState printer_state;
+//bool error_list[NUM_ERROR_SOURCES];
+////uint8_t error_count = 0;
+//static Error_CircBuf_t error_buffer;
+//
+///*  T A S K S   */
+//void prv_ErrorCheck(void *pvParameters) {
+////    error_circ_init();
+//    error_list_init();
+//    for( ;; ) {
+//        // wait for task notification
+//        ulTaskNotifyTake(pdTrue, portMAX_DELAY);
+////        int i;
+////        for(i = 0; i < error_buffer.size; i++) {
+////
+////        }
+//
+//    }
+//}
 
-Error_Sources_t error_source = {
-                                .X_nFAULT = false,
-                                .Y_nFAULT =false
-};
+//void error_list_init(void) {
+//    int i;
+//    for(i = 0; i < NUM_ERROR_SOURCES; i++) {
+//        error_list[i] = false;
+//    }
+//}
 
-/*  T A S K S   */
-void prv_ErrorCheck(void *pvParameters) {
-    static TickType_t delay_time = pdMS_TO_TICKS(1000);
-    static TickType_t flash_delay_time = pdMS_TO_TICKS(200);
-    static TickType_t use_delay_time;
-    use_delay_time = delay_time;
-    for( ;; ) {
-        if((printer_state == Error) || (printer_state == Bumper_Error)) {
-           // vTaskSuspend( xBlinkyTask );     // Stop the Blinky task from controlling LED
-           // TODO: LCD screen error
-           // LED indicator error
-           GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
-           vTaskDelay(use_delay_time);
-           GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
-           vTaskDelay(use_delay_time);
-        }
-        else {   // Check nFAULT pins, if any are low, set printer_state = Error
-            uint32_t fault_status = 0;
+//void add_error_to_list(eError_Source error) {
+//    error_list[error] = true;
+//}
+//
+//void delete_error_from_list(eError_Source error) {
+//    error_list[error] = false;
+//}
+//
+//void get_error_from_id(eError_Source error) {
+//
+//}
 
-            // Check X Motor
-            fault_status = GPIOPinRead(X_NFAULT_PORT, X_NFAULT_PIN);
-            if(!(fault_status & X_NFAULT_PIN)) {
-                printer_state = Bumper_Error;      // X Motor has a Fault
-                use_delay_time = flash_delay_time;
-            }
-
-            // Check Y Motor
-            fault_status = GPIOPinRead(Y_NFAULT_PORT, Y_NFAULT_PIN);
-            if(!(fault_status & Y_NFAULT_PIN)) {
-                printer_state = Bumper_Error;      // Y Motor has a Fault
-                use_delay_time = flash_delay_time;
-            }
-
-            if((printer_state == Error) || (printer_state == Bumper_Error)) {
-                vTaskSuspend( xBlinkyTask );    // Stop the Blinky task from controlling LED
-                vTaskSuspend( xMotorTask );     // Stop the motor control task so nothing bad happens
-            }
-            vTaskDelay(use_delay_time);
-        }
-    }
-}

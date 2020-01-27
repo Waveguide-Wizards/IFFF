@@ -86,7 +86,79 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="tivaware_c_series_2_1_4_178/usblib|tivaware_c_series_2_1_4_178/tools|tivaware_c_series_2_1_4_178/grlib|tivaware_c_series_2_1_4_178/sensorlib|tivaware_c_series_2_1_4_178/utils|tivaware_c_series_2_1_4_178/IQmath|tivaware_c_series_2_1_4_178/examples|tivaware_c_series_2_1_4_178/docs|tivaware_c_series_2_1_4_178/boot_loader|include|src|FreeRTOS|littlefs" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="tivaware_c_series_2_1_4_178/usblib|tivaware_c_series_2_1_4_178/tools|tivaware_c_series_2_1_4_178/grlib|tivaware_c_series_2_1_4_178/sensorlib|tivaware_c_series_2_1_4_178/third_party|tivaware_c_series_2_1_4_178/utils|tivaware_c_series_2_1_4_178/IQmath|tivaware_c_series_2_1_4_178/examples|tivaware_c_series_2_1_4_178/docs|tivaware_c_series_2_1_4_178/boot_loader|include|src|FreeRTOS|littlefs" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/zlib"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/watcom"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/visualc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/vcnet"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/vc2005"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/src"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/png"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/makefiles"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/jpeg"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/documentation"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/borlandc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/autom4te.cache"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/FL"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/CMake"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/uip-1.0/unix"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/uip-1.0/uip"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/uip-1.0/lib"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/uip-1.0/doc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/uip-1.0/apps/webclient"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/uip-1.0/apps/telnetd"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/uip-1.0/apps/smtp"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/uip-1.0/apps/resolv"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/uip-1.0/apps/httpd"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/uip-1.0/apps/hello-world"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/uip-1.0/apps/dhcpc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/ptpd-1.1.0"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/src/api"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/doc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/apps"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/other/ttf"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/other/fonts"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/other/binfonts"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/ofl"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/lang_demo"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/exosite"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/bget"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/test/pixmaps"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/test/desktop"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/fluid/pixmaps"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/windows/fltk-1.1.10/fluid/icons"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/uip-1.0/apps/webserver/httpd-fs"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/test/unit/udp"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/test/unit/tcp"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/test/unit/etharp"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/test/unit/core"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/src/netif/ppp"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/src/include/posix"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/src/include/netif"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/src/include/lwip"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/src/include/ipv6"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/src/include/ipv4"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/src/core/snmp"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/src/core/ipv6"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/src/core/ipv4"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/ports/tiva-tm4c129/netif"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/lwip-1.4.1/ports/tiva-tm4c129/include"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/other/doc/shinonome"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/other/doc/oradano"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/other/doc/mplus"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/other/doc/misaki"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/other/doc/kappa"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/other/doc/ayu"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/apl/ttf"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/apl/license"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/apl/fonts"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fonts/apl/binfonts"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fatfs/src"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fatfs/port"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/fatfs/doc"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Source"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/License"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="tivaware_c_series_2_1_4_178/third_party/FreeRTOS/Demo"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="FreeRTOS"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="include"/>
 						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>

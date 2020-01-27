@@ -79,6 +79,11 @@ void prv_Motor(void *pvParameters) {
             else if(x_motor.direction == Backward)
                 x_motor.direction = Forward;
 
+            if(y_motor.direction == Forward)
+                y_motor.direction = Backward;
+            else if(y_motor.direction == Backward)
+                y_motor.direction = Forward;
+
             x_pwm_count = dist_to_steps(5000);
             y_pwm_count = dist_to_steps(5000);
 
