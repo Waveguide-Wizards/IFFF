@@ -21,10 +21,12 @@
 
 /*  A P P L I C A T I O N    I N C L U D E S   */
 #include "bsp.h"
-#include "motor_control.h"
-#include "led.h"
-#include "error_checking.h"
 #include "bumpers.h"
+#include "error_checking.h"
+#include "heater_control.h"
+#include "led.h"
+#include "motor_control.h"
+
 
 /*  F R E E R T O S   H O O K S   */
 void vApplicationMallocFailedHook( void );
@@ -52,18 +54,23 @@ TaskHandle_t thConfig = NULL;
 
 void configTask(void * prvParameter) {
     /* create tasks */
+    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 1, &xMotorTask);
+    BaseType_t ExHeaterReturned = xTaskCreate(prvExtruderHeaterControl, "ExtruderHeater", 500, (void *)NULL, 1, NULL);
+    BaseType_t BedHeaterReturned = xTaskCreate(prvBedHeaterControl, "BedHeater", 500, (void *)NULL, 1, NULL);
     BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, NULL);
     BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, NULL);
-    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 1, &xMotorTask);
 
     /* check that tasks were created successfully */
-    configASSERT(BlinkyReturned == pdPASS);
     configASSERT(XMotorReturned == pdPASS);
+    configASSERT(ExHeaterReturned == pdPASS);
+    configASSERT(BedHeaterReturned == pdPASS);
+    configASSERT(ErrorCheckReturned == pdPASS);
+    configASSERT(BlinkyReturned == pdPASS);
 
     vTaskDelete(thConfig);
 }
 
-/* main.c */
+/*   --- M A I N ---   */
 void main(void)
 {
     // set clock source to 16MHz external oscillator, use PLL and divide by 10 to get 20MHz
@@ -76,12 +83,12 @@ void main(void)
     /* Q U E U E S */
 //    motor_instruction_queue = xQueueCreate(10, sizeof(Motor_Instruction_t));
 
+    /* create first task */
     BaseType_t configReturned = xTaskCreate(configTask, "Config", configMINIMAL_STACK_SIZE, (void *)NULL, 1, &thConfig);
     configASSERT(configReturned == pdPASS);
 
     /* start scheduler */
     vTaskStartScheduler();
-
     for( ;; );
 }
 

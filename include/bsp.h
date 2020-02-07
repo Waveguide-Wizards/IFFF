@@ -155,7 +155,7 @@ typedef enum {
 #define EX_MOTOR_STEP        GPIO_PA7_M1PWM3
 
 /*  EXTRUDER HEATER */
-#define EX_HEATER_PWM_BLOCK     PWM_GEN_1
+#define EX_HEATER_PWM_BLOCK     PWM_GEN_3
 #define EX_HEATER_PWM_OUT       PWM_OUT_6
 
 #define EX_HEATER_PWM_PORT      GPIO_PORTD_BASE
@@ -163,6 +163,8 @@ typedef enum {
 
 #define EX_HEATER_PWM_BASE      PWM0_BASE
 #define EX_HEATER_PWM_CHANNEL   7
+
+#define EX_HEATER_PWM_PIN_MAP   GPIO_PD0_M0PWM6
 
 #define EX_HEATER_ADC_SEQUENCER 3
 
@@ -173,13 +175,24 @@ typedef enum {
 #define EX_HEATER_ADC_PIN       GPIO_PIN_0
 
 /*  BED HEATER   */
-#define EX_BED_ADC_SEQUENCER    3
+#define BED_HEATER_PWM_PIN_MAP   GPIO_PA7_M1PWM3
 
-#define EX_BED_ADC_BASE         ADC1_BASE
-#define EX_BED_ADC_CHANNEL      ADC_CTL_CH0
+#define BED_HEATER_PWM_BLOCK     PWM_GEN_1
+#define BED_HEATER_PWM_OUT       PWM_OUT_6
 
-#define EX_BED_ADC_PORT         GPIO_PORTE_BASE
-#define EX_BED_ADC_PIN          GPIO_PIN_3
+#define BED_HEATER_PWM_PORT      GPIO_PORTD_BASE
+#define BED_HEATER_PWM_PIN       GPIO_PIN_1
+
+#define BED_HEATER_PWM_BASE      PWM0_BASE
+#define BED_HEATER_PWM_CHANNEL   7
+
+#define BED_HEATER_ADC_SEQUENCER    3
+
+#define BED_HEATER_ADC_BASE         ADC1_BASE
+#define BED_HEATER_ADC_CHANNEL      ADC_CTL_CH0
+
+#define BED_HEATER_ADC_PORT         GPIO_PORTE_BASE
+#define BED_HEATER_ADC_PIN          GPIO_PIN_3
 
 #else
 
