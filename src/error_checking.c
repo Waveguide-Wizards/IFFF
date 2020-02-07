@@ -60,6 +60,15 @@ void prv_ErrorCheck(void *pvParameters) {
             case(Y_Bumper): y_bumper_retract(); break;
             case(Z_Bumper): z_bumper_retract(); break;
         }
+
+        /* determine number of errors */
+        error_count = 0;
+        uint8_t i;
+        for(i = 0; i < NUM_ERROR_SOURCES; i++) {
+            if(error_list[i] == true) {
+                error_count++;
+            }
+        }
         /* TODO: remove error from list if capable */
     }
 }

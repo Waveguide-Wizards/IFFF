@@ -52,10 +52,10 @@ static Motor_t y_motor;
 static Motor_t z_motor;
 static Motor_t ex_motor;
 
-static uint32_t x_pwm_count = 0;
-static uint32_t y_pwm_count = 0;
-static uint32_t z_pwm_count = 0;
-static uint32_t ex_pwm_count = 0;
+//static uint32_t x_pwm_count = 0;
+//static uint32_t y_pwm_count = 0;
+//static uint32_t z_pwm_count = 0;
+//static uint32_t ex_pwm_count = 0;
 
 //static Motor_Count_Ready_t motors_ready;
 
@@ -63,8 +63,8 @@ static uint32_t ex_pwm_count = 0;
 /*  T A S K S   */
 void prv_Motor(void *pvParameters) {
     const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 10000 );  // TODO: switch to max port delay
-    uint32_t ulNotificationValue;
-    BaseType_t queue_receive_status;
+//    uint32_t ulNotificationValue;
+//    BaseType_t queue_receive_status;
     uint8_t instruction = 1;
 
 //    // init motors

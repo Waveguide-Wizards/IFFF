@@ -10,6 +10,7 @@
 #include "bumpers.h"
 #include "bsp.h"
 #include "error_checking.h"
+#include "motor_control.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
