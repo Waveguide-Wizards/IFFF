@@ -42,8 +42,8 @@
 /*  G L O B A L   V A R I A B L E S   */
 extern eState printer_state;
 extern QueueHandle_t motor_instruction_queue;
-extern TaskHandle_t xMotorTask;
-extern TaskHandle_t xExtruderTask;
+extern TaskHandle_t thMotorTask;
+extern TaskHandle_t thExtruderTask;
 
 
 /*  P R I V A T E   V A R I A B L E S   */
@@ -197,7 +197,7 @@ void prv_Extruder_Motor(void *pvParameters) {
 //     vTaskDelay(pdMS_TO_TICKS( 1000 ));
      motor_disable(x_motor);
 
-    vTaskSuspend(xExtruderTask);
+    vTaskSuspend(thExtruderTask);
 }
 
 
@@ -414,11 +414,6 @@ void motor_init_ex_pwm(void) {
 /* @param uint8_t duty_cycle: 0-100 */
 void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle) {
     PWMPulseWidthSet(motor.PWM_Base, motor.PWM_Block, ((duty_cycle * CALC_PERIOD(PWM_FREQUENCY))/100));
-}
-
-void set_pwm_load_reg(uint32_t val)
-{
-
 }
 
 
@@ -923,7 +918,7 @@ void PWM0IntHandler(void) {
     // TODO: if step count met for all motors execute this
 
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    configASSERT(xMotorTask != NULL);
-    vTaskNotifyGiveFromISR(xMotorTask, &xHigherPriorityTaskWoken);
+    configASSERT(thMotorTask != NULL);
+    vTaskNotifyGiveFromISR(thMotorTask, &xHigherPriorityTaskWoken);
     portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
 }

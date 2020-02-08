@@ -42,23 +42,22 @@ volatile eState printer_state;
 QueueHandle_t motor_instruction_queue;
 
 /*  T A S K   H A N D L E S   */
-#define EXTRUDER_LENGTH         20000   // 2cm
-#define EXTRUDER_POC
-
-/*  T A S K   N O T I F I C A T I O N S   */
-TaskHandle_t xMotorTask = NULL;
-TaskHandle_t xBlinkyTask = NULL;
-TaskHandle_t xErrorTask = NULL;
-TaskHandle_t xExtruderTask = NULL;
+TaskHandle_t thBlinkyTask = NULL;
+TaskHandle_t thErrorTask = NULL;
+TaskHandle_t thExtruderTask = NULL;
+TaskHandle_t thExtruderHeaterTask = NULL;
+TaskHandle_t thBedHeaterTask = NULL;
+TaskHandle_t thMotorTask = NULL;
 TaskHandle_t thConfig = NULL;
 
+/*  C O N F I G   T A S K   */
 void configTask(void * prvParameter) {
     /* create tasks */
-    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 1, &xMotorTask);
-    BaseType_t ExHeaterReturned = xTaskCreate(prvExtruderHeaterControl, "ExtruderHeater", 500, (void *)NULL, 1, NULL);
-    BaseType_t BedHeaterReturned = xTaskCreate(prvBedHeaterControl, "BedHeater", 500, (void *)NULL, 1, NULL);
-    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, NULL);
-    BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, NULL);
+    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 1, &thMotorTask);
+    BaseType_t ExHeaterReturned = xTaskCreate(prvExtruderHeaterControl, "ExtruderHeater", 500, (void *)NULL, 1, &thExtruderHeaterTask);
+    BaseType_t BedHeaterReturned = xTaskCreate(prvBedHeaterControl, "BedHeater", 500, (void *)NULL, 1, &thBedHeaterTask);
+    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, &thErrorTask);
+    BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, &thBlinkyTask);
 
     /* check that tasks were created successfully */
     configASSERT(XMotorReturned == pdPASS);

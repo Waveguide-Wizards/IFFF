@@ -22,8 +22,8 @@ typedef enum {
     Y_Bumper,
     Z_Bumper,
     PWR_eFuse,  // redundant if there is only 24V eFuse
-    Ex_Heater,
-    Bed_Heater,
+    Ex_Heater_Overheat,
+    Bed_Heater_Overheat,
     USB,
     SD_Card,
 }eError_Source;

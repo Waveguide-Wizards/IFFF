@@ -22,7 +22,7 @@
 #include "inc/hw_ints.h"
 
 extern eState printer_state;
-extern TaskHandle_t xErrorTask;
+extern TaskHandle_t thErrorTask;
 
 
 void init_bumper_gpio(void){
@@ -49,7 +49,7 @@ void init_bumper_gpio(void){
 void GPIO_A_IntHandler(void) {
     // Read the flags
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-    configASSERT( xErrorTask != NULL );
+    configASSERT( thErrorTask != NULL );
 
     uint32_t flags = GPIOIntStatus(GPIO_PORTA_BASE,1);
 
@@ -66,7 +66,7 @@ void GPIO_A_IntHandler(void) {
         add_error_to_list(Z_Bumper);
     }
 
-    vTaskNotifyGiveFromISR( xErrorTask, &xHigherPriorityTaskWoken );
+    vTaskNotifyGiveFromISR( thErrorTask, &xHigherPriorityTaskWoken );
     GPIOIntClear(GPIO_PORTA_BASE, flags);
     portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
 }

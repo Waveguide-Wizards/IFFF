@@ -14,6 +14,7 @@
 #include "bsp.h"
 #include "heater_control.h"
 #include "pid.h"
+#include "error_checking.h"
 
 /*  D R I V E R   L I B   */
 //#include "tm4c123gh6pm.h"
@@ -39,6 +40,10 @@
 #include "task.h"
 #include "queue.h"
 
+/*  G L O B A L S   */
+extern TaskHandle_t thExtruderHeaterTask;
+extern TaskHandle_t thBedHeaterTask;
+
 /*  P R I V A T E   V A R I A B L E S   */
 static PID_t extruder_heater_pid;
 static PID_t bed_heater_pid;
@@ -58,22 +63,32 @@ void prvExtruderHeaterControl(void * prvParameters) {
     init_extruder_heater_pwm();
 
     for( ;; ) {
+
+
         // 1. Get latest ADC reading
         ex_heater_get_adc(&adc_value);
 
         // 2. Convert to voltage
         ex_temperature_v = adc_convert_to_v(adc_value);
 
-        // 3-4. Calculate PID and Change PWM duty cycle based on PID calculation
-        float ex_dc = PID_calculate(&extruder_heater_pid, ex_temperature_v);
-        // change_pwm_duty_cycle(PWM_BASE, PID_calculate(&extruder_heater_pid, ex_temperature_v));
-        vTaskDelay(delay_time);
+        // 3. Check for over voltage
+        if(ex_temperature_v > MAX_EX_TEMPERATURE_V) {
+            ex_heater_disable();
+            add_error_to_list(Ex_Heater_Overheat);
+            vTaskSuspend(thExtruderHeaterTask);
+        }
+        else {
+            // 4-5. Calculate PID and Change PWM duty cycle based on PID calculation
+            ex_heater_change_pwm_duty_cycle(PID_calculate(&extruder_heater_pid, ex_temperature_v));
+            vTaskDelay(delay_time);
+        }
     }
 }
 
 void prvBedHeaterControl(void * prvParameters) {
-    TickType_t delay_time = pdMS_TO_TICKS( 10 );                // 10ms intervals
-    PID_init(&bed_heater_pid, 3.2, 2.1, 2.3, 1.250, 10);        // initialize PID controller
+    uint8_t delay_time_ms = 10;  // 10ms intervals
+    TickType_t delay_time = pdMS_TO_TICKS( delay_time_ms );
+    PID_init(&bed_heater_pid, 3.2, 2.1, 2.3, 1.250, delay_time_ms);        // initialize PID controller
 
     // local variables
     static uint32_t adc_value = 0;
@@ -89,10 +104,17 @@ void prvBedHeaterControl(void * prvParameters) {
         // 2. Convert to voltage
         bed_temperature_v = adc_convert_to_v(adc_value);
 
-        // 3-4. Calculate PID and Change PWM duty cycle based on PID calculation
-        float bed_dc = PID_calculate(&bed_heater_pid, bed_temperature_v);
-        //  change_pwm_duty_cycle(PWM_BASE, PID_calculate(&bed_heater_pid, bed_temperature_v));
-        vTaskDelay(delay_time);
+        // 3. Check for over voltage
+        if(bed_temperature_v > MAX_BED_TEMPERATURE_V) {
+            bed_heater_disable();
+            add_error_to_list(Bed_Heater_Overheat);
+            vTaskSuspend(thBedHeaterTask);
+        }
+        else {
+            // 4-5. Calculate PID and Change PWM duty cycle based on PID calculation
+            bed_heater_change_pwm_duty_cycle(PID_calculate(&bed_heater_pid, bed_temperature_v));
+            vTaskDelay(delay_time);
+        }
     }
 }
 
@@ -193,7 +215,6 @@ void init_bed_heater_pwm(void) {
 //    // Port B pins that are locked are 3 and 2, so unlock them by writing 1100 into the CR reg
 //    HWREG(GPIO_PORTB_BASE + GPIO_O_CR)  |= 0xC;
 
-
     GPIOPinConfigure(BED_HEATER_PWM_PIN_MAP);                // configure pin for PWM
     GPIOPinTypePWM(BED_HEATER_PWM_PORT, BED_HEATER_PWM_PIN);
 
@@ -269,4 +290,3 @@ uint32_t adc_convert_to_mv(uint32_t adc_result) {
 float adc_convert_to_v(uint32_t adc_result) {
     return (((float)adc_result * VREF_MV_F) / ADC_MAX_VALUE_F);
 }
-
