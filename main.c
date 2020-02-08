@@ -54,8 +54,14 @@ TaskHandle_t thConfig = NULL;
 void configTask(void * prvParameter) {
     /* create tasks */
     BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 1, &thMotorTask);
+    vTaskSuspend(thMotorTask);
+
     BaseType_t ExHeaterReturned = xTaskCreate(prvExtruderHeaterControl, "ExtruderHeater", 500, (void *)NULL, 1, &thExtruderHeaterTask);
+    vTaskSuspend(thExtruderHeaterTask);
+
     BaseType_t BedHeaterReturned = xTaskCreate(prvBedHeaterControl, "BedHeater", 500, (void *)NULL, 1, &thBedHeaterTask);
+    vTaskSuspend(thBedHeaterTask);
+
     BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, &thErrorTask);
     BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, &thBlinkyTask);
 

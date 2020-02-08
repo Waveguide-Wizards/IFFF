@@ -17,10 +17,14 @@
 
 typedef enum {
     Error,
-    Bumper_Error,
     Idle,
+    Storage_Device_Inserted,    // Only read file names
+    Select_Print,               // UI is used to select print file
+    SD_Card_Transfer,           // Transfer from SD card to flash
+    USB_Transfer,               // Transfer from USB to flash
+    Preheating,                 // Start Heater Tasks, wait to reach desired heat
+    Ready_To_Print,             // Pre-heat complete
     Printing,
-    MemoryTransfer,
 } eState;
 
 /*

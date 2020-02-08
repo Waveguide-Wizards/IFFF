@@ -41,30 +41,36 @@
 #include "queue.h"
 
 /*  G L O B A L S   */
+extern eState printer_state;
 extern TaskHandle_t thExtruderHeaterTask;
 extern TaskHandle_t thBedHeaterTask;
+extern TaskHandle_t thMotorTask;
 
 /*  P R I V A T E   V A R I A B L E S   */
 static PID_t extruder_heater_pid;
 static PID_t bed_heater_pid;
+static float extruder_target_voltage = 1.250;
+static float bed_target_voltage = 1.250;
+static bool ex_heater_ready = 0;
+static bool bed_heater_ready = 0;
+
 
 /*  T A S K S */
 
 void prvExtruderHeaterControl(void * prvParameters) {
     uint8_t delay_time_ms = 10;  // 10ms intervals
     TickType_t delay_time = pdMS_TO_TICKS( delay_time_ms );
-    PID_init(&extruder_heater_pid, 3.2, 2.1, 2.3, 1.250, delay_time_ms);   // initialize PID controller
+    PID_init(&extruder_heater_pid, 3.2, 2.1, 2.3, extruder_target_voltage, delay_time_ms);   // initialize PID controller
 
     // local variables
     static uint32_t adc_value = 0;
     static float ex_temperature_v = 0.0;
 
+    // init hardware
     init_extruder_heater_adc();
     init_extruder_heater_pwm();
 
     for( ;; ) {
-
-
         // 1. Get latest ADC reading
         ex_heater_get_adc(&adc_value);
 
@@ -78,7 +84,23 @@ void prvExtruderHeaterControl(void * prvParameters) {
             vTaskSuspend(thExtruderHeaterTask);
         }
         else {
-            // 4-5. Calculate PID and Change PWM duty cycle based on PID calculation
+            // 4. Update UI with latest temperature reading
+            // convert_v_to_celsius();
+
+            // 5. Pre-heat check
+            if(ex_heater_ready == false) {
+                if((ex_temperature_v >= (0.97 * extruder_target_voltage)) && (eTaskGetState(thMotorTask) == eSuspended)) {
+                    ex_heater_ready = true;
+                }
+            }
+            else {
+                if(ex_heater_ready && bed_heater_ready) {
+                    printer_state = Ready_To_Print;
+                    vTaskResume(thMotorTask);
+                }
+            }
+
+            // 6. Calculate PID and Change PWM duty cycle based on PID calculation
             ex_heater_change_pwm_duty_cycle(PID_calculate(&extruder_heater_pid, ex_temperature_v));
             vTaskDelay(delay_time);
         }
@@ -94,6 +116,7 @@ void prvBedHeaterControl(void * prvParameters) {
     static uint32_t adc_value = 0;
     static float bed_temperature_v = 0.0;
 
+    // init hardware
     init_bed_heater_adc();
     init_bed_heater_pwm();
 
@@ -111,7 +134,23 @@ void prvBedHeaterControl(void * prvParameters) {
             vTaskSuspend(thBedHeaterTask);
         }
         else {
-            // 4-5. Calculate PID and Change PWM duty cycle based on PID calculation
+            // 4. Update UI with latest temperature reading
+            // convert_v_to_celsius();
+
+            // 5. Pre-heat check
+            if(bed_heater_ready == false) {
+                if((bed_temperature_v >= (0.97 * bed_target_voltage)) && (eTaskGetState(thMotorTask) == eSuspended)) {
+                    bed_heater_ready = true;
+                }
+            }
+            else {  // allow for printing to start
+                if(ex_heater_ready && bed_heater_ready) {
+                    printer_state = Ready_To_Print;
+                    vTaskResume(thMotorTask);
+                }
+            }
+
+            // 6. Calculate PID and Change PWM duty cycle based on PID calculation
             bed_heater_change_pwm_duty_cycle(PID_calculate(&bed_heater_pid, bed_temperature_v));
             vTaskDelay(delay_time);
         }
@@ -263,6 +302,18 @@ void bed_heater_enable(void) {
 void bed_heater_disable(void) {
     PWMOutputState(BED_HEATER_PWM_BASE, (1 << BED_HEATER_PWM_CHANNEL), false);  // disables PWM output
     PWMGenDisable(BED_HEATER_PWM_BASE, PWM_GEN_0);                              // disable PWM
+}
+
+/* T E M P E R A T U R E */
+
+// TODO: characterize temperature readings, possibly use LUT
+void change_extruder_temperature(uint32_t temperature) {
+    extruder_target_voltage = temperature / 5.0;
+}
+
+// TODO: characterize temperature readings, possibly use LUT
+void change_bed_temperature(uint32_t temperature) {
+    bed_target_voltage = temperature / 5.0;
 }
 
 /*   C O N V E R S I O N S   */

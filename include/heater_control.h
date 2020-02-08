@@ -43,6 +43,10 @@ void ex_heater_disable(void);
 void bed_heater_enable(void);
 void bed_heater_disable(void);
 
+/* T E M P E R A T U R E */
+void change_extruder_temperature(uint32_t temperature);
+void change_bed_temperature(uint32_t temperature);
+
 /* C O N V E R S I O N S   */
 uint32_t adc_convert_to_mv(uint32_t adc_result);
 float adc_convert_to_v(uint32_t adc_result);
