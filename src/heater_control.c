@@ -304,6 +304,11 @@ void bed_heater_disable(void) {
     PWMGenDisable(BED_HEATER_PWM_BASE, PWM_GEN_0);                              // disable PWM
 }
 
+void emergency_heaters_disable(void) {
+    ex_heater_disable();
+    bed_heater_disable();
+}
+
 /* T E M P E R A T U R E */
 
 // TODO: characterize temperature readings, possibly use LUT

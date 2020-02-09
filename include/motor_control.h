@@ -35,6 +35,12 @@
 
 /*  E N U M S   */
 typedef enum {
+    X_Motor_ID,
+    Y_Motor_ID,
+    Z_Motor_ID
+}eMotor_ID;
+
+typedef enum {
     Forward = 0,    // Downward for extruder
     Backward = 1    // Upward for extruder
 } eMotor_Direction;
@@ -86,6 +92,7 @@ void init_x_motor(void);
 void init_y_motor(void);
 void init_z_motor(void);
 void init_all_motors(void);
+void start_motor_calibration(eMotor_ID motor);
 
 /*  M O T O R   P W M   */
 void motor_init_x_pwm();
@@ -103,13 +110,11 @@ void motor_enable(Motor_t motor);
 void motor_disable(Motor_t motor);
 void motor_set_to_sleep(Motor_t motor);
 void motor_set_direction(Motor_t motor, eMotor_Direction direction);
-void set_motor_step_size(Motor_t motor, uint8_t direction);
+void set_motor_step_size(Motor_t motor, uint8_t size);
 
 /*  E R R O R   H A N D L I N G   */
 void emergency_disable_motors(void);
-void x_bumper_retract(void);
-void y_bumper_retract(void);
-void z_bumper_retract(void);
+void error_bumper_retract(eMotor_ID motor);
 
 void PWM0IntHandler(void);
 

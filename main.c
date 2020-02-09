@@ -22,6 +22,7 @@
 /*  A P P L I C A T I O N    I N C L U D E S   */
 #include "bsp.h"
 #include "bumpers.h"
+#include "calibration.h"
 #include "error_checking.h"
 #include "heater_control.h"
 #include "led.h"
@@ -42,17 +43,21 @@ volatile eState printer_state;
 QueueHandle_t motor_instruction_queue;
 
 /*  T A S K   H A N D L E S   */
+TaskHandle_t thConfig = NULL;
 TaskHandle_t thBlinkyTask = NULL;
+TaskHandle_t thCalibration = NULL;
 TaskHandle_t thErrorTask = NULL;
 TaskHandle_t thExtruderTask = NULL;
 TaskHandle_t thExtruderHeaterTask = NULL;
 TaskHandle_t thBedHeaterTask = NULL;
 TaskHandle_t thMotorTask = NULL;
-TaskHandle_t thConfig = NULL;
+
 
 /*  C O N F I G   T A S K   */
 void configTask(void * prvParameter) {
     /* create tasks */
+
+    // Priority 1
     BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 1, &thMotorTask);
     vTaskSuspend(thMotorTask);
 
@@ -62,8 +67,16 @@ void configTask(void * prvParameter) {
     BaseType_t BedHeaterReturned = xTaskCreate(prvBedHeaterControl, "BedHeater", 500, (void *)NULL, 1, &thBedHeaterTask);
     vTaskSuspend(thBedHeaterTask);
 
-    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, &thErrorTask);
-    BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 3, &thBlinkyTask);
+    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 1, &thErrorTask);
+
+    // Priority 2
+    BaseType_t CalibrationReturned = xTaskCreate(prvCalibration, "Calibration", configMINIMAL_STACK_SIZE, (void *)NULL, 2, &thCalibration);
+    vTaskSuspend(thCalibration);
+
+    // Priority 3
+    // Priority 4
+    // Priority 5
+    BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 5, &thBlinkyTask);
 
     /* check that tasks were created successfully */
     configASSERT(XMotorReturned == pdPASS);
@@ -72,6 +85,17 @@ void configTask(void * prvParameter) {
     configASSERT(ErrorCheckReturned == pdPASS);
     configASSERT(BlinkyReturned == pdPASS);
 
+#ifdef TEST_PREHEATING
+    printer_state = Preheating;
+    vTaskResume(thExtruderHeaterTask);
+    vTaskResume(thBedHeaterTask);
+#endif
+#ifdef TEST_CALIBRATION
+    printer_state = Calibration;
+    vTaskResume(thCalibration);
+#else
+    printer_state = Idle;
+#endif
     vTaskDelete(thConfig);
 }
 

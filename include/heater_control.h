@@ -42,6 +42,7 @@ void ex_heater_enable(void);
 void ex_heater_disable(void);
 void bed_heater_enable(void);
 void bed_heater_disable(void);
+void emergency_heaters_disable(void);
 
 /* T E M P E R A T U R E */
 void change_extruder_temperature(uint32_t temperature);

@@ -265,6 +265,36 @@ void init_all_motors(void) {
 #endif
 }
 
+void start_motor_calibration(eMotor_ID motor) {
+    switch(motor) {
+        case(X_Motor_ID): {
+            x_motor.direction = Forward;
+            motor_set_direction(x_motor, x_motor.direction);
+            set_motor_step_size(x_motor, STEP_16);
+            motor_enable(x_motor);
+            motor_change_pwm_duty_cycle(x_motor, 50);
+            break;
+        }
+        case(Y_Motor_ID): {
+            y_motor.direction = Forward;
+            motor_set_direction(y_motor, y_motor.direction);
+            set_motor_step_size(y_motor, STEP_16);
+            motor_enable(y_motor);
+            motor_change_pwm_duty_cycle(y_motor, 50);
+            break;
+        }
+        case(Z_Motor_ID): {
+            z_motor.direction = Forward;
+            motor_set_direction(z_motor, z_motor.direction);
+            set_motor_step_size(z_motor, STEP_16);
+            motor_enable(z_motor);
+            motor_change_pwm_duty_cycle(z_motor, 50);
+            break;
+        }
+    }
+}
+
+
 /*  M O T O R   P W M   */
 void motor_init_x_pwm(void) {
     x_motor.PWM_Base = X_MOTOR_PWM_BASE;
@@ -706,7 +736,6 @@ void motor_init_y_gpio(void)
 //    MAP_GPIOPadConfigSet(y_motor.STEP.base, y_motor.STEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
     MAP_GPIOPadConfigSet(y_motor.NSLEEP.base, y_motor.NSLEEP.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
     MAP_GPIOPadConfigSet(y_motor.NFAULT.base, y_motor.NFAULT.pin, GPIO_STRENGTH_4MA, GPIO_PIN_TYPE_STD);
->>>>>>> dc2db7884c037528a7b40b5ca893f605b45cd5fc
 }
 #endif
 
@@ -844,8 +873,8 @@ void motor_set_direction(Motor_t motor, eMotor_Direction direction) {
     }
 }
 
-void set_motor_step_size(Motor_t motor, uint8_t direction){
-    switch(direction)
+void set_motor_step_size(Motor_t motor, uint8_t size){
+    switch(size)
     {
     case STEP_FULL:
         GPIOPinWrite(motor.M0.base, motor.M0.pin, 0);
@@ -883,34 +912,39 @@ void emergency_disable_motors(void) {
     motor_change_pwm_duty_cycle(ex_motor, 0);
 }
 
-void x_bumper_retract(void) {
-    motor_set_direction(x_motor, Backward);
-    motor_change_pwm_duty_cycle(x_motor, 50);
-    motor_enable(x_motor);
-    uint32_t delay;
-    for(delay = 0; delay < 10000; delay++); // should change this
-    motor_disable(x_motor);
-    motor_change_pwm_duty_cycle(x_motor, 0);
-}
-
-void y_bumper_retract(void) {
-    motor_set_direction(y_motor, Backward);
-    motor_change_pwm_duty_cycle(y_motor, 50);
-    motor_enable(y_motor);
-    uint32_t delay;
-    for(delay = 0; delay < 10000; delay++); // should change this
-    motor_disable(y_motor);
-    motor_change_pwm_duty_cycle(y_motor, 0);
-}
-
-void z_bumper_retract(void) {
-    motor_set_direction(z_motor, Backward);
-    motor_change_pwm_duty_cycle(z_motor, 50);
-    motor_enable(z_motor);
-    uint32_t delay;
-    for(delay = 0; delay < 10000; delay++); // should change this
-    motor_disable(z_motor);
-    motor_change_pwm_duty_cycle(z_motor, 0);
+void error_bumper_retract(eMotor_ID motor) {
+    switch(motor) {
+        case(X_Motor_ID): {
+            motor_set_direction(x_motor, Backward);
+            motor_change_pwm_duty_cycle(x_motor, 50);
+            motor_enable(x_motor);
+            uint32_t delay;
+            for(delay = 0; delay < 10000; delay++); // should change this
+            motor_disable(x_motor);
+            motor_change_pwm_duty_cycle(x_motor, 0);
+            break;
+        }
+        case(Y_Motor_ID): {
+            motor_set_direction(y_motor, Backward);
+            motor_change_pwm_duty_cycle(y_motor, 50);
+            motor_enable(y_motor);
+            uint32_t delay;
+            for(delay = 0; delay < 10000; delay++); // should change this
+            motor_disable(y_motor);
+            motor_change_pwm_duty_cycle(y_motor, 0);
+            break;
+        }
+        case(Z_Motor_ID): {
+            motor_set_direction(z_motor, Backward);
+            motor_change_pwm_duty_cycle(z_motor, 50);
+            motor_enable(z_motor);
+            uint32_t delay;
+            for(delay = 0; delay < 10000; delay++); // should change this
+            motor_disable(z_motor);
+            motor_change_pwm_duty_cycle(z_motor, 0);
+            break;
+        }
+    }
 }
 
 // static bool x_step_flag;

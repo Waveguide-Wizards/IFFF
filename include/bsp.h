@@ -8,6 +8,9 @@
 #ifndef BSP_H_
 #define BSP_H_
 
+#define TEST_PREHEATING
+//#ifdef TEST_CALIBRATION
+
 /*  D R I V E R   L I B   */
 #include "driverlib/gpio.h"
 #include "driverlib/pin_map.h"
@@ -23,6 +26,7 @@ typedef enum {
     SD_Card_Transfer,           // Transfer from SD card to flash
     USB_Transfer,               // Transfer from USB to flash
     Preheating,                 // Start Heater Tasks, wait to reach desired heat
+    Calibration,                // calibrate before print
     Ready_To_Print,             // Pre-heat complete
     Printing,
 } eState;

@@ -33,6 +33,6 @@ void error_list_init(void);
 void add_error_to_list(eError_Source error);
 void delete_error_from_list(eError_Source error);
 uint8_t get_error_count(void);
-//void update_error_count(void);
+void update_error_count(void);
 
 #endif /* ERROR_CHECKING_H_ */

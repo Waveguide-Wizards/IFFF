@@ -13,6 +13,7 @@
 /*  A P P L I C A T I O N   I N C L U D E S   */
 #include "bsp.h"
 #include "error_checking.h"
+#include "heater_control.h"
 #include "motor_control.h"
 
 /*  D R I V E R   L I B   */
@@ -34,10 +35,15 @@
 #include "task.h"
 
 /*  G L O B A L   V A R I A B L E S   */
-extern TaskHandle_t thMotorTask;
 extern TaskHandle_t thBlinkyTask;
+extern TaskHandle_t thCalibration;
 extern TaskHandle_t thErrorTask;
+extern TaskHandle_t thExtruderTask;
+extern TaskHandle_t thExtruderHeaterTask;
+extern TaskHandle_t thBedHeaterTask;
+extern TaskHandle_t thMotorTask;
 
+/*  G L O B A L S   */
 extern eState printer_state;
 
 /*  P R I V A T E   V A R I A B L E S   */
@@ -51,27 +57,33 @@ void prv_ErrorCheck(void *pvParameters) {
     for( ;; ) {
         // wait for task notification
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-//        update_error_count();
+
+        // suspend tasks that might be faulty
+        vTaskSuspend(thMotorTask);
+        vTaskSuspend(thExtruderHeaterTask);
+        vTaskSuspend(thBedHeaterTask);
+        vTaskSuspend(thExtruderTask);
+
+        // disable possibly faulty peripherals
+        emergency_disable_motors();
+        emergency_heaters_disable();
 
         /* react to the latest error */
         switch(newest_error) {
-            /* BUMPERS: move towards center */
-            case(X_Bumper): x_bumper_retract(); break;
-            case(Y_Bumper): y_bumper_retract(); break;
-            case(Z_Bumper): z_bumper_retract(); break;
+            /* BUMPERS: slight movement towards center */
+            case(X_Bumper): error_bumper_retract(X_Motor_ID); break;
+            case(Y_Bumper): error_bumper_retract(Y_Motor_ID); break;
+            case(Z_Bumper): error_bumper_retract(Z_Motor_ID); break;
         }
 
         /* determine number of errors */
-        error_count = 0;
-        uint8_t i;
-        for(i = 0; i < NUM_ERROR_SOURCES; i++) {
-            if(error_list[i] == true) {
-                error_count++;
-            }
-        }
+        update_error_count();
+
         /* TODO: remove error from list if capable */
     }
 }
+
+/*  F U N C T I O N S   */
 
 void error_list_init(void) {
     uint8_t i;
@@ -95,14 +107,14 @@ uint8_t get_error_count(void) {
     return error_count;
 }
 
-//void update_error_count(void) {
-//    uint8_t index, count = 0;
-//    for(index = 0; index < NUM_ERROR_SOURCES; index++) {
-//        if(error_list[index] == true) {
-//            count++;
-//        }
-//    }
-//    error_count = count;
-//}
+void update_error_count(void) {
+    uint8_t index, count = 0;
+    for(index = 0; index < NUM_ERROR_SOURCES; index++) {
+        if(error_list[index] == true) {
+            count++;
+        }
+    }
+    error_count = count;
+}
 
 

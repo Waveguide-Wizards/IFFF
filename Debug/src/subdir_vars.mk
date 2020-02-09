@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../src/bumpers.c \
+../src/calibration.c \
 ../src/error_checking.c \
 ../src/heater_control.c \
 ../src/led.c \
@@ -13,6 +14,7 @@ C_SRCS += \
 
 C_DEPS += \
 ./src/bumpers.d \
+./src/calibration.d \
 ./src/error_checking.d \
 ./src/heater_control.d \
 ./src/led.d \
@@ -21,6 +23,7 @@ C_DEPS += \
 
 OBJS += \
 ./src/bumpers.obj \
+./src/calibration.obj \
 ./src/error_checking.obj \
 ./src/heater_control.obj \
 ./src/led.obj \
@@ -29,6 +32,7 @@ OBJS += \
 
 OBJS__QUOTED += \
 "src/bumpers.obj" \
+"src/calibration.obj" \
 "src/error_checking.obj" \
 "src/heater_control.obj" \
 "src/led.obj" \
@@ -37,6 +41,7 @@ OBJS__QUOTED += \
 
 C_DEPS__QUOTED += \
 "src/bumpers.d" \
+"src/calibration.d" \
 "src/error_checking.d" \
 "src/heater_control.d" \
 "src/led.d" \
@@ -45,6 +50,7 @@ C_DEPS__QUOTED += \
 
 C_SRCS__QUOTED += \
 "../src/bumpers.c" \
+"../src/calibration.c" \
 "../src/error_checking.c" \
 "../src/heater_control.c" \
 "../src/led.c" \
