@@ -68,7 +68,7 @@ void prvExtruderHeaterControl(void * prvParameters) {
 
     // init hardware
     init_extruder_heater_adc();
-    init_extruder_heater_pwm();
+//    init_extruder_heater_pwm();
 
     for( ;; ) {
         // 1. Get latest ADC reading
@@ -78,32 +78,33 @@ void prvExtruderHeaterControl(void * prvParameters) {
         ex_temperature_v = adc_convert_to_v(adc_value);
 
         // 3. Check for over voltage
-        if(ex_temperature_v > MAX_EX_TEMPERATURE_V) {
-            ex_heater_disable();
-            add_error_to_list(Ex_Heater_Overheat);
-            vTaskSuspend(thExtruderHeaterTask);
-        }
-        else {
-            // 4. Update UI with latest temperature reading
-            // convert_v_to_celsius();
-
-            // 5. Pre-heat check
-            if(ex_heater_ready == false) {
-                if((ex_temperature_v >= (0.97 * extruder_target_voltage)) && (eTaskGetState(thMotorTask) == eSuspended)) {
-                    ex_heater_ready = true;
-                }
-            }
-            else {
-                if(ex_heater_ready && bed_heater_ready) {
-                    printer_state = Ready_To_Print;
-                    vTaskResume(thMotorTask);
-                }
-            }
-
-            // 6. Calculate PID and Change PWM duty cycle based on PID calculation
-            ex_heater_change_pwm_duty_cycle(PID_calculate(&extruder_heater_pid, ex_temperature_v));
-            vTaskDelay(delay_time);
-        }
+//        if(ex_temperature_v > MAX_EX_TEMPERATURE_V) {
+//            ex_heater_disable();
+//            add_error_to_list(Ex_Heater_Overheat);
+//            vTaskSuspend(thExtruderHeaterTask);
+//        }
+//        else {
+//            // 4. Update UI with latest temperature reading
+//            // convert_v_to_celsius();
+//
+//            // 5. Pre-heat check
+//            if(ex_heater_ready == false) {
+//                if((ex_temperature_v >= (0.97 * extruder_target_voltage)) && (eTaskGetState(thMotorTask) == eSuspended)) {
+//                    ex_heater_ready = true;
+//                }
+//            }
+//            else {
+//                if(ex_heater_ready && bed_heater_ready) {
+//                    printer_state = Ready_To_Print;
+//                    vTaskResume(thMotorTask);
+//                }
+//            }
+//
+//             6. Calculate PID and Change PWM duty cycle based on PID calculation
+//            ex_heater_change_pwm_duty_cycle(PID_calculate(&extruder_heater_pid, ex_temperature_v));
+//            vTaskDelay(delay_time);
+//        }
+        vTaskDelay(delay_time);
     }
 }
 
@@ -117,8 +118,8 @@ void prvBedHeaterControl(void * prvParameters) {
     static float bed_temperature_v = 0.0;
 
     // init hardware
-    init_bed_heater_adc();
-    init_bed_heater_pwm();
+//    init_bed_heater_adc();
+//    init_bed_heater_pwm();
 
     for( ;; ) {
         // 1. Get latest ADC reading
@@ -160,32 +161,30 @@ void prvBedHeaterControl(void * prvParameters) {
 /*  A D C   */
 void init_extruder_heater_adc(void) {
     /* Configure GPIO pin */
-    GPIOPinTypeADC(EX_HEATER_ADC_PORT, EX_HEATER_ADC_PIN);
+//    GPIOPinTypeADC(GPIO_PORTD_BASE, GPIO_PIN_0);
 
     /* Configure ADC peripheral */
     SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+    GPIOPinTypeADC(EX_HEATER_ADC_PORT, EX_HEATER_ADC_PIN);
     ADCSequenceConfigure(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, ADC_TRIGGER_PROCESSOR, 0);
-
-    ADCSequenceStepConfigure(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, 0,
-                             EX_HEATER_ADC_CHANNEL | ADC_CTL_END);
+    ADCSequenceStepConfigure(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, 0, ADC_CTL_CH21 | ADC_CTL_IE | ADC_CTL_END);
     ADCSequenceEnable(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
-
     ADCIntClear(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
 }
 
 void init_bed_heater_adc(void) {
-    /* Configure GPIO pin */
+//    /* Configure GPIO pin */
+//    GPIOPinTypeADC(BED_HEATER_ADC_PORT, BED_HEATER_ADC_PIN);
+//
+//    /* Configure ADC peripheral */
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC1);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
     GPIOPinTypeADC(BED_HEATER_ADC_PORT, BED_HEATER_ADC_PIN);
-
-    /* Configure ADC peripheral */
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
-    ADCSequenceConfigure(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, ADC_TRIGGER_PROCESSOR, 0);
-
-    ADCSequenceStepConfigure(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, 0,
-                             BED_HEATER_ADC_CHANNEL | ADC_CTL_END);
-
-    ADCSequenceEnable(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
-    ADCIntClear(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
+    ADCSequenceConfigure(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, ADC_TRIGGER_PROCESSOR, 0);
+    ADCSequenceStepConfigure(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, 0, ADC_CTL_CH0 | ADC_CTL_IE | ADC_CTL_END);
+    ADCSequenceEnable(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
+    ADCIntClear(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
 }
 
 void ex_heater_get_adc(uint32_t * put_data) {
@@ -214,8 +213,6 @@ void init_extruder_heater_pwm(void) {
 
 //    HWREG(GPIO_PORTB_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
 //    HWREG(GPIO_PORTE_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
-//
-//    // Port B pins that are locked are 3 and 2, so unlock them by writing 1100 into the CR reg
 //    HWREG(GPIO_PORTB_BASE + GPIO_O_CR)  |= 0xC;
 
 

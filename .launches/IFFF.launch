@@ -6,7 +6,6 @@
 <mapAttribute key="ccs.memoryview.pageexpr">
 <mapEntry key="org.eclipse.cdt.debug.ui.memory.memorybrowser.MemoryBrowser@#$Stellaris In-Circuit Debug Interface/CORTEX_M4_0" value="@@0x00005BD4"/>
 </mapAttribute>
-<stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_DEBUGGER_PROPERTIES./home/jack/workspace_v9/IFFF/targetConfigs/Tiva TM4C123GH6PM.ccxml.Stellaris In-Circuit Debug Interface/CORTEX_M4_0" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot; ?&gt;&#10;&lt;PropertyValues&gt;&#10;&#10;  &lt;property id=&quot;ConnectOnStartup&quot;&gt;&#10;    &lt;curValue&gt;1&lt;/curValue&gt;&#10;  &lt;/property&gt;&#10;&#10;  &lt;property id=&quot;EnableInstalledBreakpoint&quot;&gt;&#10;    &lt;curValue&gt;1&lt;/curValue&gt;&#10;  &lt;/property&gt;&#10;&#10;  &lt;property id=&quot;IgnoreSoftLaunchFailures&quot;&gt;&#10;    &lt;curValue&gt;0&lt;/curValue&gt;&#10;  &lt;/property&gt;&#10;&#10;&lt;/PropertyValues&gt;&#10;"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_DEBUGGER_PROPERTIES.Tiva TM4C123GH6PM.ccxml.Stellaris In-Circuit Debug Interface/CORTEX_M4_0" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot; ?&gt;&#10;&lt;PropertyValues&gt;&#10;&#10;  &lt;property id=&quot;ConnectOnStartup&quot;&gt;&#10;    &lt;curValue&gt;1&lt;/curValue&gt;&#10;  &lt;/property&gt;&#10;&#10;  &lt;property id=&quot;EnableInstalledBreakpoint&quot;&gt;&#10;    &lt;curValue&gt;1&lt;/curValue&gt;&#10;  &lt;/property&gt;&#10;&#10;  &lt;property id=&quot;IgnoreSoftLaunchFailures&quot;&gt;&#10;    &lt;curValue&gt;0&lt;/curValue&gt;&#10;  &lt;/property&gt;&#10;&#10;  &lt;property id=&quot;FlashDebugPortUnlockChoice&quot;&gt;&#10;    &lt;curValue&gt;Fury, DustDevil, and Tiva Classes&lt;/curValue&gt;&#10;  &lt;/property&gt;&#10;&#10;&lt;/PropertyValues&gt;&#10;"/>
 <setAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_HIDE_CONFIG_ELEMENT_TYPES">
 <setEntry value="BOARD"/>
@@ -20,13 +19,10 @@
 <setEntry value="SUBPATH"/>
 <setEntry value="SYSTEM"/>
 </setAttribute>
-<stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROGRAM./home/jack/workspace_v9/IFFF/targetConfigs/Tiva TM4C123GH6PM.ccxml.Stellaris In-Circuit Debug Interface/CORTEX_M4_0" value="${build_artifact:IFFF}"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROGRAM.Tiva TM4C123GH6PM.ccxml.Stellaris In-Circuit Debug Interface/CORTEX_M4_0" value="${build_artifact:IFFF}"/>
-<stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROJECT./home/jack/workspace_v9/IFFF/targetConfigs/Tiva TM4C123GH6PM.ccxml.Stellaris In-Circuit Debug Interface/CORTEX_M4_0" value="IFFF"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROJECT.Tiva TM4C123GH6PM.ccxml.Stellaris In-Circuit Debug Interface/CORTEX_M4_0" value="IFFF"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_TARGET_CONFIG" value="${target_config_active_default:IFFF}"/>
-<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM./home/jack/workspace_v9/IFFF/targetConfigs/Tiva TM4C123GH6PM.ccxml.Stellaris In-Circuit Debug Interface/CORTEX_M4_0" value="/home/jack/workspace_v9/IFFF/Debug/IFFF.out"/>
-<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.Tiva TM4C123GH6PM.ccxml.Stellaris In-Circuit Debug Interface/CORTEX_M4_0" value="C:/Users\mfrug\workspace_v9_2\IFFF\Debug\IFFF.out"/>
+<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.Tiva TM4C123GH6PM.ccxml.Stellaris In-Circuit Debug Interface/CORTEX_M4_0" value="/home/jack/workspace_v9/IFFF/Debug/IFFF.out"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/IFFF"/>
 </listAttribute>

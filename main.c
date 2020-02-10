@@ -58,45 +58,45 @@ void configTask(void * prvParameter) {
     /* create tasks */
 
     // Priority 1
-    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 1, &thMotorTask);
-    vTaskSuspend(thMotorTask);
+//    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 2, &thMotorTask);
+//    vTaskSuspend(thMotorTask);
 
-    BaseType_t ExHeaterReturned = xTaskCreate(prvExtruderHeaterControl, "ExtruderHeater", 500, (void *)NULL, 1, &thExtruderHeaterTask);
+    BaseType_t ExHeaterReturned = xTaskCreate(prvExtruderHeaterControl, "ExtruderHeater", 500, (void *)NULL, 2, &thExtruderHeaterTask);
     vTaskSuspend(thExtruderHeaterTask);
 
-    BaseType_t BedHeaterReturned = xTaskCreate(prvBedHeaterControl, "BedHeater", 500, (void *)NULL, 1, &thBedHeaterTask);
-    vTaskSuspend(thBedHeaterTask);
+//    BaseType_t BedHeaterReturned = xTaskCreate(prvBedHeaterControl, "BedHeater", 500, (void *)NULL, 2, &thBedHeaterTask);
+//    vTaskSuspend(thBedHeaterTask);
 
-    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 1, &thErrorTask);
+//    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, &thErrorTask);
 
     // Priority 2
-    BaseType_t CalibrationReturned = xTaskCreate(prvCalibration, "Calibration", configMINIMAL_STACK_SIZE, (void *)NULL, 2, &thCalibration);
-    vTaskSuspend(thCalibration);
+//    BaseType_t CalibrationReturned = xTaskCreate(prvCalibration, "Calibration", configMINIMAL_STACK_SIZE, (void *)NULL, 3, &thCalibration);
+//    vTaskSuspend(thCalibration);
 
     // Priority 3
     // Priority 4
     // Priority 5
-    BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", configMINIMAL_STACK_SIZE, (void *)NULL, 5, &thBlinkyTask);
+    BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", 200, (void *)NULL, 5, &thBlinkyTask);
 
     /* check that tasks were created successfully */
-    configASSERT(XMotorReturned == pdPASS);
+//    configASSERT(XMotorReturned == pdPASS);
     configASSERT(ExHeaterReturned == pdPASS);
-    configASSERT(BedHeaterReturned == pdPASS);
-    configASSERT(ErrorCheckReturned == pdPASS);
+//    configASSERT(BedHeaterReturned == pdPASS);
+//    configASSERT(ErrorCheckReturned == pdPASS);
     configASSERT(BlinkyReturned == pdPASS);
+
+    printer_state = Idle;
 
 #ifdef TEST_PREHEATING
     printer_state = Preheating;
     vTaskResume(thExtruderHeaterTask);
-    vTaskResume(thBedHeaterTask);
+//    vTaskResume(thBedHeaterTask);
 #endif
 #ifdef TEST_CALIBRATION
     printer_state = Calibration;
     vTaskResume(thCalibration);
-#else
-    printer_state = Idle;
-#endif
     vTaskDelete(thConfig);
+#endif
 }
 
 /*   --- M A I N ---   */
@@ -104,16 +104,19 @@ void main(void)
 {
     // set clock source to 16MHz external oscillator, use PLL and divide by 10 to get 20MHz
     SysCtlClockSet(SYSCTL_SYSDIV_10 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
+//    SysCtlClockFreqSet();
+
+    configASSERT(SysCtlClockGet() == 20000000);
 
     /* I N I T */
-    init_all_motors();
-    init_bumper_gpio();
+//    init_all_motors();
+//    init_bumper_gpio();
 
     /* Q U E U E S */
 //    motor_instruction_queue = xQueueCreate(10, sizeof(Motor_Instruction_t));
 
     /* create first task */
-    BaseType_t configReturned = xTaskCreate(configTask, "Config", configMINIMAL_STACK_SIZE, (void *)NULL, 1, &thConfig);
+    BaseType_t configReturned = xTaskCreate(configTask, "Config", 400, (void *)NULL, 2, &thConfig);
     configASSERT(configReturned == pdPASS);
 
     /* start scheduler */
@@ -132,7 +135,7 @@ void vApplicationMallocFailedHook( void )
 void vApplicationIdleHook( void )
 {
     for( ;; ) {
-        // sleep (stop the CPU clock) when the opportunity is given
+//        SysCtlSleep(); // sleep (stop the CPU clock) when the opportunity is given
     }
 }
 /*-----------------------------------------------------------*/
