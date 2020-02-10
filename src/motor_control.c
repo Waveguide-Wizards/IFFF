@@ -95,7 +95,6 @@ void prv_Motor(void *pvParameters) {
 //            ex_motor.position = current_instruction->extruder_pos;
 
             // find step counts
-            /* Step Count calculations still return 0, Hardcoding for interrupt testing purposes */
             x_needed_step_count = dist_to_steps(current_instruction.x_pos);
             y_needed_step_count = dist_to_steps(current_instruction.y_pos);
 //            z_pwm_count = dist_to_steps(current_instruction->z_pos);
@@ -229,6 +228,8 @@ void motor_init_x_pwm(void) {
     /* Enable Interrupts */
     PWMGenIntRegister(x_motor.PWM_Base, x_motor.PWM_Block, PWM0Gen0IntHandler);
 
+    IntPrioritySet(INT_PWM0_0, 0xF0);
+
     IntEnable(INT_PWM0_0);
 
     /* Enable PWM Signal output */
@@ -270,6 +271,15 @@ void motor_init_y_pwm(void) {
 
     /* Register Interrupts  to be enabled*/
     PWMGenIntRegister(y_motor.PWM_Base, y_motor.PWM_Block, PWM0Gen1IntHandler);
+
+    // Need to set the priority of the interrupt to be lower than (larger number) configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY
+    /* Priority only depends on the 3 highest bits */
+
+    IntPrioritySet(INT_PWM0_1, 0xF0);
+
+    int prio;
+    prio = IntPriorityGet(INT_PWM0_1);
+
 
     IntEnable(INT_PWM0_1);
 
