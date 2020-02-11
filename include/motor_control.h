@@ -24,7 +24,7 @@
 #define EX_MOTOR            3U
 
 #define SOURCE_FREQUENCY    20000000        // 20MHz
-#define PWM_FREQUENCY       5000       // 5kHz, DRV8886 f_pwm range is 0-100kHz
+#define PWM_FREQUENCY       400       // 5kHz, DRV8886 f_pwm range is 0-100kHz
 #define CALC_PERIOD(X)          (SOURCE_FREQUENCY / X)
 
 //STEP CONVERSION PARAMETERS

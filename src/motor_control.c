@@ -74,10 +74,15 @@ void prv_Motor(void *pvParameters) {
 
     for( ;; ) {
         /* Wait for current instruction to be completed */
-//        ulNotificationValue = ulTaskNotifyTake( pdFALSE, xMaxBlockTime );
+        ulNotificationValue = ulTaskNotifyTake( pdFALSE, xMaxBlockTime );
+
+        /* Right now, the task only gets notified by the PWM ISR's */
 
 //        if( (ulNotificationValue == 1)  && (printer_state == Printing)) {
             // pop from queue
+
+
+
         if(do_it == true) {
             Motor_Instruction_t current_instruction;
             xQueueReceive(motor_instruction_queue,  &current_instruction, (TickType_t)5);
@@ -100,8 +105,11 @@ void prv_Motor(void *pvParameters) {
 //            z_pwm_count = dist_to_steps(current_instruction->z_pos);
 //            ex_pwm_count = dist_to_steps(current_instruction->ex_pos);
 
-            set_motor_step_size(x_motor, STEP_16);
-            set_motor_step_size(y_motor, STEP_16);
+            motor_set_step_size(x_motor, STEP_16);
+            motor_set_step_size(y_motor, STEP_16);
+
+            GPIOPinWrite(x_motor.NSLEEP.base, x_motor.NSLEEP.pin, x_motor.NSLEEP.pin);
+            GPIOPinWrite(y_motor.NSLEEP.base, y_motor.NSLEEP.pin, y_motor.NSLEEP.pin);
 
             // start PWM on all motors
             motor_change_pwm_duty_cycle(x_motor, 50);
@@ -124,6 +132,9 @@ void prv_Motor(void *pvParameters) {
 //            printer_state = Error;
 //        }
         vTaskDelay(xMaxBlockTime);
+
+
+//        xTaskNotifyWait
     }
 }
 
@@ -621,7 +632,9 @@ void motor_start(uint32_t distance, uint32_t direction, uint8_t motor)
         motor_enable(y_motor);
         break;
     default:
+
         /* Motor has not been implemented yet */
+        break;
 
     }
 }
@@ -648,7 +661,7 @@ void find_direction(uint32_t instruction, Motor_t motor) {
     }
 }
 
-void set_motor_step_size(Motor_t motor, uint8_t direction){
+void motor_set_step_size(Motor_t motor, uint8_t direction){
     switch(direction)
     {
     case STEP_FULL:
@@ -656,20 +669,21 @@ void set_motor_step_size(Motor_t motor, uint8_t direction){
         GPIOPinWrite(motor.M1.base, motor.M1.pin, 0);
         break;
     case STEP_16:
-        GPIOPinWrite(motor.M0.base, motor.M0.pin, 1);
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, motor.M0.pin);
         GPIOPinWrite(motor.M1.base, motor.M1.pin, 0);
         break;
     case STEP_2:
         GPIOPinWrite(motor.M0.base, motor.M0.pin, 0);
-        GPIOPinWrite(motor.M1.base, motor.M1.pin, 1);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, motor.M1.pin);
         break;
     case STEP_4:
-        GPIOPinWrite(motor.M0.base, motor.M0.pin, 1);
-        GPIOPinWrite(motor.M1.base, motor.M1.pin, 1);
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, motor.M0.pin);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, motor.M1.pin);
         break;
     case STEP_8:
-        GPIOPinWrite(motor.M0.base, motor.M0.pin, 1);
-        GPIOPinWrite(motor.M1.base, motor.M1.pin, 1);
+        /* In reality, these should be high Z */
+        GPIOPinWrite(motor.M0.base, motor.M0.pin, motor.M0.pin);
+        GPIOPinWrite(motor.M1.base, motor.M1.pin, motor.M1.pin);
         break;
     }
 }
@@ -678,6 +692,7 @@ void set_motor_step_size(Motor_t motor, uint8_t direction){
 
 
 /* C O N V E R S I O N      F U N C T I O N  S */
+
 //This is used to convert the numer of steps taken into a distance in micrometers.
 uint32_t steps_to_dist(uint32_t stepCount) {
     return stepCount*DIST_PER_USTEP;
