@@ -68,7 +68,7 @@ void prvExtruderHeaterControl(void * prvParameters) {
 
     // init hardware
     init_extruder_heater_adc();
-//    init_extruder_heater_pwm();
+    init_extruder_heater_pwm();
 
     for( ;; ) {
         // 1. Get latest ADC reading
@@ -104,6 +104,7 @@ void prvExtruderHeaterControl(void * prvParameters) {
 //            ex_heater_change_pwm_duty_cycle(PID_calculate(&extruder_heater_pid, ex_temperature_v));
 //            vTaskDelay(delay_time);
 //        }
+        ex_heater_change_pwm_duty_cycle(PID_calculate(&extruder_heater_pid, ex_temperature_v));
         vTaskDelay(delay_time);
     }
 }
@@ -203,7 +204,7 @@ void ex_bed_get_adc(uint32_t * put_data) {
 
 /*  P W M */
 void init_extruder_heater_pwm(void) {
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);         // The PWM peripheral must be enabled for use.
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
 
     /* init GPIO pin */
     SysCtlPeripheralEnable(EX_HEATER_PWM_PORT);            // enable GPIO port if not already enabled
@@ -215,7 +216,7 @@ void init_extruder_heater_pwm(void) {
 //    HWREG(GPIO_PORTE_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
 //    HWREG(GPIO_PORTB_BASE + GPIO_O_CR)  |= 0xC;
 
-
+///////////////////////////
     GPIOPinConfigure(EX_HEATER_PWM_PIN_MAP);                // configure pin for PWM
     GPIOPinTypePWM(EX_HEATER_PWM_PORT, EX_HEATER_PWM_PIN);
 
@@ -237,7 +238,7 @@ void init_extruder_heater_pwm(void) {
 }
 
 void init_bed_heater_pwm(void) {
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);         // The PWM peripheral must be enabled for use.
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
 
     /* init GPIO pin */
     SysCtlPeripheralEnable(BED_HEATER_PWM_PORT);        // enable GPIO port if not already enabled
