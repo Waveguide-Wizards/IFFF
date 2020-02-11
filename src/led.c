@@ -27,7 +27,7 @@ void prvLED_Heartbeat(void *pvParameters) {
     static TickType_t delay_time = pdMS_TO_TICKS(500);
     init_led_gpio();
     for( ;; ) {
-        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, GPIO_PIN_3);
+        GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_2, GPIO_PIN_2);
         vTaskDelay(delay_time);
         GPIOPinWrite(GPIO_PORTF_BASE, GPIO_PIN_3, 0);
         vTaskDelay(delay_time);
