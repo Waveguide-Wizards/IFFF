@@ -100,6 +100,9 @@ void prv_Motor(void *pvParameters) {
 //            z_pwm_count = dist_to_steps(current_instruction->z_pos);
 //            ex_pwm_count = dist_to_steps(current_instruction->ex_pos);
 
+            set_motor_step_size(x_motor, STEP_16);
+            set_motor_step_size(y_motor, STEP_16);
+
             // start PWM on all motors
             motor_change_pwm_duty_cycle(x_motor, 50);
             motor_start(current_instruction.x_pos, 0, X_MOTOR);
