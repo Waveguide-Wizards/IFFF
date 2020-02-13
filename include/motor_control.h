@@ -100,7 +100,7 @@ void motor_init_y_pwm();
 void motor_init_z_pwm();
 void motor_init_ex_pwm();
 void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle);
-void motor_start(uint32_t distance, uint32_t direction, uint8_t motor);
+void motor_start(uint32_t distance, uint32_t direction, uint8_t motor, uint8_t step_size);
 uint32_t motor_steps_to_dist(uint32_t stepCount);
 uint32_t motor_dist_to_steps(uint32_t distance);
 
@@ -123,5 +123,7 @@ uint8_t update_motor_status(uint8_t motor);
 
 void PWM0Gen0IntHandler(void);
 void PWM0Gen1IntHandler(void);
+void PWM0Gen3IntHandler(void);
+
 
 #endif /* MOTOR_CONTROL_H_ */

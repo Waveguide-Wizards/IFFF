@@ -96,6 +96,9 @@ typedef enum {
  */
 
 /*  Z - MOTOR   */
+#define Z_PWM_BLOCK         PWM_GEN_3
+#define Z_PWM_OUT           PWM_OUT_6
+
 #define Z_M1_PORT           GPIO_PORTF_BASE
 #define Z_M1_PIN            GPIO_PIN_7      // output
 
@@ -114,16 +117,19 @@ typedef enum {
 #define Z_NFAULT_PORT       GPIO_PORTB_BASE
 #define Z_NFAULT_PIN        GPIO_PIN_3      // input
 
-#define Z_STEP_PORT         GPIO_PORTG_BASE
-#define Z_STEP_PIN          GPIO_PIN_3      // output
+#define Z_STEP_PORT         GPIO_PORTD_BASE
+#define Z_STEP_PIN          GPIO_PIN_0      // output
 
-#define Z_MOTOR_PWM_BASE    PWM1_BASE       //  M0PWM6
+#define Z_MOTOR_PWM_BASE    PWM0_BASE       //  M0PWM6
 #define Z_MOTOR_PWM_CHANNEL 1
 
-#define Z_MOTOR_STEP        GPIOH_PG3_M0PWM6
+#define Z_MOTOR_STEP        GPIO_PD0_M0PWM6
 
 
 /*  EXTRUDER - MOTOR   */
+#define EX_PWM_BLOCK        PWM_GEN_2
+#define EX_PWM_OUT          PWM_OUT_5
+
 #define EX_M1_PORT           GPIO_PORTB_BASE
 #define EX_M1_PIN            GPIO_PIN_5      // output
 
@@ -148,7 +154,7 @@ typedef enum {
 #define EX_MOTOR_PWM_BASE    PWM0_BASE       //  M0PWM5
 #define EX_MOTOR_PWM_CHANNEL 5
 
-#define EX_MOTOR_STEP        GPIOH_PE5_M0PWM5
+#define EX_MOTOR_STEP        GPIO_PE5_M0PWM5
 
 #else
 

@@ -38,6 +38,7 @@ extern void vPortSVCHandler(void);
 extern void xPortSysTickHandler(void);
 extern void PWM0Gen0IntHandler(void);
 extern void PWM0Gen1IntHandler(void);
+extern void PWM0Gen3IntHandler(void);
 
 
 //*****************************************************************************
@@ -134,7 +135,7 @@ void (* const g_pfnVectors[])(void) =
      0,                                      // Reserved
      IntDefaultHandler,                      // Hibernate
      IntDefaultHandler,                      // USB0
-     IntDefaultHandler,                      // PWM Generator 3
+     PWM0Gen3IntHandler,                      // PWM Generator 3
      IntDefaultHandler,                      // uDMA Software Transfer
      IntDefaultHandler,                      // uDMA Error
      IntDefaultHandler,                      // ADC1 Sequence 0
