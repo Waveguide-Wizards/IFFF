@@ -39,6 +39,8 @@ extern void xPortSysTickHandler(void);
 extern void PWM0Gen0IntHandler(void);
 extern void PWM0Gen1IntHandler(void);
 extern void PWM0Gen3IntHandler(void);
+extern void GPIO_A_IntHandler(void);
+
 
 
 //*****************************************************************************
@@ -90,7 +92,7 @@ void (* const g_pfnVectors[])(void) =
      0,                                      // Reserved
      xPortPendSVHandler,                     // The PendSV handler
      xPortSysTickHandler,                    // The SysTick handler
-     IntDefaultHandler,                      // GPIO Port A
+     GPIO_A_IntHandler,                      // GPIO Port A
      IntDefaultHandler,                      // GPIO Port B
      IntDefaultHandler,                      // GPIO Port C
      IntDefaultHandler,                      // GPIO Port D

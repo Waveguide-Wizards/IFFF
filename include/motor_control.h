@@ -9,6 +9,7 @@
 #define MOTOR_CONTROL_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /* STEP SIZE TO PASS INTO motor_set_step_size */
 #define STEP_FULL           0U
@@ -36,14 +37,26 @@
 #define DIST_PER_REV       (780000.0)
 
 //Functional relationships:
-#define DIST_PER_USTEP	   ((DIST_PER_REV/(STEPS_PER_ROTATION*SELECTED_MICROSTEP)))
-#define USTEP_PER_DIST	   (1/DIST_PER_USTEP)
+#define DIST_PER_USTEP     ((DIST_PER_REV/(STEPS_PER_ROTATION*SELECTED_MICROSTEP)))
+#define USTEP_PER_DIST     (1/DIST_PER_USTEP)
 
 /*  E N U M S   */
 typedef enum {
-    Forward = 0,
-    Backward = 1
+    X_Motor_ID,
+    Y_Motor_ID,
+    Z_Motor_ID
+}eMotor_ID;
+
+typedef enum {
+    Forward = 0,    // Downward for extruder
+    Backward = 1    // Upward for extruder
 } eMotor_Direction;
+
+typedef struct {
+  bool x_ready;
+  bool y_ready;
+  bool z_ready;
+} Motor_Count_Ready_t;
 
 typedef struct {
     uint32_t        base;
@@ -83,6 +96,7 @@ typedef struct {
 
 /*  T A S K S   */
 void prv_Motor(void *pvParameters);
+void prv_Extruder_Motor(void *pvParameters);
 
 /*  F U N C T I O N S   */
 void find_direction(uint32_t instruction, Motor_t motor);
@@ -93,6 +107,8 @@ void init_y_motor(void);
 void init_z_motor(void);
 void init_all_motors(void);
 void init_motor_status(uint8_t x_init_status,uint8_t y_init_status,uint8_t z_init_status);
+void start_motor_calibration(eMotor_ID motor);
+
 
 /*  M O T O R   P W M   */
 void motor_init_x_pwm();
@@ -104,7 +120,7 @@ void motor_start(uint32_t distance, uint32_t direction, uint8_t motor, uint8_t s
 uint32_t motor_steps_to_dist(uint32_t stepCount);
 uint32_t motor_dist_to_steps(uint32_t distance);
 
-/*  X   M O T O R   G P I O   */
+/*  M O T O R S   */
 void motor_init_x_gpio(void);
 void motor_init_y_gpio(void);
 void motor_init_z_gpio(void);
@@ -124,6 +140,10 @@ uint8_t update_motor_status(uint8_t motor);
 void PWM0Gen0IntHandler(void);
 void PWM0Gen1IntHandler(void);
 void PWM0Gen3IntHandler(void);
+
+/*  E R R O R   H A N D L I N G   */
+void emergency_disable_motors(void);
+void error_bumper_retract(eMotor_ID motor);
 
 
 #endif /* MOTOR_CONTROL_H_ */
