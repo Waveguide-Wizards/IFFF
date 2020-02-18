@@ -75,7 +75,7 @@ volatile Motor_Status_t Task_Status;
 /*  T A S K S   */
 void prv_Motor(void *pvParameters) {
     const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 10000 );  // TODO: switch to max port delay
-//    uint32_t ulNotificationValue;
+    uint32_t ulNotificationValue;
 //    BaseType_t queue_receive_status;
     uint8_t instruction = 1;
 
@@ -156,7 +156,7 @@ void prv_Extruder_Motor(void *pvParameters) {
 //    x_motor.direction = Forward;
     x_motor.direction = Backward;
      motor_set_direction(x_motor, x_motor.direction);
-     set_motor_step_size(x_motor, STEP_16);
+     motor_set_step_size(x_motor, STEP_16);
      motor_enable(x_motor);
      motor_change_pwm_duty_cycle(x_motor, 50);
 
@@ -238,11 +238,6 @@ void init_ex_motor(void) {
 #endif
 
 
-void init_all_motors(void) {
-    init_x_motor();
-    init_y_motor();
-}
-
 
 void init_motor_status(uint8_t x_init_status,uint8_t y_init_status,uint8_t z_init_status){
     Task_Status.x_done = x_init_status;
@@ -255,7 +250,7 @@ void start_motor_calibration(eMotor_ID motor) {
         case(X_Motor_ID): {
             x_motor.direction = Forward;
             motor_set_direction(x_motor, x_motor.direction);
-            set_motor_step_size(x_motor, STEP_16);
+            motor_set_step_size(x_motor, STEP_16);
             motor_enable(x_motor);
             motor_change_pwm_duty_cycle(x_motor, 50);
             break;
@@ -263,7 +258,7 @@ void start_motor_calibration(eMotor_ID motor) {
         case(Y_Motor_ID): {
             y_motor.direction = Forward;
             motor_set_direction(y_motor, y_motor.direction);
-            set_motor_step_size(y_motor, STEP_16);
+            motor_set_step_size(y_motor, STEP_16);
             motor_enable(y_motor);
             motor_change_pwm_duty_cycle(y_motor, 50);
             break;
@@ -271,7 +266,7 @@ void start_motor_calibration(eMotor_ID motor) {
         case(Z_Motor_ID): {
             z_motor.direction = Forward;
             motor_set_direction(z_motor, z_motor.direction);
-            set_motor_step_size(z_motor, STEP_16);
+            motor_set_step_size(z_motor, STEP_16);
             motor_enable(z_motor);
             motor_change_pwm_duty_cycle(z_motor, 50);
             break;
@@ -785,12 +780,12 @@ void motor_set_step_size(Motor_t motor, uint8_t size){
 /* C O N V E R S I O N      F U N C T I O N  S */
 
 //This is used to convert the numer of steps taken into a distance in micrometers.
-uint32_t steps_to_dist(uint32_t stepCount) {
+uint32_t motor_steps_to_dist(uint32_t stepCount) {
     return stepCount*DIST_PER_USTEP;
 }
 
 //This is used to convert the desired distance into a step count.
-uint32_t dist_to_steps(uint32_t distance) {
+uint32_t motor_dist_to_steps(uint32_t distance) {
     return (uint32_t)((distance * USTEP_PER_DIST) + 0.5);
 }
 
@@ -904,8 +899,8 @@ void PWM0Gen0IntHandler(void) {
             task_complete++;
             // Task complete
             BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-            configASSERT(xMotorTask != NULL);
-            vTaskNotifyGiveFromISR(xMotorTask, &xHigherPriorityTaskWoken);
+            configASSERT(prv_Motor != NULL);
+            vTaskNotifyGiveFromISR(prv_Motor, &xHigherPriorityTaskWoken);
             portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
         }
     }
@@ -938,8 +933,8 @@ void PWM0Gen1IntHandler(void) {
 
             // TODO: if step count met for all motors execute this
             BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-            configASSERT(xMotorTask != NULL);
-            vTaskNotifyGiveFromISR(xMotorTask, &xHigherPriorityTaskWoken);
+            configASSERT(prv_Motor != NULL);
+            vTaskNotifyGiveFromISR(prv_Motor, &xHigherPriorityTaskWoken);
             portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
         }
     }
@@ -971,8 +966,8 @@ void PWM0Gen3IntHandler(void) {
             task_complete++;
             // Task complete
             BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-            configASSERT(xMotorTask != NULL);
-            vTaskNotifyGiveFromISR(xMotorTask, &xHigherPriorityTaskWoken);
+            configASSERT(prv_Motor != NULL);
+            vTaskNotifyGiveFromISR(prv_Motor, &xHigherPriorityTaskWoken);
             portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
         }
     }
