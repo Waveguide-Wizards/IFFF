@@ -27,8 +27,8 @@
 
 
 /******************************************************************************
-	See http://www.freertos.org/a00110.html for an explanation of the
-	definitions contained in this file.
+    See http://www.freertos.org/a00110.html for an explanation of the
+    definitions contained in this file.
 ******************************************************************************/
 
 #ifndef FREERTOS_CONFIG_H
@@ -43,20 +43,20 @@
 
 
 /* Constants related to the behaviour or the scheduler. */
-#define configUSE_PREEMPTION					1
-//#define configUSE_TIME_SLICING					1
-#define configMAX_PRIORITIES					( 5 )
-#define configIDLE_SHOULD_YIELD					1
+#define configUSE_PREEMPTION                    1
+//#define configUSE_TIME_SLICING                    1
+#define configMAX_PRIORITIES                    ( 5 )
+#define configIDLE_SHOULD_YIELD                 1
 #define configTICK_RATE_HZ                      ( ( TickType_t ) 100 )  // 10ms/tick
 #define configUSE_16_BIT_TICKS                  1
 
 /* Constants that describe the hardware and memory usage. */
-#define configCPU_CLOCK_HZ						20000000        // 20MHz
-#define configMINIMAL_STACK_SIZE				( ( uint16_t ) 100 )
-#define configMAX_TASK_NAME_LEN					( 16 )
+#define configCPU_CLOCK_HZ                      20000000        // 20MHz
+#define configMINIMAL_STACK_SIZE                ( ( uint16_t ) 100 )
+#define configMAX_TASK_NAME_LEN                 ( 16 )
 
 /* TODO: look at datasheet for heap size */
-#define configTOTAL_HEAP_SIZE					( ( size_t ) 6500)  // ( 50 * 1024 ) )
+#define configTOTAL_HEAP_SIZE                   ( ( size_t ) 12000)  // ( 50 * 1024 ) )
 
 #define configUSE_IDLE_HOOK             0
 #define configUSE_TICK_HOOK             0
@@ -78,7 +78,7 @@
 #define configUSE_TIMERS                1
 #define configTIMER_TASK_PRIORITY       ( 3 )
 #define configTIMER_QUEUE_LENGTH        5
-#define configTIMER_TASK_STACK_DEPTH    ( 80 )
+#define configTIMER_TASK_STACK_DEPTH    ( 100 )
 
 /* Normal assert() semantics without relying on the provision of an assert.h
 header file. */
@@ -110,9 +110,9 @@ header file. */
 /* Cortex-M3/4 interrupt priority configuration follows...................... */
 /* Use the system definition, if there is one. */
 #ifdef __NVIC_PRIO_BITS
-	#define configPRIO_BITS       __NVIC_PRIO_BITS
+    #define configPRIO_BITS       __NVIC_PRIO_BITS
 #else
-	#define configPRIO_BITS       NUM_PRIORITY_BITS     /* 8 priority levels */
+    #define configPRIO_BITS       NUM_PRIORITY_BITS     /* 8 priority levels */
 #endif
 
 /* The lowest interrupt priority that can be used in a call to a "set priority"
@@ -133,4 +133,3 @@ See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY    ( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS) )
 
 #endif /* FREERTOS_CONFIG_H */
-
