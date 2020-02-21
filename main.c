@@ -56,11 +56,10 @@ TaskHandle_t thMotorTask = NULL;
 /*   --- M A I N ---   */
 void main(void)
 {
-    // set clock source to 16MHz external oscillator, use PLL and divide by 10 to get 20MHz
-    SysCtlClockSet(SYSCTL_SYSDIV_10 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
-//    SysCtlClockFreqSet();
+    // Set system clock to 80MHz
+    SysCtlClockSet(SYSCTL_SYSDIV_2 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_OSC_INT);
+    configASSERT(SysCtlClockGet() == 80000000);
 
-    configASSERT(SysCtlClockGet() == 20000000);
 
     /* I N I T */
 //    init_all_motors();
@@ -79,10 +78,10 @@ void main(void)
 //    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 2, &thMotorTask);
 //    vTaskSuspend(thMotorTask);
 
-    BaseType_t ExHeaterReturned = xTaskCreate(prvExtruderHeaterControl, "ExtruderHeater", 700, (void *)NULL, 2, &thExtruderHeaterTask);
+    BaseType_t ExHeaterReturned = xTaskCreate(prvExtruderHeaterControl, "ExtruderHeater", 400, (void *)NULL, 2, &thExtruderHeaterTask);
     vTaskSuspend(thExtruderHeaterTask);
 
-    BaseType_t BedHeaterReturned = xTaskCreate(prvBedHeaterControl, "BedHeater", 500, (void *)NULL, 2, &thBedHeaterTask);
+    BaseType_t BedHeaterReturned = xTaskCreate(prvBedHeaterControl, "BedHeater", 400, (void *)NULL, 2, &thBedHeaterTask);
     vTaskSuspend(thBedHeaterTask);
 
 //    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, &thErrorTask);
@@ -94,7 +93,7 @@ void main(void)
     // Priority 3
     // Priority 4
     // Priority 5
-    BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", 300, (void *)NULL, 5, &thBlinkyTask);
+    BaseType_t BlinkyReturned = xTaskCreate(prvLED_Heartbeat, "HeartbeatLED", 100, (void *)NULL, 4, &thBlinkyTask);
 
     /* check that tasks were created successfully */
 //    configASSERT(XMotorReturned == pdPASS);

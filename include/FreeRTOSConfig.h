@@ -51,12 +51,12 @@
 #define configUSE_16_BIT_TICKS                  1
 
 /* Constants that describe the hardware and memory usage. */
-#define configCPU_CLOCK_HZ                      20000000        // 20MHz
+#define configCPU_CLOCK_HZ                      80000000        // 20MHz
 #define configMINIMAL_STACK_SIZE                ( ( uint16_t ) 100 )
 #define configMAX_TASK_NAME_LEN                 ( 16 )
 
 /* TODO: look at datasheet for heap size */
-#define configTOTAL_HEAP_SIZE                   ( ( size_t ) 12000)  // ( 50 * 1024 ) )
+#define configTOTAL_HEAP_SIZE                   ( ( size_t ) 5120)  // ( 50 * 1024 ) )
 
 #define configUSE_IDLE_HOOK             0
 #define configUSE_TICK_HOOK             0
@@ -105,7 +105,6 @@ header file. */
 #define INCLUDE_xTaskGetHandle                  1
 #define INCLUDE_xTaskResumeFromISR              1
 #define INCLUDE_xSemaphoreGetMutexHolder        1
-#define INCLUDE_eTaskGetState                   1
 
 /* Cortex-M3/4 interrupt priority configuration follows...................... */
 /* Use the system definition, if there is one. */
