@@ -244,10 +244,16 @@ void UI_Init(uint32_t ui32SysClock)
     uDMAControlBaseSet(&psDMAControlTable[0]);
     uDMAEnable();
 
+    // Initialize the touch screen driver and have it route its messages to the
+    // widget tree.
+    TouchScreenInit(ui32SysClock);
+    TouchScreenCallbackSet(WidgetPointerMessage);
+
+    // Fun graphic to symbolize system start
     UI_OnWarmUpPaint(&sContext);
 
     // Initialize the widget tree
-    UI_InitWidgetsIntegrationTest(ui32SysClock);
+    UI_InitWidgetsIntegrationTest();
 }
 
 //*****************************************************************************
@@ -255,13 +261,8 @@ void UI_Init(uint32_t ui32SysClock)
 // Initializes Widgets for Integration Testing
 //
 //*****************************************************************************
-void UI_InitWidgetsIntegrationTest(uint32_t sysClock)
+void UI_InitWidgetsIntegrationTest(void)
 {
-    // Initialize the touch screen driver and have it route its messages to the
-    // widget tree.
-    TouchScreenInit(sysClock);
-    TouchScreenCallbackSet(WidgetPointerMessage);
-
     // Add the title block and the previous and next buttons to the widget tree.
     WidgetAdd(WIDGET_ROOT, (tWidget *)&g_sPreviousUI);
     WidgetAdd(WIDGET_ROOT, (tWidget *)&g_sTitleUI);

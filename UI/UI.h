@@ -61,7 +61,7 @@
 // *** Function Definitions
 //
 void UI_Init(uint32_t ui32SysClock);
-void UI_InitWidgetsIntegrationTest(uint32_t sysClock);
+void UI_InitWidgetsIntegrationTest(void);
 void UI_GenerateHeader(void);
 //
 void UI_OnWarmUpPaint(tContext *psContext);                             /*      */

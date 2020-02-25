@@ -81,7 +81,7 @@ void main(void)
 //    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 2, &thMotorTask);
 //    vTaskSuspend(thMotorTask);
 
-    BaseType_t UIReturned = xTaskCreate(prv_UI, "UI", 2000, (void *)NULL, 1, &thUITask);
+    BaseType_t UIReturned = xTaskCreate(prv_UI, "UI", 400, (void *)NULL, 1, &thUITask);
 //    vTaskSuspend(thUITask);
 
 //    BaseType_t ExHeaterReturned = xTaskCreate(prvExtruderHeaterControl, "ExtruderHeater", 700, (void *)NULL, 2, &thExtruderHeaterTask);
