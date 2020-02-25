@@ -110,13 +110,17 @@ void prv_Motor(void *pvParameters) {
                 //
 
                 motor_set_direction(x_motor, Backward);
-                motor_set_direction(x_motor, Backward);
+                motor_set_direction(y_motor, Backward);
+                motor_set_direction(z_motor, Backward);
 
                 motor_change_pwm_duty_cycle(x_motor, 50);
                 motor_start(ULONG_MAX, 0, X_MOTOR, STEP_16);
 
                 motor_change_pwm_duty_cycle(y_motor, 50);
                 motor_start(ULONG_MAX, 0, Y_MOTOR, STEP_16);
+
+                motor_change_pwm_duty_cycle(z_motor, 50);
+                motor_start(ULONG_MAX, 0, Z_MOTOR, STEP_16);
 
                 vTaskDelay(xMaxBlockTime);
 
@@ -738,8 +742,8 @@ void motor_start(uint32_t distance, uint32_t direction, uint8_t motor, uint8_t s
         GPIOPinWrite(z_motor.NSLEEP.base, z_motor.NSLEEP.pin, z_motor.NSLEEP.pin);
         PWMIntEnable(PWM0_BASE, PWM_INT_GEN_2);
         PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_2, PWM_INT_CNT_ZERO);
-        motor_set_step_size(y_motor, step_size);
-        motor_enable(y_motor);
+        motor_set_step_size(z_motor, step_size);
+        motor_enable(z_motor);
     case EX_MOTOR:
         GPIOPinWrite(ex_motor.NSLEEP.base, ex_motor.NSLEEP.pin, ex_motor.NSLEEP.pin);
         PWMIntEnable(PWM0_BASE, PWM_INT_GEN_3);
