@@ -8,7 +8,7 @@
 #ifndef BSP_H_
 #define BSP_H_
 
-#define TEST_PREHEATING
+//#define TEST_PREHEATING
 //#ifdef TEST_CALIBRATION
 
 /*  D R I V E R   L I B   */
