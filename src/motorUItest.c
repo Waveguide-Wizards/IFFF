@@ -19,13 +19,13 @@ void prv_MotorUITest(void  *pvParameters)
 
     while(1)
     {
-        NotifReceived = ulTaskNotifyWait( pdFALSE, ULONG_MAX, &ulNotificationValue, xMaxBlockTime );
+//        NotifReceived = ulTaskNotifyWait( pdFALSE, ULONG_MAX, &ulNotificationValue, xMaxBlockTime );
 
         /* Send a notification to the UI to show the initial test screen */
-        xTaskNotify(thUI_Task, MUI_TEST_SCREEN, eSetBits);
+//        xTaskNotify(thUI_Task, MUI_TEST_SCREEN, eSetBits);
         /* The task has been notified */
-        if( NotifReceived == pdPASS)
-        {
+//        if( NotifReceived == pdPASS)
+//        {
             // Sync. with UI thread to publish an update to the user and wait for a button press
             /*
             if(ulNotificationValue == Notif_from_UI)
@@ -35,15 +35,17 @@ void prv_MotorUITest(void  *pvParameters)
 
             }   */
 
-            if( ulNotificationValue == )
-        }
+//            if( ulNotificationValue == )
+//        }
 
+        xTaskNotify(thMotorTask, MUI_TEST_PROCEDURE, eSetBits);
 
         /* The task has not received a notification */
 
-        else{
-            vTaskDelay( xMaxBlockTime );
-        }
+//        else{
+//            vTaskDelay( xMaxBlockTime );
+//        }
+        vTaskDelay( xMaxBlockTime );
 
 
 

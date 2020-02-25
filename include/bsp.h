@@ -150,11 +150,11 @@ typedef enum {
 #define Z_DIR_PORT          GPIO_PORTE_BASE
 #define Z_DIR_PIN           GPIO_PIN_3      // output
 
-#define Z_ENABLE_PORT       GPIO_PORTD_BASE
-#define Z_ENABLE_PIN        GPIO_PIN_4      // output
+#define Z_ENABLE_PORT       GPIO_PORTF_BASE
+#define Z_ENABLE_PIN        GPIO_PIN_1      // output
 
-#define Z_NSLEEP_PORT       GPIO_PORTD_BASE
-#define Z_NSLEEP_PIN        GPIO_PIN_5      // output
+#define Z_NSLEEP_PORT       GPIO_PORTB_BASE
+#define Z_NSLEEP_PIN        GPIO_PIN_2      // output
 
 #define Z_NFAULT_PORT       GPIO_PORTD_BASE
 #define Z_NFAULT_PIN        GPIO_PIN_6      // input

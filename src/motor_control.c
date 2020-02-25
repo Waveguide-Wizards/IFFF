@@ -75,6 +75,7 @@ volatile Motor_Status_t Task_Status;
 /*  T A S K S   */
 void prv_Motor(void *pvParameters) {
     const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 10000 );  // TODO: switch to max port delay
+    BaseType_t NotifReceived;
     uint32_t ulNotificationValue;
 //    BaseType_t queue_receive_status;
     uint8_t instruction = 1;
@@ -93,55 +94,82 @@ void prv_Motor(void *pvParameters) {
 
     for( ;; ) {
         /* Wait for current instruction to be completed */
-        ulNotificationValue = ulTaskNotifyTake( pdFALSE, xMaxBlockTime );
+        NotifReceived = ulTaskNotifyWait( pdFALSE, ULONG_MAX, &ulNotificationValue, xMaxBlockTime );
 
 //        if( (ulNotificationValue == 1)  && (printer_state == Printing)) {
             // pop from queue
 
-        if(do_it == true) {
+        if(NotifReceived == pdPass)
+        {
+            if(ulNotificationValue == MUI_TEST_PROCEDURE)
+            {
+                // Make changing printer state atomic
+                taskENTER_CRITICAL();
+                printer_state = Printing;
+                taskENTER_CRITICAL();
+                //
 
-            xQueueReceive(motor_instruction_queue,  &next_instruction, (TickType_t)5);
+                motor_set_direction(x_motor, Backward);
+                motor_set_direction(x_motor, Backward);
 
-//            // set up motors
-            find_direction(current_instruction.x_pos, x_motor);
-            find_direction(current_instruction.y_pos, y_motor);
-//            find_direction(current_instruction->z_pos, z_motor);
-//            find_direction(current_instruction->x_pos, ex_motor);
+                motor_change_pwm_duty_cycle(x_motor, 50);
+                motor_start(ULONG_MAX, 0, X_MOTOR, STEP_16);
 
-            // update positions
-            x_motor.position = current_instruction.x_pos;
-            y_motor.position = current_instruction.y_pos;
-//            z_motor.position = current_instruction->z_pos;
-//            ex_motor.position = current_instruction->extruder_pos;
+                motor_change_pwm_duty_cycle(y_motor, 50);
+                motor_start(ULONG_MAX, 0, Y_MOTOR, STEP_16);
 
-            // find step counts
-            x_needed_step_count = dist_to_steps(next_instruction.x_pos - current_instruction.x_pos);
-            y_needed_step_count = dist_to_steps(next_instruction.y_pos - current_instruction.y_pos);
-//            z_pwm_count = dist_to_steps(current_instruction->z_pos);
-//            ex_pwm_count = dist_to_steps(current_instruction->ex_pos);
+                vTaskDelay(xMaxBlockTime);
 
-            current_instruction = next_instruction;
-            // start PWM on all motors
-            motor_change_pwm_duty_cycle(x_motor, 50);
-            motor_start(current_instruction.x_pos, 0, X_MOTOR, STEP_16);
+            }
 
-            motor_change_pwm_duty_cycle(y_motor, 50);
-            motor_start(current_instruction.y_pos, 0, Y_MOTOR, STEP_16);
-
-
-            do_it = false;
         }
-        else if(do_it == false) {
-            motor_disable(x_motor);
-            motor_disable(y_motor);
-            motor_change_pwm_duty_cycle(x_motor, 0);
-            motor_change_pwm_duty_cycle(y_motor, 0);
-            do_it = true;
+
+        else{
+            vTaskDelay(xMaxBlockTime);
         }
-        else {  // taking notification timed out, indicate error occurred
-            printer_state = Error;
-        }
-        vTaskDelay(xMaxBlockTime);
+//        if(do_it == true) {
+//
+//            xQueueReceive(motor_instruction_queue,  &next_instruction, (TickType_t)5);
+//
+////            // set up motors
+//            find_direction(current_instruction.x_pos, x_motor);
+//            find_direction(current_instruction.y_pos, y_motor);
+////            find_direction(current_instruction->z_pos, z_motor);
+////            find_direction(current_instruction->x_pos, ex_motor);
+//
+//            // update positions
+//            x_motor.position = current_instruction.x_pos;
+//            y_motor.position = current_instruction.y_pos;
+////            z_motor.position = current_instruction->z_pos;
+////            ex_motor.position = current_instruction->extruder_pos;
+//
+//            // find step counts
+//            x_needed_step_count = dist_to_steps(next_instruction.x_pos - current_instruction.x_pos);
+//            y_needed_step_count = dist_to_steps(next_instruction.y_pos - current_instruction.y_pos);
+////            z_pwm_count = dist_to_steps(current_instruction->z_pos);
+////            ex_pwm_count = dist_to_steps(current_instruction->ex_pos);
+//
+//            current_instruction = next_instruction;
+//            // start PWM on all motors
+//            motor_change_pwm_duty_cycle(x_motor, 50);
+//            motor_start(current_instruction.x_pos, 0, X_MOTOR, STEP_16);
+//
+//            motor_change_pwm_duty_cycle(y_motor, 50);
+//            motor_start(current_instruction.y_pos, 0, Y_MOTOR, STEP_16);
+//
+//
+//            do_it = false;
+//        }
+//        else if(do_it == false) {
+//            motor_disable(x_motor);
+//            motor_disable(y_motor);
+//            motor_change_pwm_duty_cycle(x_motor, 0);
+//            motor_change_pwm_duty_cycle(y_motor, 0);
+//            do_it = true;
+//        }
+//        else {  // taking notification timed out, indicate error occurred
+//            printer_state = Error;
+//        }
 
 
 //        xTaskNotifyWait
@@ -478,6 +506,8 @@ void motor_init_x_gpio(void)
 
     MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
     MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 
     /* Set GPIO output pins */
     MAP_GPIODirModeSet(x_motor.M0.base, x_motor.M0.pin, GPIO_DIR_MODE_OUT);
@@ -585,9 +615,10 @@ void motor_init_z_gpio(void)
 
     // Enable Ports
 
-    MAP_SysCtlPeripheralEnable(z_motor.M0.base);      // Port E
-    MAP_SysCtlPeripheralEnable(z_motor.M1.base);      // Port J
-    MAP_SysCtlPeripheralEnable(z_motor.NFAULT.base);  // Port H
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 
     /* Set GPIO output pins */
     MAP_GPIODirModeSet(z_motor.M0.base, z_motor.M0.pin, GPIO_DIR_MODE_OUT);
