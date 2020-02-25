@@ -34,9 +34,9 @@ typedef enum {
 /*
  * TODO: Change these to real pins and ports
  */
-#define POC
+#define MUI_TEST
 
-#ifdef POC
+#ifdef MUI_TEST
 /* X motor Uses PWM Generator block 0 and the output is PWM out 0 */
 #define X_PWM_BLOCK         PWM_GEN_0
 #define X_PWM_OUT           PWM_OUT_0
@@ -44,8 +44,8 @@ typedef enum {
 #define X_M1_PORT           GPIO_PORTB_BASE
 #define X_M1_PIN            GPIO_PIN_0      // output
 
-#define X_M0_PORT           GPIO_PORTB_BASE
-#define X_M0_PIN            GPIO_PIN_5      // output
+#define X_M0_PORT           GPIO_PORTD_BASE
+#define X_M0_PIN            GPIO_PIN_3      // output
 
 #define X_DIR_PORT          GPIO_PORTB_BASE
 #define X_DIR_PIN           GPIO_PIN_1      // output
@@ -53,8 +53,8 @@ typedef enum {
 #define X_ENABLE_PORT       GPIO_PORTE_BASE
 #define X_ENABLE_PIN        GPIO_PIN_4      // output
 
-#define X_NSLEEP_PORT       GPIO_PORTE_BASE
-#define X_NSLEEP_PIN        GPIO_PIN_5      // output
+#define X_NSLEEP_PORT       GPIO_PORTA_BASE
+#define X_NSLEEP_PIN        GPIO_PIN_7      // output
 
 #define X_NFAULT_PORT       GPIO_PORTE_BASE
 #define X_NFAULT_PIN        GPIO_PIN_1      // input
@@ -103,7 +103,7 @@ typedef enum {
 
 /*  Y - MOTOR   */
 #define Y_PWM_BLOCK         PWM_GEN_1
-#define Y_PWM_OUT           PWM_OUT_2
+#define Y_PWM_OUT           PWM_OUT_3
 
 #define Y_M1_PORT           GPIO_PORTF_BASE
 #define Y_M1_PIN            GPIO_PIN_3      // output
@@ -124,12 +124,12 @@ typedef enum {
 #define Y_NFAULT_PIN        GPIO_PIN_7      // input
 
 #define Y_STEP_PORT         GPIO_PORTB_BASE
-#define Y_STEP_PIN          GPIO_PIN_4      // output (same as Y_MOTOR_PWM_OUT)
+#define Y_STEP_PIN          GPIO_PIN_5      // output (same as Y_MOTOR_PWM_OUT)
 
 #define Y_MOTOR_PWM_BASE    PWM0_BASE
-#define Y_MOTOR_PWM_CHANNEL 2
+#define Y_MOTOR_PWM_CHANNEL 3
 
-#define Y_MOTOR_PWM_OUT     GPIO_PB4_M0PWM2
+#define Y_MOTOR_PWM_OUT     GPIO_PB5_M0PWM3
 
 
 /*
@@ -138,36 +138,37 @@ typedef enum {
  */
 
 /*  Z - MOTOR   */
-#define Z_PWM_BLOCK         PWM_GEN_3
-#define Z_PWM_OUT           PWM_OUT_6
+#define Z_PWM_BLOCK         PWM_GEN_2
+#define Z_PWM_OUT           PWM_OUT_5
 
-#define Z_M1_PORT           GPIO_PORTF_BASE
-#define Z_M1_PIN            GPIO_PIN_7      // output
+#define Z_M1_PORT           GPIO_PORTE_BASE
+#define Z_M1_PIN            GPIO_PIN_0      // output
 
-#define Z_M0_PORT           GPIO_PORTG_BASE
+#define Z_M0_PORT           GPIO_PORTE_BASE
 #define Z_M0_PIN            GPIO_PIN_2      // output
 
-#define Z_DIR_PORT          GPIO_PORTG_BASE
-#define Z_DIR_PIN           GPIO_PIN_1      // output
+#define Z_DIR_PORT          GPIO_PORTE_BASE
+#define Z_DIR_PIN           GPIO_PIN_3      // output
 
-#define Z_ENABLE_PORT       GPIO_PORTG_BASE
-#define Z_ENABLE_PIN        GPIO_PIN_0      // output
+#define Z_ENABLE_PORT       GPIO_PORTD_BASE
+#define Z_ENABLE_PIN        GPIO_PIN_4      // output
 
-#define Z_NSLEEP_PORT       GPIO_PORTB_BASE
-#define Z_NSLEEP_PIN        GPIO_PIN_2      // output
+#define Z_NSLEEP_PORT       GPIO_PORTD_BASE
+#define Z_NSLEEP_PIN        GPIO_PIN_5      // output
 
-#define Z_NFAULT_PORT       GPIO_PORTB_BASE
-#define Z_NFAULT_PIN        GPIO_PIN_3      // input
+#define Z_NFAULT_PORT       GPIO_PORTD_BASE
+#define Z_NFAULT_PIN        GPIO_PIN_6      // input
 
-#define Z_STEP_PORT         GPIO_PORTD_BASE
-#define Z_STEP_PIN          GPIO_PIN_0      // output
+#define Z_STEP_PORT         GPIO_PORTE_BASE
+#define Z_STEP_PIN          GPIO_PIN_5      // output
 
 #define Z_MOTOR_PWM_BASE    PWM0_BASE       //  M0PWM6
-#define Z_MOTOR_PWM_CHANNEL 6
+#define Z_MOTOR_PWM_CHANNEL 5
 
-#define Z_MOTOR_STEP        GPIO_PD0_M0PWM6
+#define Z_MOTOR_STEP        GPIO_PE5_M0PWM5
 
 
+#else
 /*  EXTRUDER - MOTOR   */
 #define EX_PWM_BLOCK        PWM_GEN_2
 #define EX_PWM_OUT          PWM_OUT_5
@@ -199,14 +200,14 @@ typedef enum {
 #define EX_MOTOR_STEP        GPIO_PE5_M0PWM5
 
 /*  EXTRUDER HEATER */
-#define EX_HEATER_PWM_BLOCK     PWM_GEN_3
-#define EX_HEATER_PWM_OUT       PWM_OUT_6
+#define EX_HEATER_PWM_BLOCK     PWM_GEN_1
+#define EX_HEATER_PWM_OUT       PWM_OUT_3
 
 #define EX_HEATER_PWM_PORT      GPIO_PORTA_BASE
 #define EX_HEATER_PWM_PIN       GPIO_PIN_7
 
 #define EX_HEATER_PWM_BASE      PWM1_BASE
-#define EX_HEATER_PWM_CHANNEL   6
+#define EX_HEATER_PWM_CHANNEL   3
 
 #define EX_HEATER_PWM_PIN_MAP   GPIO_PA7_M1PWM3
 
@@ -216,19 +217,19 @@ typedef enum {
 #define EX_HEATER_ADC_CHANNEL   ADC_CTL_CH7
 
 #define EX_HEATER_ADC_PORT      GPIO_PORTD_BASE
-#define EX_HEATER_ADC_PIN       GPIO_PIN_0
+#define EX_HEATER_ADC_PIN       GPIO_PIN_2
 
 /*  BED HEATER   */
-#define BED_HEATER_PWM_PIN_MAP   GPIO_PD1_M1PWM1
+#define BED_HEATER_PWM_PIN_MAP   GPIO_PF0_M1PWM4
 
-#define BED_HEATER_PWM_BLOCK     PWM_GEN_0
-#define BED_HEATER_PWM_OUT       PWM_OUT_1
+#define BED_HEATER_PWM_BLOCK     PWM_GEN_2
+#define BED_HEATER_PWM_OUT       PWM_OUT_4
 
-#define BED_HEATER_PWM_PORT      GPIO_PORTD_BASE
-#define BED_HEATER_PWM_PIN       GPIO_PIN_1
+#define BED_HEATER_PWM_PORT      GPIO_PORTF_BASE
+#define BED_HEATER_PWM_PIN       GPIO_PIN_0
 
 #define BED_HEATER_PWM_BASE      PWM1_BASE
-#define BED_HEATER_PWM_CHANNEL   1
+#define BED_HEATER_PWM_CHANNEL   4
 
 #define BED_HEATER_ADC_SEQUENCER    3
 
@@ -238,8 +239,6 @@ typedef enum {
 #define BED_HEATER_ADC_PORT         GPIO_PORTD_BASE
 #define BED_HEATER_ADC_PIN          GPIO_PIN_1
 
-
-#else
 
 
 /*  X - MOTOR   */

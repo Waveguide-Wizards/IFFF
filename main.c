@@ -79,11 +79,11 @@ void main(void)
 //    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 2, &thMotorTask);
 //    vTaskSuspend(thMotorTask);
 
-    BaseType_t ExHeaterReturned = xTaskCreate(prvExtruderHeaterControl, "ExtruderHeater", 700, (void *)NULL, 2, &thExtruderHeaterTask);
-    vTaskSuspend(thExtruderHeaterTask);
+//    BaseType_t ExHeaterReturned = xTaskCreate(prvExtruderHeaterControl, "ExtruderHeater", 700, (void *)NULL, 2, &thExtruderHeaterTask);
+//    vTaskSuspend(thExtruderHeaterTask);
 
-    BaseType_t BedHeaterReturned = xTaskCreate(prvBedHeaterControl, "BedHeater", 500, (void *)NULL, 2, &thBedHeaterTask);
-    vTaskSuspend(thBedHeaterTask);
+//    BaseType_t BedHeaterReturned = xTaskCreate(prvBedHeaterControl, "BedHeater", 500, (void *)NULL, 2, &thBedHeaterTask);
+//    vTaskSuspend(thBedHeaterTask);
 
 //    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, &thErrorTask);
 
@@ -91,6 +91,7 @@ void main(void)
 //    BaseType_t CalibrationReturned = xTaskCreate(prvCalibration, "Calibration", configMINIMAL_STACK_SIZE, (void *)NULL, 3, &thCalibration);
 //    vTaskSuspend(thCalibration);
 
+    BaseType_t MotorUITestReturned = xTaskCreate(prv_MotorUITest, "Motor UI Test", configMINIMAL_STACK_SIZE,  (void *)NULL, 3, &thMotorUITest);
     // Priority 3
     // Priority 4
     // Priority 5
@@ -115,6 +116,7 @@ void main(void)
     vTaskResume(thCalibration);
     vTaskDelete(thConfig);
 #endif
+
 
     /* start scheduler */
     vTaskStartScheduler();
