@@ -27,6 +27,7 @@
 #include "heater_control.h"
 #include "led.h"
 #include "motor_control.h"
+#include "motorUITest.h"
 
 
 /*  F R E E R T O S   H O O K S   */
@@ -51,6 +52,7 @@ TaskHandle_t thExtruderTask = NULL;
 TaskHandle_t thExtruderHeaterTask = NULL;
 TaskHandle_t thBedHeaterTask = NULL;
 TaskHandle_t thMotorTask = NULL;
+TaskHandle_t thMotorUITest = NULL;
 
 
 /*   --- M A I N ---   */
@@ -76,7 +78,7 @@ void main(void)
     /* create tasks */
 
     // Priority 1
-//    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 2, &thMotorTask);
+    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 3, &thMotorTask);
 //    vTaskSuspend(thMotorTask);
 
 //    BaseType_t ExHeaterReturned = xTaskCreate(prvExtruderHeaterControl, "ExtruderHeater", 700, (void *)NULL, 2, &thExtruderHeaterTask);
@@ -91,7 +93,7 @@ void main(void)
 //    BaseType_t CalibrationReturned = xTaskCreate(prvCalibration, "Calibration", configMINIMAL_STACK_SIZE, (void *)NULL, 3, &thCalibration);
 //    vTaskSuspend(thCalibration);
 
-    BaseType_t MotorUITestReturned = xTaskCreate(prv_MotorUITest, "Motor UI Test", configMINIMAL_STACK_SIZE,  (void *)NULL, 3, &thMotorUITest);
+    BaseType_t MotorUITestReturned = xTaskCreate(prv_MotorUITest, "Motor UI Test", configMINIMAL_STACK_SIZE,  (void *)NULL, 2, &thMotorUITest);
     // Priority 3
     // Priority 4
     // Priority 5
@@ -99,13 +101,16 @@ void main(void)
 
     /* check that tasks were created successfully */
 //    configASSERT(XMotorReturned == pdPASS);
-    configASSERT(ExHeaterReturned == pdPASS);
-    configASSERT(BedHeaterReturned == pdPASS);
+//    configASSERT(ExHeaterReturned == pdPASS);
+//    configASSERT(BedHeaterReturned == pdPASS);
 //    configASSERT(ErrorCheckReturned == pdPASS);
     configASSERT(BlinkyReturned == pdPASS);
+//    configASSERT(MotorUITestReturned == pdPASS);
+//    configASSERT(XMotorReturned == pdPASS);
+
 
     printer_state = Idle;
-
+#ifndef MUI_TEST
 #ifdef TEST_PREHEATING
     printer_state = Preheating;
     vTaskResume(thExtruderHeaterTask);
@@ -115,6 +120,7 @@ void main(void)
     printer_state = Calibration;
     vTaskResume(thCalibration);
     vTaskDelete(thConfig);
+#endif
 #endif
 
 

@@ -139,7 +139,7 @@ uint8_t update_motor_status(uint8_t motor);
 
 void PWM0Gen0IntHandler(void);
 void PWM0Gen1IntHandler(void);
-void PWM0Gen3IntHandler(void);
+void PWM0Gen2IntHandler(void);
 
 /*  E R R O R   H A N D L I N G   */
 void emergency_disable_motors(void);

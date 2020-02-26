@@ -1,3 +1,6 @@
+
+#include "bsp.h"
+
 /*  F R E E R T O S   I N C L U D E S   */
 #include "FreeRTOS.h"
 #include "task.h"
@@ -10,12 +13,16 @@
 /* G L O B A L S */
 extern eState printer_state;
 
+extern TaskHandle_t thMotorTask;
+
 
 void prv_MotorUITest(void  *pvParameters)
 {
-    const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 1000 );  // TODO: switch to max port delay
+    const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 10000 );  // TODO: switch to max port delay
     BaseType_t NotifReceived;
     uint32_t ulNotificationValue;
+    uint8_t motorNotif = 0;
+
 
     while(1)
     {
@@ -38,7 +45,10 @@ void prv_MotorUITest(void  *pvParameters)
 //            if( ulNotificationValue == )
 //        }
 
-        xTaskNotify(thMotorTask, MUI_TEST_PROCEDURE, eSetBits);
+        if(!motorNotif)
+        {
+            xTaskNotify(thMotorTask, MUI_TEST_PROCEDURE, eSetBits);
+        }
 
         /* The task has not received a notification */
 

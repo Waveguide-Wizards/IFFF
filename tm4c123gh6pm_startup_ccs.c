@@ -38,7 +38,7 @@ extern void vPortSVCHandler(void);
 extern void xPortSysTickHandler(void);
 extern void PWM0Gen0IntHandler(void);
 extern void PWM0Gen1IntHandler(void);
-extern void PWM0Gen3IntHandler(void);
+extern void PWM0Gen2IntHandler(void);
 extern void GPIO_A_IntHandler(void);
 
 
@@ -104,7 +104,7 @@ void (* const g_pfnVectors[])(void) =
      IntDefaultHandler,                      // PWM Fault
      PWM0Gen0IntHandler,                      // PWM Generator 0
      PWM0Gen1IntHandler,                      // PWM Generator 1
-     IntDefaultHandler,                      // PWM Generator 2
+     PWM0Gen2IntHandler,                      // PWM Generator 2
      IntDefaultHandler,                      // Quadrature Encoder 0
      IntDefaultHandler,                      // ADC Sequence 0
      IntDefaultHandler,                      // ADC Sequence 1
@@ -137,7 +137,7 @@ void (* const g_pfnVectors[])(void) =
      0,                                      // Reserved
      IntDefaultHandler,                      // Hibernate
      IntDefaultHandler,                      // USB0
-     PWM0Gen3IntHandler,                      // PWM Generator 3
+     IntDefaultHandler,                      // PWM Generator 3
      IntDefaultHandler,                      // uDMA Software Transfer
      IntDefaultHandler,                      // uDMA Error
      IntDefaultHandler,                      // ADC1 Sequence 0

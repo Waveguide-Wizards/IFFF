@@ -66,7 +66,7 @@ void prv_ErrorCheck(void *pvParameters) {
 
         // disable possibly faulty peripherals
         emergency_disable_motors();
-        emergency_heaters_disable();
+//        emergency_heaters_disable();
 
         /* react to the latest error */
         switch(newest_error) {

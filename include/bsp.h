@@ -31,6 +31,10 @@ typedef enum {
     Printing,
 } eState;
 
+/*      E V E N T    F L A G S      */
+
+#define MUI_TEST_PROCEDURE      0x88886969
+
 /*
  * TODO: Change these to real pins and ports
  */
