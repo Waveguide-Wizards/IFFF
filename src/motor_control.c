@@ -80,20 +80,20 @@ void prv_Motor(void *pvParameters) {
     BaseType_t NotifReceived;
     uint32_t ulNotificationValue;
 //    BaseType_t queue_receive_status;
-    uint8_t instruction = 1;
+//    uint8_t instruction = 1;
     uint8_t motors_launched = 0;
 
 //    // init motors
     init_all_motors();
-    bool do_it = false;
+//    bool do_it = false;
 
-    Motor_Instruction_t current_instruction, next_instruction;
-
-    current_instruction.x_pos = 0;
-    current_instruction.y_pos = 0;
-    current_instruction.z_pos = 0;
-    current_instruction.speed = 0;
-    current_instruction.extruder_pos = 0;
+//    Motor_Instruction_t current_instruction, next_instruction;
+//
+//    current_instruction.x_pos = 0;
+//    current_instruction.y_pos = 0;
+//    current_instruction.z_pos = 0;
+//    current_instruction.speed = 0;
+//    current_instruction.extruder_pos = 0;
 
     for( ;; ) {
         /* Wait for current instruction to be completed */
@@ -105,27 +105,27 @@ void prv_Motor(void *pvParameters) {
         {
           if(ulNotificationValue && MUI_TEST_PROCEDURE)
           {
-            ulNotificationValue &= !MUI_TEST_PROCEDURE;
-            // Make changing printer state atomic
-            taskENTER_CRITICAL();
-            printer_state = Printing;
-            taskEXIT_CRITICAL();
-            //
+                ulNotificationValue &= !MUI_TEST_PROCEDURE;
+                // Make changing printer state atomic
+                taskENTER_CRITICAL();
+                printer_state = Printing;
+                taskEXIT_CRITICAL();
+                //
 
-            motor_set_direction(x_motor, Backward);
-            motor_set_direction(y_motor, Backward);
-            motor_set_direction(z_motor, Backward);
+                motor_set_direction(x_motor, Backward);
+                motor_set_direction(y_motor, Backward);
+                motor_set_direction(z_motor, Backward);
 
-            motor_change_pwm_duty_cycle(x_motor, 50);
-            motor_start(ULONG_MAX, 0, x_motor, STEP_16);
+//                motor_change_pwm_duty_cycle(x_motor, 50);
+//                motor_start(ULONG_MAX, 0, x_motor, STEP_16);
 
-            motor_change_pwm_duty_cycle(y_motor, 50);
-            motor_start(ULONG_MAX, 0, y_motor, STEP_16);
+                motor_change_pwm_duty_cycle(y_motor, 50);
+                motor_start(ULONG_MAX, 0, y_motor, STEP_16);
 
-            motor_change_pwm_duty_cycle(z_motor, 50);
-            motor_start(ULONG_MAX, 0, z_motor, STEP_16);
+//                motor_change_pwm_duty_cycle(z_motor, 50);
+//                motor_start(ULONG_MAX, 0, z_motor, STEP_16);
 
-            motors_launched = 1;
+                motors_launched = 1;
 //            vTaskDelay(xMaxBlockTime);
 
           }
