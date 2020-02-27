@@ -29,6 +29,7 @@
 extern eState printer_state;
 extern TaskHandle_t thErrorTask;
 extern TaskHandle_t thCalibration;
+extern TaskHandle_t thUITask;
 
 /*  F U N C T I O N S   */
 
@@ -37,20 +38,21 @@ void init_bumper_gpio(void){
 
     //Initialize the X, Y and Z bumper input pins consecutively
     GPIOPinTypeGPIOInput(X_BUMPER_PORT, X_BUMPER_PIN);
-    GPIOPinTypeGPIOInput(Y_BUMPER_PORT, Y_BUMPER_PIN);
-    GPIOPinTypeGPIOInput(Z_BUMPER_PORT, Z_BUMPER_PIN);
+//    GPIOPinTypeGPIOInput(Y_BUMPER_PORT, Y_BUMPER_PIN);
+//    GPIOPinTypeGPIOInput(Z_BUMPER_PORT, Z_BUMPER_PIN);
 
     //Set all pins to falling edge interrupts
     GPIOIntTypeSet(X_BUMPER_PORT, X_BUMPER_PIN,GPIO_FALLING_EDGE);
-    GPIOIntTypeSet(Y_BUMPER_PORT, Y_BUMPER_PIN,GPIO_RISING_EDGE);
-    GPIOIntTypeSet(Z_BUMPER_PORT, Z_BUMPER_PIN,GPIO_FALLING_EDGE);
+//    GPIOIntTypeSet(Y_BUMPER_PORT, Y_BUMPER_PIN,GPIO_RISING_EDGE);
+//    GPIOIntTypeSet(Z_BUMPER_PORT, Z_BUMPER_PIN,GPIO_FALLING_EDGE);
 
     //Enable all of the interrupts
     GPIOIntEnable(X_BUMPER_PORT, X_BUMPER_PIN);//Pin Probably needs to be swapped out.
-    GPIOIntEnable(Y_BUMPER_PORT, Y_BUMPER_PIN);//Pin Probably needs to be swapped out.
-    GPIOIntEnable(Z_BUMPER_PORT, Z_BUMPER_PIN);//Pin Probably needs to be swapped out.
+//    GPIOIntEnable(Y_BUMPER_PORT, Y_BUMPER_PIN);//Pin Probably needs to be swapped out.
+//    GPIOIntEnable(Z_BUMPER_PORT, Z_BUMPER_PIN);//Pin Probably needs to be swapped out.
 
     IntEnable(INT_GPIOA);
+    IntPrioritySet(INT_GPIOA, 0xF0);
 }
 
 void GPIO_A_IntHandler(void) {

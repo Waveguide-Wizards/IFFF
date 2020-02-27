@@ -51,7 +51,7 @@
 // arithmetic more efficient, this should be a power of two.
 //
 //*****************************************************************************
-#define QUEUE_SIZE              16
+#define QUEUE_SIZE              32
 
 #ifdef DEBUG_MSGQ
 //*****************************************************************************
