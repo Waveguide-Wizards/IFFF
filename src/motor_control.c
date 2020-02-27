@@ -602,6 +602,8 @@ void motor_init_y_gpio(void)
     MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
     MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
     MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+
 
 
     /* Set GPIO output pins */
