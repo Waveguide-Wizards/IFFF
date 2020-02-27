@@ -12,6 +12,7 @@
 // *** Variables
 //
 #pragma DATA_ALIGN(psDMAControlTable, 1024)
+bool begin_motor_IT;
 static tDMAControlTable psDMAControlTable[64];
 static tContext sContext;
 static tRectangle sRect;
@@ -223,6 +224,8 @@ RectangularButton(g_sNextUI, 0, 0, 0, &g_sKentec320x240x16_SSD2119, 270, 190,
 //*****************************************************************************
 void UI_Init(uint32_t ui32SysClock)
 {
+    begin_motor_IT = false;
+
     FPUEnable();
     FPULazyStackingEnable();
 
@@ -492,7 +495,7 @@ void UI_OnMotorTestPaint(tWidget *psWidget, tContext *psContext)
                          GrContextDpyWidthGet(psContext) / 2, 74, 0);
     GrStringDrawCentered(psContext, "the PWM motor control in the", -1,
                          GrContextDpyWidthGet(psContext) / 2, 92, 0);
-    GrStringDrawCentered(psContext, "context of calibration while", -1,
+    GrStringDrawCentered(psContext, "context of error events while", -1,
                          GrContextDpyWidthGet(psContext) / 2, 110, 0);
     GrStringDrawCentered(psContext, "integrating the UI for control", -1,
                          GrContextDpyWidthGet(psContext) / 2, 128, 0);
@@ -622,9 +625,9 @@ void UI_OnNext(tWidget *psWidget)
         return;
     }
 
-    if(g_ui32PanelUI == 8)
+    if(g_ui32PanelUI == 7)
     {
-        //this is where to send notification
+        begin_motor_IT = true;
     }
 
     // See if the panel should not have a next button

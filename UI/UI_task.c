@@ -21,6 +21,7 @@
 extern eState printer_state;
 extern TaskHandle_t thMotorTask;
 extern TaskHandle_t thExtruderTask;
+extern bool begin_motor_IT;
 
 void prv_UI(void *pvParameters)
 {
@@ -34,9 +35,9 @@ void prv_UI(void *pvParameters)
     // UI Main
     for(ever)
     {
-        if(printer_state == Idle)
+        if(printer_state == Idle && begin_motor_IT == true)
         {
-            // touchscreen event
+            begin_motor_IT = false;
             xTaskNotifyGive(thMotorTask);
         }
         else if(printer_state == Printing)
