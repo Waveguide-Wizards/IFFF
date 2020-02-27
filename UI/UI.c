@@ -37,7 +37,6 @@ const uint32_t bytesTx = 420;
 //*****************************************************************************
 char *g_pcPanei32NamesUI[] =
 {
-//    "   Warm Up   ",
     "   Introduction   ",
     "   Test Menu   ",
     "   Memory Test   ",
@@ -47,7 +46,7 @@ char *g_pcPanei32NamesUI[] =
     "   Test Complete   ",
     "   Motor Test   ",
     "   In Progress   ",
-    "   Limit Reached   ",
+    "   Error   ",
     "   Test Complete   "
 };
 
@@ -523,7 +522,7 @@ void UI_OnMotorColPaint(tWidget *psWidget, tContext *psContext)
     GrContextFontSet(psContext, &g_sFontCm18);
     GrContextForegroundSet(psContext, ClrSilver);
 
-    GrStringDrawCentered(psContext, "X Motor Collision with Bumper!", -1,
+    GrStringDrawCentered(psContext, "Motor Collision with Bumper!", -1,
                          GrContextDpyWidthGet(psContext) / 2, 100, 0);
 }
 
@@ -536,14 +535,8 @@ void UI_OnMotorCompletePaint(tWidget *psWidget, tContext *psContext)
     GrContextFontSet(psContext, &g_sFontCm18);
     GrContextForegroundSet(psContext, ClrSilver);
 
-    GrStringDrawCentered(psContext, "Motor Test Complete", -1,
-                         GrContextDpyWidthGet(psContext) / 2, 32, 0);
-    GrStringDrawCentered(psContext, "X Position: 10", -1,
-                         GrContextDpyWidthGet(psContext) / 2, 68, 0);
-    GrStringDrawCentered(psContext, "Y Position: 100", -1,
-                         GrContextDpyWidthGet(psContext) / 2, 86, 0);
-    GrStringDrawCentered(psContext, "Z Position: 20", -1,
-                         GrContextDpyWidthGet(psContext) / 2, 104, 0);
+    GrStringDrawCentered(psContext, "Motor Integration Test Complete", -1,
+                         GrContextDpyWidthGet(psContext) / 2, 100, 0);
 }
 
 //*****************************************************************************
@@ -827,6 +820,27 @@ void UI_ReturnHome(tWidget * psWidget)
 
     // Decrement the panel index.
     g_ui32PanelUI = 0;
+
+    // Set the title of this panel.
+    CanvasTextSet(&g_sTitleUI, g_pcPanei32NamesUI[g_ui32PanelUI]);
+    WidgetPaint((tWidget *)&g_sTitleUI);
+
+    // Add and draw the new panel.
+    WidgetAdd(WIDGET_ROOT, (tWidget *)(g_psPanelsUI + g_ui32PanelUI));
+    WidgetPaint((tWidget *)(g_psPanelsUI + g_ui32PanelUI));
+}
+
+void UI_HandleErrors(uint32_t err)
+{
+    //Error code DNE
+    if(err == 0)
+        return;
+
+    // Remove the current panel.
+    WidgetRemove((tWidget *)(g_psPanelsUI + g_ui32PanelUI));
+
+    // set the panel index.
+    g_ui32PanelUI = 9;
 
     // Set the title of this panel.
     CanvasTextSet(&g_sTitleUI, g_pcPanei32NamesUI[g_ui32PanelUI]);

@@ -41,6 +41,7 @@
 #include "grlib/slider.h"
 //
 #include "images.h"
+#include "error_checking.h"
 
 // *** Defines
 //
@@ -56,7 +57,6 @@
 //
 #define UI_TICKS_TO_MS(x)                   (x * 40000 / 3)
 #define UI_WARMUP_DELAY_TIME                40
-
 
 // *** Function Definitions
 //
@@ -88,6 +88,8 @@ void UI_MemSelectFile(tWidget *psWidget);
 void UI_SliderMemConfrimFile(tWidget * psWidget, int32_t i32Value);
 //
 void UI_OnSliderChange(tWidget *psWidget, int32_t i32Value);
+//
+void UI_HandleErrors(uint32_t err);
 
 
 #endif /* UI_H_ */

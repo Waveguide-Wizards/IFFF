@@ -24,7 +24,9 @@ extern TaskHandle_t thExtruderTask;
 
 void prv_UI(void *pvParameters)
 {
-    const TickType_t delay_time = pdMS_TO_TICKS( 100 );
+    static const TickType_t delay_time = pdMS_TO_TICKS( 100 );
+    static uint32_t error_code = 0;
+    static BaseType_t ret;
 
     //Initialize Variables
     UI_Init(SysCtlClockGet());
@@ -32,6 +34,14 @@ void prv_UI(void *pvParameters)
     // UI Main
     for(ever)
     {
+        //check for notifications
+        ret = xTaskNotifyWait(UI_CLEAR_BITS_ON_ENTRY, UI_CLEAR_BITS_ON_EXIT, &error_code, UI_NOTIFY_WAIT_TIME);
+        if(ret == pdPASS)
+        {
+            UI_HandleErrors(error_code);
+        }
+
+        //continue normal UI operation
         WidgetMessageQueueProcess();
         vTaskDelay(delay_time);
     }

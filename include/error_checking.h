@@ -8,7 +8,12 @@
 #ifndef ERROR_CHECKING_H_
 #define ERROR_CHECKING_H_
 
-#define NUM_ERROR_SOURCES       12
+#define NUM_ERROR_SOURCES                   12
+#define IT_NUM_SUBMODULES                   1
+//
+#define ERR_CODE_ID_BASE                    (0x00000000UL)
+#define ERR_MOTOR_CODE_BASE_ID              (ERR_CODE_ID_BASE + (0x0 << 16))
+
 
 #include <stdbool.h>
 
