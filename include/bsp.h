@@ -35,6 +35,11 @@ typedef enum {
 
 #define MUI_TEST_PROCEDURE      0x88886969
 
+
+#define X_MOTOR_DONE            0x11110001
+#define Y_MOTOR_DONE            0x11110002
+#define Z_MOTOR_DONE            0x11110004
+
 /*
  * TODO: Change these to real pins and ports
  */

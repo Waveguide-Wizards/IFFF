@@ -48,6 +48,7 @@ void prv_MotorUITest(void  *pvParameters)
         if(!motorNotif)
         {
             xTaskNotify(thMotorTask, MUI_TEST_PROCEDURE, eSetBits);
+            motorNotif = 1;
         }
 
         /* The task has not received a notification */

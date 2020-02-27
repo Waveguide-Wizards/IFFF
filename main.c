@@ -105,8 +105,8 @@ void main(void)
 //    configASSERT(BedHeaterReturned == pdPASS);
 //    configASSERT(ErrorCheckReturned == pdPASS);
     configASSERT(BlinkyReturned == pdPASS);
-//    configASSERT(MotorUITestReturned == pdPASS);
-//    configASSERT(XMotorReturned == pdPASS);
+    configASSERT(MotorUITestReturned == pdPASS);
+    configASSERT(XMotorReturned == pdPASS);
 
 
     printer_state = Idle;
