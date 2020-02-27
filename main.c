@@ -68,7 +68,7 @@ void main(void)
 
     /* I N I T */
 //    init_all_motors();
-//    init_bumper_gpio();
+    init_bumper_gpio();
 
     /* Q U E U E S */
 //    motor_instruction_queue = xQueueCreate(10, sizeof(Motor_Instruction_t));
@@ -83,7 +83,7 @@ void main(void)
     BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 3, &thMotorTask);
 //    vTaskSuspend(thMotorTask);
 
-    BaseType_t UIReturned = xTaskCreate(prv_UI, "UI", 400, (void *)NULL, 1, &thUITask);
+    BaseType_t UIReturned = xTaskCreate(prv_UI, "UI", 400, (void *)NULL, 2, &thUITask);
 
 
 //    BaseType_t ExHeaterReturned = xTaskCreate(prvExtruderHeaterControl, "ExtruderHeater", 700, (void *)NULL, 2, &thExtruderHeaterTask);
@@ -92,13 +92,13 @@ void main(void)
 //    BaseType_t BedHeaterReturned = xTaskCreate(prvBedHeaterControl, "BedHeater", 500, (void *)NULL, 2, &thBedHeaterTask);
 //    vTaskSuspend(thBedHeaterTask);
 
-//    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", configMINIMAL_STACK_SIZE, (void *)NULL, 2, &thErrorTask);
+    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", 200, (void *)NULL, 1, &thErrorTask);
 
     // Priority 2
 //    BaseType_t CalibrationReturned = xTaskCreate(prvCalibration, "Calibration", configMINIMAL_STACK_SIZE, (void *)NULL, 3, &thCalibration);
 //    vTaskSuspend(thCalibration);
 
-    BaseType_t MotorUITestReturned = xTaskCreate(prv_MotorUITest, "Motor UI Test", configMINIMAL_STACK_SIZE,  (void *)NULL, 2, &thMotorUITest);
+//    BaseType_t MotorUITestReturned = xTaskCreate(prv_MotorUITest, "Motor UI Test", configMINIMAL_STACK_SIZE,  (void *)NULL, 2, &thMotorUITest);
     // Priority 3
     // Priority 4
     // Priority 5
@@ -108,9 +108,9 @@ void main(void)
 //    configASSERT(XMotorReturned == pdPASS);
 //    configASSERT(ExHeaterReturned == pdPASS);
 //    configASSERT(BedHeaterReturned == pdPASS);
-//    configASSERT(ErrorCheckReturned == pdPASS);
+    configASSERT(ErrorCheckReturned == pdPASS);
 //    configASSERT(BlinkyReturned == pdPASS);
-    configASSERT(MotorUITestReturned == pdPASS);
+//    configASSERT(MotorUITestReturned == pdPASS);
     configASSERT(XMotorReturned == pdPASS);
     configASSERT(UIReturned == pdPASS);
 

@@ -33,6 +33,9 @@
 /*  F R E E R T O S   I N C L U D E S   */
 #include "FreeRTOS.h"
 #include "task.h"
+#include "limits.h"
+#include "queue.h"
+
 
 /*  G L O B A L   V A R I A B L E S   */
 extern TaskHandle_t thBlinkyTask;
@@ -42,6 +45,7 @@ extern TaskHandle_t thExtruderTask;
 extern TaskHandle_t thExtruderHeaterTask;
 extern TaskHandle_t thBedHeaterTask;
 extern TaskHandle_t thMotorTask;
+extern TaskHandle_t thUITask;
 
 /*  G L O B A L S   */
 extern eState printer_state;
@@ -53,31 +57,38 @@ static eError_Source newest_error = None;
 
 /*  T A S K S   */
 void prv_ErrorCheck(void *pvParameters) {
+    BaseType_t NotifReceived;
+    uint32_t ulNotificationValue;
+
     error_list_init();
     for( ;; ) {
         // wait for task notification
+//        NotifReceived = xTaskNotifyWait( 0, ULONG_MAX, &ulNotificationValue, portMAX_DELAY);
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
-
         // suspend tasks that might be faulty
         vTaskSuspend(thMotorTask);
-        vTaskSuspend(thExtruderHeaterTask);
-        vTaskSuspend(thBedHeaterTask);
-        vTaskSuspend(thExtruderTask);
+//        vTaskSuspend(thExtruderHeaterTask);
+//        vTaskSuspend(thBedHeaterTask);
+//        vTaskSuspend(thExtruderTask);
 
         // disable possibly faulty peripherals
         emergency_disable_motors();
 //        emergency_heaters_disable();
 
         /* react to the latest error */
-        switch(newest_error) {
-            /* BUMPERS: slight movement towards center */
-            case(X_Bumper): error_bumper_retract(X_Motor_ID); break;
-            case(Y_Bumper): error_bumper_retract(Y_Motor_ID); break;
-            case(Z_Bumper): error_bumper_retract(Z_Motor_ID); break;
-        }
+//        switch(newest_error) {
+//            /* BUMPERS: slight movement towards center */
+//            case(X_Bumper): error_bumper_retract(X_Motor_ID); break;
+//            case(Y_Bumper): error_bumper_retract(Y_Motor_ID); break;
+//            case(Z_Bumper): error_bumper_retract(Z_Motor_ID); break;
+//        }
+
+        error_bumper_retract(X_Motor_ID);
+        error_bumper_retract(Y_Motor_ID);
 
         /* determine number of errors */
         update_error_count();
+        xTaskNotify(thUITask, MUI_ERROR_RECEIVED, eSetBits);
 
         /* TODO: remove error from list if capable */
     }

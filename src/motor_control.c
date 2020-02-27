@@ -76,7 +76,7 @@ volatile Motor_Status_t Task_Status;
 
 /*  T A S K S   */
 void prv_Motor(void *pvParameters) {
-    const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 300 );  // TODO: switch to max port delay
+    const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 1000 );  // TODO: switch to max port delay
     BaseType_t NotifReceived;
     uint32_t ulNotificationValue;
 //    BaseType_t queue_receive_status;
@@ -103,7 +103,7 @@ void prv_Motor(void *pvParameters) {
             // pop from queue
         if(NotifReceived == pdPASS)
         {
-          if(ulNotificationValue && MUI_TEST_PROCEDURE)
+          if(ulNotificationValue & MUI_TEST_PROCEDURE)
           {
                 ulNotificationValue &= !MUI_TEST_PROCEDURE;
                 // Make changing printer state atomic
@@ -130,19 +130,19 @@ void prv_Motor(void *pvParameters) {
 
           }
 
-          if(ulNotificationValue && X_MOTOR_DONE)
+          if(ulNotificationValue & X_MOTOR_DONE)
           {
               ulNotificationValue &= !X_MOTOR_DONE;
               motor_disable(x_motor);
           }
 
-          if(ulNotificationValue && Y_MOTOR_DONE)
+          if(ulNotificationValue & Y_MOTOR_DONE)
           {
               ulNotificationValue &= !Y_MOTOR_DONE;
               motor_disable(y_motor);
           }
 
-          if(ulNotificationValue && Z_MOTOR_DONE)
+          if(ulNotificationValue & Z_MOTOR_DONE)
           {
               ulNotificationValue &= !Z_MOTOR_DONE;
               motor_disable(z_motor);
@@ -276,6 +276,7 @@ void init_x_motor(void) {
     motor_init_x_pwm();
     x_motor.ID = X_Motor_ID;
     motor_disable(x_motor);
+    motor_change_pwm_duty_cycle(x_motor, 0);
 }
 
 void init_y_motor(void) {
@@ -283,6 +284,7 @@ void init_y_motor(void) {
     motor_init_y_pwm();
     y_motor.ID = Y_Motor_ID;
     motor_disable(y_motor);
+    motor_change_pwm_duty_cycle(y_motor, 0);
 }
 
 
@@ -292,6 +294,7 @@ void init_z_motor(void) {
     motor_init_z_pwm();
     z_motor.ID = Z_Motor_ID;
     motor_disable(z_motor);
+    motor_change_pwm_duty_cycle(z_motor, 0);
 }
 
 #ifndef TEST

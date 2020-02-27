@@ -33,7 +33,10 @@ typedef enum {
 
 /*      E V E N T    F L A G S      */
 
+#define MUI_TEST_BEGIN          0x69694200
+
 #define MUI_TEST_PROCEDURE      0x88886969
+#define MUI_ERROR_RECEIVED      0x42042069
 
 
 #define X_MOTOR_DONE            0x11110001
