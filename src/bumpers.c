@@ -52,12 +52,12 @@ void init_bumper_gpio(void){
 //    GPIOIntEnable(Z_BUMPER_PORT, Z_BUMPER_PIN);//Pin Probably needs to be swapped out.
 
     IntEnable(INT_GPIOA);
-    IntPrioritySet(INT_GPIOA, 0xF0);
+    IntPrioritySet(INT_GPIOA, 0xE0);
 }
 
 void GPIO_A_IntHandler(void) {
     // Read the flags
-    portENTER_CRITICAL();
+//    portENTER_CRITICAL();
     uint32_t flags = GPIOIntStatus(GPIO_PORTA_BASE, 1);
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     GPIOIntClear(GPIO_PORTA_BASE, flags);
@@ -106,7 +106,7 @@ void GPIO_A_IntHandler(void) {
 
         vTaskNotifyGiveFromISR(thErrorTask, &xHigherPriorityTaskWoken);
         GPIOIntClear(GPIO_PORTA_BASE, flags);
-        portEXIT_CRITICAL();
+//        portEXIT_CRITICAL();
         portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
     }
 }

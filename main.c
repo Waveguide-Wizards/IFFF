@@ -68,7 +68,7 @@ void main(void)
 
     /* I N I T */
 //    init_all_motors();
-    init_bumper_gpio();
+//    init_bumper_gpio();
 
     /* Q U E U E S */
 //    motor_instruction_queue = xQueueCreate(10, sizeof(Motor_Instruction_t));

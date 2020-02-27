@@ -66,29 +66,30 @@ void prv_ErrorCheck(void *pvParameters) {
 //        NotifReceived = xTaskNotifyWait( 0, ULONG_MAX, &ulNotificationValue, portMAX_DELAY);
         ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
         // suspend tasks that might be faulty
-        vTaskSuspend(thMotorTask);
 //        vTaskSuspend(thExtruderHeaterTask);
 //        vTaskSuspend(thBedHeaterTask);
 //        vTaskSuspend(thExtruderTask);
+        if(printer_state == Printing) {
+            vTaskSuspend(thMotorTask);
+            // disable possibly faulty peripherals
+            emergency_disable_motors();
+    //        emergency_heaters_disable();
 
-        // disable possibly faulty peripherals
-        emergency_disable_motors();
-//        emergency_heaters_disable();
+            /* react to the latest error */
+    //        switch(newest_error) {
+    //            /* BUMPERS: slight movement towards center */
+    //            case(X_Bumper): error_bumper_retract(X_Motor_ID); break;
+    //            case(Y_Bumper): error_bumper_retract(Y_Motor_ID); break;
+    //            case(Z_Bumper): error_bumper_retract(Z_Motor_ID); break;
+    //        }
 
-        /* react to the latest error */
-//        switch(newest_error) {
-//            /* BUMPERS: slight movement towards center */
-//            case(X_Bumper): error_bumper_retract(X_Motor_ID); break;
-//            case(Y_Bumper): error_bumper_retract(Y_Motor_ID); break;
-//            case(Z_Bumper): error_bumper_retract(Z_Motor_ID); break;
-//        }
+            error_bumper_retract(X_Motor_ID);
+            error_bumper_retract(Y_Motor_ID);
 
-        error_bumper_retract(X_Motor_ID);
-        error_bumper_retract(Y_Motor_ID);
-
-        /* determine number of errors */
-        update_error_count();
-        xTaskNotify(thUITask, MUI_ERROR_RECEIVED, eSetBits);
+            /* determine number of errors */
+            update_error_count();
+            xTaskNotify(thUITask, MUI_ERROR_RECEIVED, eSetBits);
+        }
 
         /* TODO: remove error from list if capable */
     }

@@ -38,6 +38,7 @@ void prv_UI(void *pvParameters)
         if(printer_state == Idle && begin_motor_IT == true)
         {
             begin_motor_IT = false;
+            printer_state = Printing;
             xTaskNotify(thMotorTask, MUI_TEST_PROCEDURE, eSetBits);
         }
         else if(printer_state == Printing)

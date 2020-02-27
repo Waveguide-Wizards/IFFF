@@ -13,6 +13,7 @@
 /*  A P P L I C A T I O N   I N C L U D E S   */
 #include "bsp.h"
 #include "motor_control.h"
+#include "bumpers.h"
 
 /*  D R I V E R   L I B   */
 #include "driverlib/gpio.h"
@@ -101,64 +102,60 @@ void prv_Motor(void *pvParameters) {
 
 //        if( (ulNotificationValue == 1)  && (printer_state == Printing)) {
             // pop from queue
-        if(NotifReceived == pdPASS)
-        {
-          if(ulNotificationValue & MUI_TEST_PROCEDURE)
-          {
-                ulNotificationValue &= !MUI_TEST_PROCEDURE;
-                // Make changing printer state atomic
-                taskENTER_CRITICAL();
-                printer_state = Printing;
-                taskEXIT_CRITICAL();
-                //
+        if(NotifReceived == pdPASS) {
+          if(printer_state == Printing) {
+              if(ulNotificationValue & MUI_TEST_PROCEDURE) {
+                  ulNotificationValue &= !MUI_TEST_PROCEDURE;
+                  // Make changing printer state atomic
+                  taskENTER_CRITICAL();
+                  taskEXIT_CRITICAL();
+                  init_bumper_gpio();
 
-                motor_set_direction(x_motor, Backward);
-                motor_set_direction(y_motor, Backward);
-                motor_set_direction(z_motor, Backward);
 
-//                motor_change_pwm_duty_cycle(x_motor, 50);
-//                motor_start(ULONG_MAX, 0, x_motor, STEP_16);
+                  motor_set_direction(x_motor, Backward);
+                  motor_set_direction(y_motor, Backward);
+                  motor_set_direction(z_motor, Backward);
 
-                motor_change_pwm_duty_cycle(y_motor, 50);
-                motor_start(ULONG_MAX, 0, y_motor, STEP_16);
+                  motor_change_pwm_duty_cycle(x_motor, 50);
+                  motor_start(ULONG_MAX, 0, x_motor, STEP_16);
 
-//                motor_change_pwm_duty_cycle(z_motor, 50);
-//                motor_start(ULONG_MAX, 0, z_motor, STEP_16);
+                  motor_change_pwm_duty_cycle(y_motor, 50);
+                  motor_start(ULONG_MAX, 0, y_motor, STEP_16);
 
-                motors_launched = 1;
-//            vTaskDelay(xMaxBlockTime);
+                    //                motor_change_pwm_duty_cycle(z_motor, 50);
+                    //                motor_start(ULONG_MAX, 0, z_motor, STEP_16);
 
+                  motors_launched = 1;
+    //            vTaskDelay(xMaxBlockTime);
+              }
+
+              if(ulNotificationValue & X_MOTOR_DONE)
+              {
+                  ulNotificationValue &= !X_MOTOR_DONE;
+                  motor_disable(x_motor);
+              }
+
+              if(ulNotificationValue & Y_MOTOR_DONE)
+              {
+                  ulNotificationValue &= !Y_MOTOR_DONE;
+                  motor_disable(y_motor);
+              }
+
+              if(ulNotificationValue & Z_MOTOR_DONE)
+              {
+                  ulNotificationValue &= !Z_MOTOR_DONE;
+                  motor_disable(z_motor);
+              }
           }
-
-          if(ulNotificationValue & X_MOTOR_DONE)
-          {
-              ulNotificationValue &= !X_MOTOR_DONE;
-              motor_disable(x_motor);
-          }
-
-          if(ulNotificationValue & Y_MOTOR_DONE)
-          {
-              ulNotificationValue &= !Y_MOTOR_DONE;
-              motor_disable(y_motor);
-          }
-
-          if(ulNotificationValue & Z_MOTOR_DONE)
-          {
-              ulNotificationValue &= !Z_MOTOR_DONE;
-              motor_disable(z_motor);
-          }
-
+//        else if(NotifReceived == pdFAIL && motors_launched == 0)
+//        {
+//            motor_change_pwm_duty_cycle(x_motor, 10);
+//            motor_change_pwm_duty_cycle(y_motor, 10);
+//            motor_change_pwm_duty_cycle(z_motor, 10);
+//            motor_start(ULONG_MAX, 0, y_motor, STEP_16);
+//
+//        }
         }
-
-        else if(NotifReceived == pdFAIL && motors_launched == 0)
-        {
-            motor_change_pwm_duty_cycle(x_motor, 10);
-            motor_change_pwm_duty_cycle(y_motor, 10);
-            motor_change_pwm_duty_cycle(z_motor, 10);
-            motor_start(ULONG_MAX, 0, y_motor, STEP_16);
-
-        }
-
         vTaskDelay(xMaxBlockTime);
     }
 }
