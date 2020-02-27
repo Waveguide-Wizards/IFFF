@@ -46,7 +46,7 @@ char *g_pcPanei32NamesUI[] =
     "   Test Complete   ",
     "   Motor Test   ",
     "   In Progress   ",
-    "   Error   ",
+    "      Error       ",
     "   Test Complete   "
 };
 
@@ -620,6 +620,11 @@ void UI_OnNext(tWidget *psWidget)
     if(g_ui32PanelUI == (UI_NUM_PANELS - 1))
     {
         return;
+    }
+
+    if(g_ui32PanelUI == 8)
+    {
+        //this is where to send notification
     }
 
     // See if the panel should not have a next button

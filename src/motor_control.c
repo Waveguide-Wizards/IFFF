@@ -81,7 +81,7 @@ void prv_Motor(void *pvParameters) {
 
 //    // init motors
     init_all_motors();
-    bool do_it = false;
+    bool do_it = true;
 
     Motor_Instruction_t current_instruction, next_instruction;
 
@@ -97,37 +97,47 @@ void prv_Motor(void *pvParameters) {
 
 //        if( (ulNotificationValue == 1)  && (printer_state == Printing)) {
             // pop from queue
+        printer_state = Printing;
 
         if(do_it == true) {
 
-            xQueueReceive(motor_instruction_queue,  &next_instruction, (TickType_t)5);
+//            xQueueReceive(motor_instruction_queue,  &next_instruction, (TickType_t)5);
 
 //            // set up motors
-            find_direction(current_instruction.x_pos, x_motor);
-            find_direction(current_instruction.y_pos, y_motor);
+//            find_direction(current_instruction.x_pos, x_motor);
+//            find_direction(current_instruction.y_pos, y_motor);
 //            find_direction(current_instruction->z_pos, z_motor);
 //            find_direction(current_instruction->x_pos, ex_motor);
 
             // update positions
-            x_motor.position = current_instruction.x_pos;
-            y_motor.position = current_instruction.y_pos;
+//            x_motor.position = current_instruction.x_pos;
+//            y_motor.position = current_instruction.y_pos;
 //            z_motor.position = current_instruction->z_pos;
 //            ex_motor.position = current_instruction->extruder_pos;
 
             // find step counts
-            x_needed_step_count = dist_to_steps(next_instruction.x_pos - current_instruction.x_pos);
-            y_needed_step_count = dist_to_steps(next_instruction.y_pos - current_instruction.y_pos);
+//            x_needed_step_count = dist_to_steps(next_instruction.x_pos - current_instruction.x_pos);
+//            y_needed_step_count = dist_to_steps(next_instruction.y_pos - current_instruction.y_pos);
 //            z_pwm_count = dist_to_steps(current_instruction->z_pos);
 //            ex_pwm_count = dist_to_steps(current_instruction->ex_pos);
 
-            current_instruction = next_instruction;
+            x_needed_step_count = dist_to_steps(20000);
+            y_needed_step_count = dist_to_steps(20000);
+            z_needed_step_count = dist_to_steps(20000);
+
+//            current_instruction = next_instruction;
             // start PWM on all motors
             motor_change_pwm_duty_cycle(x_motor, 50);
-            motor_start(current_instruction.x_pos, 0, X_MOTOR, STEP_16);
+//            motor_start(current_instruction.x_pos, 0, X_MOTOR, STEP_16);
+            motor_start(20000, 0, X_MOTOR, STEP_16);
 
             motor_change_pwm_duty_cycle(y_motor, 50);
-            motor_start(current_instruction.y_pos, 0, Y_MOTOR, STEP_16);
+//            motor_start(current_instruction.y_pos, 0, Y_MOTOR, STEP_16);
+            motor_start(20000, 0, Y_MOTOR, STEP_16);
 
+            motor_change_pwm_duty_cycle(z_motor, 50);
+//            motor_start(current_instruction.y_pos, 0, Y_MOTOR, STEP_16);
+            motor_start(20000, 0, Z_MOTOR, STEP_16);
 
             do_it = false;
         }

@@ -34,12 +34,26 @@ void prv_UI(void *pvParameters)
     // UI Main
     for(ever)
     {
-        //check for notifications
-        ret = xTaskNotifyWait(UI_CLEAR_BITS_ON_ENTRY, UI_CLEAR_BITS_ON_EXIT, &error_code, UI_NOTIFY_WAIT_TIME);
-        if(ret == pdPASS)
+        if(printer_state == Idle)
         {
-            UI_HandleErrors(error_code);
+            // touchscreen event
+            xTaskNotifyGive(thMotorTask);
         }
+        else if(printer_state == Printing)
+        {
+            ret = xTaskNotifyWait(UI_CLEAR_BITS_ON_ENTRY, UI_CLEAR_BITS_ON_EXIT, &error_code, UI_NOTIFY_WAIT_TIME);
+            if(ret == pdPASS)
+            {
+                UI_HandleErrors(error_code);
+            }
+        }
+
+        //check for notifications
+//        ret = xTaskNotifyWait(UI_CLEAR_BITS_ON_ENTRY, UI_CLEAR_BITS_ON_EXIT, &error_code, UI_NOTIFY_WAIT_TIME);
+//        if(ret == pdPASS)
+//        {
+//            UI_HandleErrors(error_code);
+//        }
 
         //continue normal UI operation
         WidgetMessageQueueProcess();
