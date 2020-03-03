@@ -7,7 +7,7 @@
 
 
 #include "memory_task.h"
-#incldue "usb_host"
+#include "usb_host_msc.h"
 #include "bsp.h"
 //
 ///*  F R E E R T O S   I N C L U D E S   */
@@ -24,13 +24,17 @@ extern TaskHandle_t thUITask;
 extern TaskHandle_t thMemoryTask;
 
 
-void prv_MEMORY(void *pvParameters){
+void prv_Memory(void *pvParameters)
+{
     static TickType_t delay_time = pdMS_TO_TICKS( 100 );
     static uint32_t error_code = 0;
 
     // these init's might need to be moved to main if it crashes the OS
     usbInit();
-    uartInit(); //only necessary for integration tests
+
+#warning "UART is uninitialized"
+    // TODO - Seems like this function needs to be created
+//    uartInit(); //only necessary for integration tests
 
     for(ever) {
         /* When in the Select_Printer state and a notification is RX'd,

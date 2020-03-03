@@ -13,6 +13,7 @@
 /*  A P P L I C A T I O N   I N C L U D E S   */
 #include "bsp.h"
 #include "motor_control.h"
+#include "bumpers.h"
 
 /*  D R I V E R   L I B   */
 #include "driverlib/gpio.h"
@@ -34,6 +35,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
+#include "limits.h"
+#include "projdefs.h"
 
 #define TEST
 //#define BACKNFORTH
@@ -74,89 +77,135 @@ volatile Motor_Status_t Task_Status;
 
 /*  T A S K S   */
 void prv_Motor(void *pvParameters) {
-    const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 10000 );  // TODO: switch to max port delay
+    const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 1000 );  // TODO: switch to max port delay
+    BaseType_t NotifReceived;
     uint32_t ulNotificationValue;
 //    BaseType_t queue_receive_status;
-    uint8_t instruction = 1;
+//    uint8_t instruction = 1;
+    uint8_t motors_launched = 0;
 
 //    // init motors
     init_all_motors();
-    bool do_it = true;
+//    bool do_it = false;
 
-    Motor_Instruction_t current_instruction, next_instruction;
-
-    current_instruction.x_pos = 0;
-    current_instruction.y_pos = 0;
-    current_instruction.z_pos = 0;
-    current_instruction.speed = 0;
-    current_instruction.extruder_pos = 0;
+//    Motor_Instruction_t current_instruction, next_instruction;
+//
+//    current_instruction.x_pos = 0;
+//    current_instruction.y_pos = 0;
+//    current_instruction.z_pos = 0;
+//    current_instruction.speed = 0;
+//    current_instruction.extruder_pos = 0;
 
     for( ;; ) {
         /* Wait for current instruction to be completed */
-        ulNotificationValue = ulTaskNotifyTake( pdFALSE, xMaxBlockTime );
+        NotifReceived = xTaskNotifyWait( 0, ULONG_MAX, &ulNotificationValue, 0);
 
 //        if( (ulNotificationValue == 1)  && (printer_state == Printing)) {
             // pop from queue
-        printer_state = Printing;
+        if(NotifReceived == pdPASS) {
+          if(printer_state == Printing) {
+              if(ulNotificationValue & MUI_TEST_PROCEDURE) {
+                  ulNotificationValue &= !MUI_TEST_PROCEDURE;
+                  // Make changing printer state atomic
+                  taskENTER_CRITICAL();
+                  taskEXIT_CRITICAL();
+                  init_bumper_gpio();
 
-        if(do_it == true) {
 
-//            xQueueReceive(motor_instruction_queue,  &next_instruction, (TickType_t)5);
+                  motor_set_direction(x_motor, Backward);
+                  motor_set_direction(y_motor, Backward);
+                  motor_set_direction(z_motor, Backward);
 
-//            // set up motors
-//            find_direction(current_instruction.x_pos, x_motor);
-//            find_direction(current_instruction.y_pos, y_motor);
-//            find_direction(current_instruction->z_pos, z_motor);
-//            find_direction(current_instruction->x_pos, ex_motor);
+                  motor_change_pwm_duty_cycle(x_motor, 50);
+                  motor_start(ULONG_MAX, 0, x_motor, STEP_16);
 
-            // update positions
-//            x_motor.position = current_instruction.x_pos;
-//            y_motor.position = current_instruction.y_pos;
-//            z_motor.position = current_instruction->z_pos;
-//            ex_motor.position = current_instruction->extruder_pos;
+                  motor_change_pwm_duty_cycle(y_motor, 50);
+                  motor_start(ULONG_MAX, 0, y_motor, STEP_16);
 
-            // find step counts
-//            x_needed_step_count = dist_to_steps(next_instruction.x_pos - current_instruction.x_pos);
-//            y_needed_step_count = dist_to_steps(next_instruction.y_pos - current_instruction.y_pos);
-//            z_pwm_count = dist_to_steps(current_instruction->z_pos);
-//            ex_pwm_count = dist_to_steps(current_instruction->ex_pos);
+                    //                motor_change_pwm_duty_cycle(z_motor, 50);
+                    //                motor_start(ULONG_MAX, 0, z_motor, STEP_16);
 
-            x_needed_step_count = dist_to_steps(20000);
-            y_needed_step_count = dist_to_steps(20000);
-            z_needed_step_count = dist_to_steps(20000);
+                  motors_launched = 1;
+    //            vTaskDelay(xMaxBlockTime);
+              }
 
-//            current_instruction = next_instruction;
-            // start PWM on all motors
-            motor_change_pwm_duty_cycle(x_motor, 50);
-//            motor_start(current_instruction.x_pos, 0, X_MOTOR, STEP_16);
-            motor_start(20000, 0, X_MOTOR, STEP_16);
+              if(ulNotificationValue & X_MOTOR_DONE)
+              {
+                  ulNotificationValue &= !X_MOTOR_DONE;
+                  motor_disable(x_motor);
+              }
 
-            motor_change_pwm_duty_cycle(y_motor, 50);
-//            motor_start(current_instruction.y_pos, 0, Y_MOTOR, STEP_16);
-            motor_start(20000, 0, Y_MOTOR, STEP_16);
+              if(ulNotificationValue & Y_MOTOR_DONE)
+              {
+                  ulNotificationValue &= !Y_MOTOR_DONE;
+                  motor_disable(y_motor);
+              }
 
-            motor_change_pwm_duty_cycle(z_motor, 50);
-//            motor_start(current_instruction.y_pos, 0, Y_MOTOR, STEP_16);
-            motor_start(20000, 0, Z_MOTOR, STEP_16);
-
-            do_it = false;
-        }
-        else if(do_it == false) {
-            motor_disable(x_motor);
-            motor_disable(y_motor);
-            motor_change_pwm_duty_cycle(x_motor, 0);
-            motor_change_pwm_duty_cycle(y_motor, 0);
-            do_it = true;
-        }
-        else {  // taking notification timed out, indicate error occurred
-            printer_state = Error;
+              if(ulNotificationValue & Z_MOTOR_DONE)
+              {
+                  ulNotificationValue &= !Z_MOTOR_DONE;
+                  motor_disable(z_motor);
+              }
+          }
+//        else if(NotifReceived == pdFAIL && motors_launched == 0)
+//        {
+//            motor_change_pwm_duty_cycle(x_motor, 10);
+//            motor_change_pwm_duty_cycle(y_motor, 10);
+//            motor_change_pwm_duty_cycle(z_motor, 10);
+//            motor_start(ULONG_MAX, 0, y_motor, STEP_16);
+//
+//        }
         }
         vTaskDelay(xMaxBlockTime);
+    }
+}
+//        if(do_it == true) {
+//
+//            xQueueReceive(motor_instruction_queue,  &next_instruction, (TickType_t)5);
+//
+////            // set up motors
+//            find_direction(current_instruction.x_pos, x_motor);
+//            find_direction(current_instruction.y_pos, y_motor);
+////            find_direction(current_instruction->z_pos, z_motor);
+////            find_direction(current_instruction->x_pos, ex_motor);
+//
+//            // update positions
+//            x_motor.position = current_instruction.x_pos;
+//            y_motor.position = current_instruction.y_pos;
+////            z_motor.position = current_instruction->z_pos;
+////            ex_motor.position = current_instruction->extruder_pos;
+//
+//            // find step counts
+//            x_needed_step_count = dist_to_steps(next_instruction.x_pos - current_instruction.x_pos);
+//            y_needed_step_count = dist_to_steps(next_instruction.y_pos - current_instruction.y_pos);
+////            z_pwm_count = dist_to_steps(current_instruction->z_pos);
+////            ex_pwm_count = dist_to_steps(current_instruction->ex_pos);
+//
+//            current_instruction = next_instruction;
+//            // start PWM on all motors
+//            motor_change_pwm_duty_cycle(x_motor, 50);
+//            motor_start(current_instruction.x_pos, 0, X_MOTOR, STEP_16);
+//
+//            motor_change_pwm_duty_cycle(y_motor, 50);
+//            motor_start(current_instruction.y_pos, 0, Y_MOTOR, STEP_16);
+//
+//
+//            do_it = false;
+//        }
+//        else if(do_it == false) {
+//            motor_disable(x_motor);
+//            motor_disable(y_motor);
+//            motor_change_pwm_duty_cycle(x_motor, 0);
+//            motor_change_pwm_duty_cycle(y_motor, 0);
+//            do_it = true;
+//        }
+//        else {  // taking notification timed out, indicate error occurred
+//            printer_state = Error;
+//        }
 
 
 //        xTaskNotifyWait
-    }
-}
+
 
 void prv_Extruder_Motor(void *pvParameters) {
     // configure motor to run
@@ -210,6 +259,7 @@ uint32_t dist_to_steps(uint32_t distance) {
 void init_all_motors(void) {
     init_x_motor();
     init_y_motor();
+    init_z_motor();
 
     // Commented for POC testing
 #ifndef TEST
@@ -221,24 +271,30 @@ void init_all_motors(void) {
 void init_x_motor(void) {
     motor_init_x_gpio();
     motor_init_x_pwm();
+    x_motor.ID = X_Motor_ID;
     motor_disable(x_motor);
+    motor_change_pwm_duty_cycle(x_motor, 0);
 }
 
 void init_y_motor(void) {
     motor_init_y_gpio();
     motor_init_y_pwm();
+    y_motor.ID = Y_Motor_ID;
     motor_disable(y_motor);
+    motor_change_pwm_duty_cycle(y_motor, 0);
 }
 
-#ifndef TEST
+
 
 void init_z_motor(void) {
     motor_init_z_gpio();
     motor_init_z_pwm();
+    z_motor.ID = Z_Motor_ID;
     motor_disable(z_motor);
+    motor_change_pwm_duty_cycle(z_motor, 0);
 }
 
-
+#ifndef TEST
 
 void init_ex_motor(void) {
     motor_init_ex_gpio();
@@ -329,9 +385,6 @@ void motor_init_x_pwm(void) {
     /* Enable PWM Signal output */
     PWMOutputState(x_motor.PWM_Base, (1 << x_motor.PWM_Channel), false);
 
-//    /* Enable the generator block to start timer */
-//    PWMGenEnable(x_motor.PWM_Base, x_motor.PWM_Block);
-
 }
 
 
@@ -344,6 +397,7 @@ void motor_init_y_pwm(void) {
 
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);         // The PWM peripheral must be enabled for use.
 
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
     // Port B pins that are locked are 3 and 2, so unlock them by writing 1100 into the CR reg
     // HWREG(GPIO_PORTB_BASE + GPIO_O_CR)  |= 0xC;
 
@@ -371,9 +425,6 @@ void motor_init_y_pwm(void) {
 
     IntPrioritySet(INT_PWM0_1, 0xF0);
 
-    int prio;
-    prio = IntPriorityGet(INT_PWM0_1);
-
     IntEnable(INT_PWM0_1);
 
     /* Ensure PWM signal output is off */
@@ -394,7 +445,7 @@ void motor_init_z_pwm(void) {
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);         // The PWM peripheral must be enabled for use.
 
     /* init GPIO pin */
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);            // enable GPIO port if not already enabled
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);            // enable GPIO port if not already enabled
     GPIOPinConfigure(z_motor.PWM_Pin_Map);                // configure pin for PWM
     GPIOPinTypePWM(z_motor.STEP.base, z_motor.STEP.pin);
 
@@ -408,10 +459,17 @@ void motor_init_z_pwm(void) {
     PWMPulseWidthSet(z_motor.PWM_Base, Z_PWM_OUT, 0);
 
     /* Enable Interrupts */
-    PWMGenIntRegister(z_motor.PWM_Base, Z_PWM_BLOCK, PWM0Gen3IntHandler);
+    PWMGenIntRegister(z_motor.PWM_Base, Z_PWM_BLOCK, PWM0Gen2IntHandler);
+
+    IntPrioritySet(INT_PWM0_2, 0xF0);
+
+    IntEnable(INT_PWM0_2);
+
+    PWMOutputState(z_motor.PWM_Base, (1 << z_motor.PWM_Channel), false);
+
 }
 
-
+#ifndef MUI_TEST
 void motor_init_ex_pwm(void) {
 
     ex_motor.PWM_Base = EX_MOTOR_PWM_BASE;
@@ -439,7 +497,7 @@ void motor_init_ex_pwm(void) {
     /* Enable Interrupts */
 //    PWMGenIntRegister(ex_motor.PWM_Base, EX_PWM_BLOCK, PWM0Gen3IntHandler);
 }
-
+#endif
 
 /* @param uint8_t duty_cycle: 0-100 */
 void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle) {
@@ -488,6 +546,8 @@ void motor_init_x_gpio(void)
 
     MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
     MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
 
     /* Set GPIO output pins */
     MAP_GPIODirModeSet(x_motor.M0.base, x_motor.M0.pin, GPIO_DIR_MODE_OUT);
@@ -542,6 +602,9 @@ void motor_init_y_gpio(void)
     MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
     MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
     MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+
+
 
     /* Set GPIO output pins */
     MAP_GPIODirModeSet(y_motor.M0.base, y_motor.M0.pin, GPIO_DIR_MODE_OUT);
@@ -595,9 +658,10 @@ void motor_init_z_gpio(void)
 
     // Enable Ports
 
-    MAP_SysCtlPeripheralEnable(z_motor.M0.base);      // Port E
-    MAP_SysCtlPeripheralEnable(z_motor.M1.base);      // Port J
-    MAP_SysCtlPeripheralEnable(z_motor.NFAULT.base);  // Port H
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
 
     /* Set GPIO output pins */
     MAP_GPIODirModeSet(z_motor.M0.base, z_motor.M0.pin, GPIO_DIR_MODE_OUT);
@@ -622,7 +686,7 @@ void motor_init_z_gpio(void)
     GPIOPinWrite(z_motor.ENABLE.base, z_motor.ENABLE.pin, z_motor.ENABLE.pin);
 }
 
-
+#ifndef MUI_TEST
 void motor_init_ex_gpio(void) {
     // Assign Struct members to definitions
     ex_motor.M0.base   =    EX_M0_PORT;
@@ -675,14 +739,13 @@ void motor_init_ex_gpio(void) {
     GPIOPinWrite(ex_motor.ENABLE.base, ex_motor.ENABLE.pin, ex_motor.ENABLE.pin);
 }
 
-
+#endif
 /* M O T O R    C O N F I G U R A T I O N */
 
 
 void motor_enable(Motor_t motor) {
     GPIOPinWrite(motor.NSLEEP.base, motor.NSLEEP.pin, motor.NSLEEP.pin);    // set ENABLE pin HIGH
     GPIOPinWrite(motor.ENABLE.base, motor.ENABLE.pin, motor.ENABLE.pin);    // set ENABLE pin HIGH
-    GPIOPinWrite(motor.NSLEEP.base, motor.NSLEEP.pin, motor.NSLEEP.pin);
     PWMOutputState(motor.PWM_Base, (1 << motor.PWM_Channel), true);    // disables PWM output
     PWMGenEnable(motor.PWM_Base, motor.PWM_Block);                     // enables PWM
 }
@@ -696,41 +759,41 @@ void motor_disable(Motor_t motor) {
 /*
  *Enables PWM interrupts, Enables motors
  */
-void motor_start(uint32_t distance, uint32_t direction, uint8_t motor, uint8_t step_size)
+void motor_start(uint32_t distance, uint32_t direction, Motor_t motor, uint8_t step_size)
 {
-    switch(motor)
+    switch(motor.ID)
     {
-    case X_MOTOR:
+    case X_Motor_ID:
         /* Enable PWM Module 0 or 1, and the signal Generation block 0 1 2 or 3 */
+        x_needed_step_count = motor_dist_to_steps(distance);
         PWMIntEnable(PWM0_BASE, PWM_INT_GEN_0);
         PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_0, PWM_INT_CNT_ZERO);
-        motor_set_step_size(x_motor, step_size);
-        motor_enable(x_motor);
         break;
-    case Y_MOTOR:
+
+    case Y_Motor_ID:
+        y_needed_step_count = motor_dist_to_steps(distance);
         PWMIntEnable(PWM0_BASE, PWM_INT_GEN_1);
         PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_1, PWM_INT_CNT_ZERO);
-        motor_set_step_size(y_motor, step_size);
-        motor_enable(y_motor);
         break;
-    case Z_MOTOR:
-        GPIOPinWrite(z_motor.NSLEEP.base, z_motor.NSLEEP.pin, z_motor.NSLEEP.pin);
+
+    case Z_Motor_ID:
+        z_needed_step_count = motor_dist_to_steps(distance);
         PWMIntEnable(PWM0_BASE, PWM_INT_GEN_2);
         PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_2, PWM_INT_CNT_ZERO);
-        motor_set_step_size(y_motor, step_size);
-        motor_enable(y_motor);
-    case EX_MOTOR:
-        GPIOPinWrite(ex_motor.NSLEEP.base, ex_motor.NSLEEP.pin, ex_motor.NSLEEP.pin);
-        PWMIntEnable(PWM0_BASE, PWM_INT_GEN_3);
-        PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_3, PWM_INT_CNT_ZERO);
-        motor_set_step_size(ex_motor, step_size);
-        motor_enable(ex_motor);
+        break;
+
+//    case ex_motor:
+//        GPIOPinWrite(ex_motor.NSLEEP.base, ex_motor.NSLEEP.pin, ex_motor.NSLEEP.pin);
+//        PWMIntEnable(PWM0_BASE, PWM_INT_GEN_3);
+//        PWMGenIntTrigEnable(PWM0_BASE, PWM_GEN_3, PWM_INT_CNT_ZERO);
     default:
 
         /* Motor has not been implemented yet */
         break;
 
     }
+    motor_set_step_size(motor, step_size);
+    motor_enable(motor);
 }
 
 void motor_set_to_sleep(Motor_t motor) {
@@ -879,12 +942,7 @@ void error_bumper_retract(eMotor_ID motor) {
 
 
 /* I N T E R U P T      H A N D L E R S */
-/*
- * TODO:
- *  - use LOAD register to count Pulses
- *  - set PWM duty cycle for X/Y/Z to 0 in this handler
- *  - notify motors task once an interrupt flag for each motor has been raised
- */
+
 
 /* X - Motor */
 void PWM0Gen0IntHandler(void) {
@@ -902,17 +960,13 @@ void PWM0Gen0IntHandler(void) {
     {
         x_complete++;
         x_pwm_count = 0;
-        /* TODO Set a flag and do this motor disable */
-        motor_disable(x_motor);
-        if(update_motor_status(X_MOTOR))
-        {
-            task_complete++;
-            // Task complete
-            BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-            configASSERT(prv_Motor != NULL);
-            vTaskNotifyGiveFromISR(prv_Motor, &xHigherPriorityTaskWoken);
-            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-        }
+
+        // Task complete
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        configASSERT(prv_Motor != NULL);
+        PWMIntEnable(PWM0_BASE, PWM_INT_GEN_0);
+        xTaskNotifyFromISR(thMotorTask, X_MOTOR_DONE, eSetBits,  &xHigherPriorityTaskWoken);
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
 
     PWMIntEnable(PWM0_BASE, PWM_INT_GEN_0);
@@ -923,6 +977,7 @@ void PWM0Gen0IntHandler(void) {
 
 void PWM0Gen1IntHandler(void) {
     PWMIntDisable(PWM0_BASE, PWM_INT_GEN_1);
+    bool stop = 0;
     int flags = PWMGenIntStatus(PWM0_BASE, PWM_GEN_1, true);       // Get status of interrupts
     PWMGenIntClear(PWM0_BASE, PWM_GEN_1, flags);     // Clear interrupts
 
@@ -935,18 +990,11 @@ void PWM0Gen1IntHandler(void) {
     {
         y_pwm_count = 0;
         y_complete++;
-        /* TODO: Set a flag or alert a task to do this */
-//        motor_disable(y_motor);
-        if(update_motor_status(Y_MOTOR))
-        {
-            task_complete++;
-
-            // TODO: if step count met for all motors execute this
-            BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-            configASSERT(prv_Motor != NULL);
-            vTaskNotifyGiveFromISR(prv_Motor, &xHigherPriorityTaskWoken);
-            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-        }
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        configASSERT(prv_Motor != NULL);
+        PWMIntEnable(PWM0_BASE, PWM_INT_GEN_1);
+        xTaskNotifyFromISR(thMotorTask, Y_MOTOR_DONE, eSetBits,  &xHigherPriorityTaskWoken);
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
 
     PWMIntEnable(PWM0_BASE, PWM_INT_GEN_1);
@@ -954,11 +1002,11 @@ void PWM0Gen1IntHandler(void) {
 
 
 /* Z- Motor*/
-void PWM0Gen3IntHandler(void) {
+void PWM0Gen2IntHandler(void) {
 
-    PWMIntDisable(PWM0_BASE, PWM_INT_GEN_3);
-    int flags = PWMGenIntStatus(PWM0_BASE, PWM_GEN_3, true);       // Get status of interrupts
-    PWMGenIntClear(PWM0_BASE, PWM_GEN_3, flags);     // Clear interrupts
+    PWMIntDisable(PWM0_BASE, PWM_INT_GEN_2);
+    int flags = PWMGenIntStatus(PWM0_BASE, PWM_GEN_2, true);       // Get status of interrupts
+    PWMGenIntClear(PWM0_BASE, PWM_GEN_2, flags);     // Clear interrupts
 
     if(flags & PWM_INT_CNT_ZERO)
     {
@@ -969,20 +1017,15 @@ void PWM0Gen3IntHandler(void) {
     {
         z_complete++;
         z_pwm_count = 0;
-        /* TODO Set a flag and do this motor disable */
-//        motor_disable(x_motor);
-        if(update_motor_status(Z_MOTOR))
-        {
-            task_complete++;
-            // Task complete
-            BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-            configASSERT(prv_Motor != NULL);
-            vTaskNotifyGiveFromISR(prv_Motor, &xHigherPriorityTaskWoken);
-            portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
-        }
+
+        // Task complete
+        BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+        configASSERT(prv_Motor != NULL);
+        xTaskNotifyFromISR(thMotorTask, Z_MOTOR_DONE, eSetBits,  &xHigherPriorityTaskWoken);
+        portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
     }
 
-    PWMIntEnable(PWM0_BASE, PWM_INT_GEN_3);
+    PWMIntEnable(PWM0_BASE, PWM_INT_GEN_2);
 }
 
 //void PWM0Gen2IntHandler(void) {

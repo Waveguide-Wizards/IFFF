@@ -159,143 +159,146 @@ void prvBedHeaterControl(void * prvParameters) {
     }
 }
 
-/*  A D C   */
-void init_extruder_heater_adc(void) {
-    /* Configure ADC peripheral */
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-    GPIOPinTypeADC(EX_HEATER_ADC_PORT, EX_HEATER_ADC_PIN);
-    ADCSequenceConfigure(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, ADC_TRIGGER_PROCESSOR, 0);
-    ADCSequenceStepConfigure(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, 0, EX_HEATER_ADC_CHANNEL | ADC_CTL_IE | ADC_CTL_END);
-    ADCSequenceEnable(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
-    ADCIntClear(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
-}
+// TODO - Fix all this stuff I just commented so it would build
+#warning "Heater Control Code Disabled"
 
-void init_bed_heater_adc(void) {
-    /* Configure ADC peripheral */
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC1);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-    GPIOPinTypeADC(BED_HEATER_ADC_PORT, BED_HEATER_ADC_PIN);
-    ADCSequenceConfigure(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, ADC_TRIGGER_PROCESSOR, 0);
-    ADCSequenceStepConfigure(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, 0, BED_HEATER_ADC_CHANNEL | ADC_CTL_IE | ADC_CTL_END);
-    ADCSequenceEnable(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
-    ADCIntClear(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
-}
-
-void ex_heater_get_adc(uint32_t * put_data) {
-    ADCProcessorTrigger(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
-    while(!ADCIntStatus(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, false));
-    ADCIntClear(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
-    ADCSequenceDataGet(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, put_data);
-}
-
-void ex_bed_get_adc(uint32_t * put_data) {
-    ADCProcessorTrigger(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
-    while(!ADCIntStatus(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, false));
-    ADCIntClear(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
-    ADCSequenceDataGet(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, put_data);
-}
-
-/*  P W M */
-void init_extruder_heater_pwm(void) {
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
-
-    /* init GPIO pin */
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);            // enable GPIO port if not already enabled
-
-    /* setup and enable clock */
-    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
-
-
-    GPIOPinConfigure(EX_HEATER_PWM_PIN_MAP);                // configure pin for PWM
-    GPIOPinTypePWM(EX_HEATER_PWM_PORT, EX_HEATER_PWM_PIN);
-
-    /* Count down without synchronization */
-    PWMGenConfigure(EX_HEATER_PWM_BASE, EX_HEATER_PWM_BLOCK, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
-
-    PWMGenPeriodSet(EX_HEATER_PWM_BASE, EX_HEATER_PWM_BLOCK, CALC_PERIOD(PWM_FREQUENCY));
-
-    /* initialize to no output */
-    PWMPulseWidthSet(EX_HEATER_PWM_BASE, EX_HEATER_PWM_OUT, 0);
-
-//    /* Enable Interrupts */
-//    PWMGenIntRegister(x_motor.PWM_Base, x_motor.PWM_Block, PWM0IntHandler);
-
-    /* Enable the generator block to start timer */
-    PWMGenEnable(EX_HEATER_PWM_BASE, EX_HEATER_PWM_BLOCK);
-
-    PWMOutputState(EX_HEATER_PWM_BASE, (1 << EX_HEATER_PWM_CHANNEL), true);
-}
-
-void init_bed_heater_pwm(void) {
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
-
-    /* init GPIO pin */
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);        // enable GPIO port if not already enabled
-
-    /* setup and enable clock */
-    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
-
-//    HWREG(GPIO_PORTB_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
-//    HWREG(GPIO_PORTE_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+///*  A D C   */
+//void init_extruder_heater_adc(void) {
+//    /* Configure ADC peripheral */
+//    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
+//    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+//    GPIOPinTypeADC(EX_HEATER_ADC_PORT, EX_HEATER_ADC_PIN);
+//    ADCSequenceConfigure(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, ADC_TRIGGER_PROCESSOR, 0);
+//    ADCSequenceStepConfigure(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, 0, EX_HEATER_ADC_CHANNEL | ADC_CTL_IE | ADC_CTL_END);
+//    ADCSequenceEnable(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
+//    ADCIntClear(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
+//}
 //
-//    // Port B pins that are locked are 3 and 2, so unlock them by writing 1100 into the CR reg
-//    HWREG(GPIO_PORTB_BASE + GPIO_O_CR)  |= 0xC;
-
-    GPIOPinConfigure(BED_HEATER_PWM_PIN_MAP);                // configure pin for PWM
-    GPIOPinTypePWM(BED_HEATER_PWM_PORT, BED_HEATER_PWM_PIN);
-
-    /* Count down without synchronization */
-    PWMGenConfigure(BED_HEATER_PWM_BASE, BED_HEATER_PWM_BLOCK, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
-
-    PWMGenPeriodSet(BED_HEATER_PWM_BASE, BED_HEATER_PWM_BLOCK, CALC_PERIOD(PWM_FREQUENCY));
-
-    /* initialize to no output */
-    PWMPulseWidthSet(BED_HEATER_PWM_BASE, BED_HEATER_PWM_OUT, 0);
-
-//    /* Enable Interrupts */
-//    PWMGenIntRegister(x_motor.PWM_Base, x_motor.PWM_Block, PWM0IntHandler);
-
-    /* Enable the generator block to start timer */
-    PWMGenEnable(BED_HEATER_PWM_BASE, BED_HEATER_PWM_BLOCK);
-
-    PWMOutputState(BED_HEATER_PWM_BASE, (1 << BED_HEATER_PWM_CHANNEL), true);
-}
-
-/* @param uint8_t duty_cycle: 0-100 */
-void ex_heater_change_pwm_duty_cycle(uint8_t duty_cycle) {
-    PWMPulseWidthSet(EX_HEATER_PWM_BASE, EX_HEATER_PWM_BLOCK, ((duty_cycle * CALC_PERIOD(PWM_FREQUENCY))/100));
-}
-
-/* @param uint8_t duty_cycle: 0-100 */
-void bed_heater_change_pwm_duty_cycle(uint8_t duty_cycle) {
-    PWMPulseWidthSet(EX_HEATER_PWM_BASE, EX_HEATER_PWM_BLOCK, ((duty_cycle * CALC_PERIOD(PWM_FREQUENCY))/100));
-}
-
-void ex_heater_enable(void) {
-    PWMOutputState(EX_HEATER_PWM_BASE, (1 << EX_HEATER_PWM_CHANNEL), true); // disables PWM output
-    PWMGenEnable(EX_HEATER_PWM_BASE, PWM_GEN_0);                            // enables PWM
-}
-
-void ex_heater_disable(void) {
-    PWMOutputState(EX_HEATER_PWM_BASE, (1 << EX_HEATER_PWM_CHANNEL), false);    // disables PWM output
-    PWMGenDisable(EX_HEATER_PWM_BASE, PWM_GEN_0);                               // disable PWM
-}
-
-void bed_heater_enable(void) {
-    PWMOutputState(BED_HEATER_PWM_BASE, (1 << BED_HEATER_PWM_CHANNEL), true);   // disables PWM output
-    PWMGenEnable(BED_HEATER_PWM_BASE, PWM_GEN_0);                               // enables PWM
-}
-
-void bed_heater_disable(void) {
-    PWMOutputState(BED_HEATER_PWM_BASE, (1 << BED_HEATER_PWM_CHANNEL), false);  // disables PWM output
-    PWMGenDisable(BED_HEATER_PWM_BASE, PWM_GEN_0);                              // disable PWM
-}
-
-void emergency_heaters_disable(void) {
-    ex_heater_disable();
-    bed_heater_disable();
-}
+//void init_bed_heater_adc(void) {
+//    /* Configure ADC peripheral */
+//    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC1);
+//    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+//    GPIOPinTypeADC(BED_HEATER_ADC_PORT, BED_HEATER_ADC_PIN);
+//    ADCSequenceConfigure(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, ADC_TRIGGER_PROCESSOR, 0);
+//    ADCSequenceStepConfigure(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, 0, BED_HEATER_ADC_CHANNEL | ADC_CTL_IE | ADC_CTL_END);
+//    ADCSequenceEnable(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
+//    ADCIntClear(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
+//}
+//
+//void ex_heater_get_adc(uint32_t * put_data) {
+//    ADCProcessorTrigger(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
+//    while(!ADCIntStatus(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, false));
+//    ADCIntClear(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
+//    ADCSequenceDataGet(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, put_data);
+//}
+//
+//void ex_bed_get_adc(uint32_t * put_data) {
+//    ADCProcessorTrigger(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
+//    while(!ADCIntStatus(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, false));
+//    ADCIntClear(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
+//    ADCSequenceDataGet(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, put_data);
+//}
+//
+///*  P W M */
+//void init_extruder_heater_pwm(void) {
+//    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
+//
+//    /* init GPIO pin */
+//    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);            // enable GPIO port if not already enabled
+//
+//    /* setup and enable clock */
+//    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
+//
+//
+//    GPIOPinConfigure(EX_HEATER_PWM_PIN_MAP);                // configure pin for PWM
+//    GPIOPinTypePWM(EX_HEATER_PWM_PORT, EX_HEATER_PWM_PIN);
+//
+//    /* Count down without synchronization */
+//    PWMGenConfigure(EX_HEATER_PWM_BASE, EX_HEATER_PWM_BLOCK, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
+//
+//    PWMGenPeriodSet(EX_HEATER_PWM_BASE, EX_HEATER_PWM_BLOCK, CALC_PERIOD(PWM_FREQUENCY));
+//
+//    /* initialize to no output */
+//    PWMPulseWidthSet(EX_HEATER_PWM_BASE, EX_HEATER_PWM_OUT, 0);
+//
+////    /* Enable Interrupts */
+////    PWMGenIntRegister(x_motor.PWM_Base, x_motor.PWM_Block, PWM0IntHandler);
+//
+//    /* Enable the generator block to start timer */
+//    PWMGenEnable(EX_HEATER_PWM_BASE, EX_HEATER_PWM_BLOCK);
+//
+//    PWMOutputState(EX_HEATER_PWM_BASE, (1 << EX_HEATER_PWM_CHANNEL), true);
+//}
+//
+//void init_bed_heater_pwm(void) {
+//    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
+//
+//    /* init GPIO pin */
+//    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);        // enable GPIO port if not already enabled
+//
+//    /* setup and enable clock */
+//    SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
+//
+////    HWREG(GPIO_PORTB_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+////    HWREG(GPIO_PORTE_BASE + GPIO_O_LOCK) = GPIO_LOCK_KEY;
+////
+////    // Port B pins that are locked are 3 and 2, so unlock them by writing 1100 into the CR reg
+////    HWREG(GPIO_PORTB_BASE + GPIO_O_CR)  |= 0xC;
+//
+//    GPIOPinConfigure(BED_HEATER_PWM_PIN_MAP);                // configure pin for PWM
+//    GPIOPinTypePWM(BED_HEATER_PWM_PORT, BED_HEATER_PWM_PIN);
+//
+//    /* Count down without synchronization */
+//    PWMGenConfigure(BED_HEATER_PWM_BASE, BED_HEATER_PWM_BLOCK, PWM_GEN_MODE_DOWN | PWM_GEN_MODE_NO_SYNC);
+//
+//    PWMGenPeriodSet(BED_HEATER_PWM_BASE, BED_HEATER_PWM_BLOCK, CALC_PERIOD(PWM_FREQUENCY));
+//
+//    /* initialize to no output */
+//    PWMPulseWidthSet(BED_HEATER_PWM_BASE, BED_HEATER_PWM_OUT, 0);
+//
+////    /* Enable Interrupts */
+////    PWMGenIntRegister(x_motor.PWM_Base, x_motor.PWM_Block, PWM0IntHandler);
+//
+//    /* Enable the generator block to start timer */
+//    PWMGenEnable(BED_HEATER_PWM_BASE, BED_HEATER_PWM_BLOCK);
+//
+//    PWMOutputState(BED_HEATER_PWM_BASE, (1 << BED_HEATER_PWM_CHANNEL), true);
+//}
+//
+///* @param uint8_t duty_cycle: 0-100 */
+//void ex_heater_change_pwm_duty_cycle(uint8_t duty_cycle) {
+//    PWMPulseWidthSet(EX_HEATER_PWM_BASE, EX_HEATER_PWM_BLOCK, ((duty_cycle * CALC_PERIOD(PWM_FREQUENCY))/100));
+//}
+//
+///* @param uint8_t duty_cycle: 0-100 */
+//void bed_heater_change_pwm_duty_cycle(uint8_t duty_cycle) {
+//    PWMPulseWidthSet(EX_HEATER_PWM_BASE, EX_HEATER_PWM_BLOCK, ((duty_cycle * CALC_PERIOD(PWM_FREQUENCY))/100));
+//}
+//
+//void ex_heater_enable(void) {
+//    PWMOutputState(EX_HEATER_PWM_BASE, (1 << EX_HEATER_PWM_CHANNEL), true); // disables PWM output
+//    PWMGenEnable(EX_HEATER_PWM_BASE, PWM_GEN_0);                            // enables PWM
+//}
+//
+//void ex_heater_disable(void) {
+//    PWMOutputState(EX_HEATER_PWM_BASE, (1 << EX_HEATER_PWM_CHANNEL), false);    // disables PWM output
+//    PWMGenDisable(EX_HEATER_PWM_BASE, PWM_GEN_0);                               // disable PWM
+//}
+//
+//void bed_heater_enable(void) {
+//    PWMOutputState(BED_HEATER_PWM_BASE, (1 << BED_HEATER_PWM_CHANNEL), true);   // disables PWM output
+//    PWMGenEnable(BED_HEATER_PWM_BASE, PWM_GEN_0);                               // enables PWM
+//}
+//
+//void bed_heater_disable(void) {
+//    PWMOutputState(BED_HEATER_PWM_BASE, (1 << BED_HEATER_PWM_CHANNEL), false);  // disables PWM output
+//    PWMGenDisable(BED_HEATER_PWM_BASE, PWM_GEN_0);                              // disable PWM
+//}
+//
+//void emergency_heaters_disable(void) {
+//    ex_heater_disable();
+//    bed_heater_disable();
+//}
 
 /* T E M P E R A T U R E */
 

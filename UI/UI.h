@@ -55,7 +55,7 @@
 #define UI_UTMENU_SEL_MOTOR_W               200
 #define UI_UTMENU_SEL_MOTOR_H               50
 //
-#define UI_TICKS_TO_MS(x)                   (x * 40000 / 3)
+#define UI_MS_TO_TICKS(x)                   (x * 40000 / 3)
 #define UI_WARMUP_DELAY_TIME                40
 
 // *** Function Definitions

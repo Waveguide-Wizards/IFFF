@@ -85,6 +85,7 @@ typedef struct {
     uint32_t            PWM_Pin_Map;
     uint32_t            position;
     eMotor_Direction    direction;
+    eMotor_ID           ID;
 } Motor_t;
 
 //Struct to indicate the current status of each of the motor tasks
@@ -116,7 +117,7 @@ void motor_init_y_pwm();
 void motor_init_z_pwm();
 void motor_init_ex_pwm();
 void motor_change_pwm_duty_cycle(Motor_t motor, uint8_t duty_cycle);
-void motor_start(uint32_t distance, uint32_t direction, uint8_t motor, uint8_t step_size);
+void motor_start(uint32_t distance, uint32_t direction, Motor_t motor, uint8_t step_size);
 uint32_t motor_steps_to_dist(uint32_t stepCount);
 uint32_t motor_dist_to_steps(uint32_t distance);
 
@@ -131,7 +132,7 @@ void motor_enable(Motor_t motor);
 void motor_disable(Motor_t motor);
 void motor_set_to_sleep(Motor_t motor);
 void motor_set_direction(Motor_t motor, eMotor_Direction direction);
-void motor_set_step_size(Motor_t motor, uint8_t direction);
+void motor_set_step_size(Motor_t motor, uint8_t size);
 uint8_t update_motor_status(uint8_t motor);
 //uint8_t update_x_status();
 //uint8_t update_y_status();
@@ -139,7 +140,7 @@ uint8_t update_motor_status(uint8_t motor);
 
 void PWM0Gen0IntHandler(void);
 void PWM0Gen1IntHandler(void);
-void PWM0Gen3IntHandler(void);
+void PWM0Gen2IntHandler(void);
 
 /*  E R R O R   H A N D L I N G   */
 void emergency_disable_motors(void);

@@ -52,18 +52,21 @@ void init_bumper_gpio(void){
 //    GPIOIntEnable(Z_BUMPER_PORT, Z_BUMPER_PIN);//Pin Probably needs to be swapped out.
 
     IntEnable(INT_GPIOA);
-    IntPrioritySet(INT_GPIOA, 0xF0);
+    IntPrioritySet(INT_GPIOA, 0xE0);
 }
 
 void GPIO_A_IntHandler(void) {
     // Read the flags
-    uint32_t flags = GPIOIntStatus(GPIO_PORTA_BASE,1);
+//    portENTER_CRITICAL();
+    uint32_t flags = GPIOIntStatus(GPIO_PORTA_BASE, 1);
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+    GPIOIntClear(GPIO_PORTA_BASE, flags);
+
 
     if(printer_state == Calibration) {
         configASSERT( thCalibration != NULL );
 
-        if(flags && X_BUMPER_PIN){
+        if(flags & X_BUMPER_PIN){
             if(!is_motor_calibrated(Cal_X_ID)) {
                 set_calibration(Cal_X_ID);
             }
@@ -71,11 +74,11 @@ void GPIO_A_IntHandler(void) {
 //                // TODO: soft error?
 //            }
         }
-        else if(flags && Y_BUMPER_PIN){
+        else if(flags & Y_BUMPER_PIN){
             if(!is_motor_calibrated(Cal_Y_ID)) {
                  set_calibration(Cal_Y_ID);
              }        }
-        else if(flags && Z_BUMPER_PIN){
+        else if(flags & Z_BUMPER_PIN){
             if(!is_motor_calibrated(Cal_Z_ID)) {
                  set_calibration(Cal_Z_ID);
              }        }
@@ -91,18 +94,19 @@ void GPIO_A_IntHandler(void) {
         /* Disable all motors */
         emergency_disable_motors();
 
-        if(flags && X_BUMPER_PIN){
+        if(flags & X_BUMPER_PIN){
             add_error_to_list(X_Bumper);
         }
-        else if(flags && Y_BUMPER_PIN){
+        else if(flags & Y_BUMPER_PIN){
             add_error_to_list(Y_Bumper);
         }
-        else if(flags && Z_BUMPER_PIN){
+        else if(flags & Z_BUMPER_PIN){
             add_error_to_list(Z_Bumper);
         }
 
         xTaskNotifyFromISR(thUITask, 0x00001000, eSetBits, &xHigherPriorityTaskWoken);
         GPIOIntClear(GPIO_PORTA_BASE, flags);
+//        portEXIT_CRITICAL();
         portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
     }
 }

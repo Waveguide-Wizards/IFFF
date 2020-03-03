@@ -10,6 +10,6 @@
 
 #define ever    ;;
 
-
+void prv_Memory(void *pvParameters);
 
 #endif /* MEMORY_MEMORY_TASK_H_ */

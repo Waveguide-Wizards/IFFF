@@ -8,6 +8,7 @@
 // *** Includes
 //
 #include "UI.h"
+#include "usb_host_msc.h"
 
 // *** Variables
 //
@@ -320,7 +321,7 @@ void UI_OnWarmUpPaint(tContext *psContext)
                                (((((10 - ui32Idx) * 255) / 10) << ClrRedShift) |
                                 (((ui32Idx * 255) / 10) << ClrGreenShift)));
         GrLineDraw(psContext, GrContextDpyWidthGet(psContext) / 2, 120, 5, 120 - (11 * ui32Idx));
-        SysCtlDelay(UI_TICKS_TO_MS(UI_WARMUP_DELAY_TIME));
+        SysCtlDelay(UI_MS_TO_TICKS(UI_WARMUP_DELAY_TIME));
     }
 
     //
@@ -333,7 +334,7 @@ void UI_OnWarmUpPaint(tContext *psContext)
                                  ClrGreenShift) |
                                 (((ui32Idx * 255) / 10) << ClrBlueShift)));
         GrLineDraw(psContext, GrContextDpyWidthGet(psContext) / 2, 120, 5 + (ui32Idx * 15), 29);
-        SysCtlDelay(UI_TICKS_TO_MS(UI_WARMUP_DELAY_TIME));
+        SysCtlDelay(UI_MS_TO_TICKS(UI_WARMUP_DELAY_TIME));
     }
     GrContextForegroundSet(psContext, (ClrGreenShift) | (((ui32Idx * 255) / 10) << ClrBlueShift));
     GrLineDraw(psContext, GrContextDpyWidthGet(psContext) / 2, 120, 5 + (150), 29);
@@ -348,7 +349,7 @@ void UI_OnWarmUpPaint(tContext *psContext)
                                  ClrBlueShift) |
                                 (((ui32Idx * 255) / 10) << ClrGreenShift)));
         GrLineDraw(psContext, GrContextDpyWidthGet(psContext) / 2, 120, 140 + (ui32Idx * 15), 29);
-        SysCtlDelay(UI_TICKS_TO_MS(UI_WARMUP_DELAY_TIME));
+        SysCtlDelay(UI_MS_TO_TICKS(UI_WARMUP_DELAY_TIME));
     }
 
     //
@@ -360,7 +361,7 @@ void UI_OnWarmUpPaint(tContext *psContext)
                                (((((10 - ui32Idx) * 255) / 10) << ClrRedShift) |
                                 (((ui32Idx * 255) / 10) << ClrGreenShift)));
         GrLineDraw(psContext, GrContextDpyWidthGet(psContext) / 2, 120, 305, 120 - (11 * ui32Idx));
-        SysCtlDelay(UI_TICKS_TO_MS(UI_WARMUP_DELAY_TIME));
+        SysCtlDelay(UI_MS_TO_TICKS(UI_WARMUP_DELAY_TIME));
     }
 
     GrContextForegroundSet(psContext, (255 << ClrRedShift) | (0 << ClrGreenShift));

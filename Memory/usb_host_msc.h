@@ -25,8 +25,8 @@
 #include "third_party/fatfs/src/diskio.h"
 #include "driverlib/uart.h"
 #include "inc/hw_ints.h"
-#include "utils/uartstdio.h"
-#include "utils/cmdline.h"
+//#include "utils/uartstdio.h"
+//#include "utils/cmdline.h"
 #include "flash.h"
 
 
@@ -64,19 +64,8 @@ static char g_pcTmpBuf[PATH_BUF_SIZE] = "POLYGO~1.GCO";
 //
 //*****************************************************************************
 static char g_pcCmdBuf[CMD_BUF_SIZE];
-//*****************************************************************************
-//
-// The following are data structures used by FatFs.
-//
-//*****************************************************************************
-static FATFS g_sFatFs;
-static DIR g_sDirObject;
-static FILINFO g_sFileInfo;
-static FIL g_sFileObject;
 
-unsigned int valueToSave;
-extern unsigned int isRead;
-uint32_t ui32SysClock;
+
 //*****************************************************************************
 //
 // A structure that holds a mapping between an FRESULT numerical code,
@@ -99,14 +88,6 @@ tFresultString;
 //*****************************************************************************
 #define FRESULT_ENTRY(f)        { (f), (#f) }
 
-//*****************************************************************************
-//
-// A table that holds a mapping between the numerical FRESULT code and
-// it's name as a string.  This is used for looking up error codes and
-// providing a human-readable string.
-//
-//*****************************************************************************
-extern tFresultString g_sFresultStrings[];
 
 //*****************************************************************************
 //
@@ -122,15 +103,6 @@ extern tFresultString g_sFresultStrings[];
 //*****************************************************************************
 #define NAME_TOO_LONG_ERROR 1
 #define OPENDIR_ERROR       2
-
-
-//*****************************************************************************
-//
-// Holds global flags for the system.
-//
-//*****************************************************************************
-static uint32_t g_ui32Flags = 0;
-
 
 //*****************************************************************************
 //
@@ -170,74 +142,10 @@ char g_pcStatus[NUM_STATUS_STRINGS][MAX_STATUS_STRING_LEN];
 
 //*****************************************************************************
 //
-// Hold the current state for the application.
-//
-//*****************************************************************************
-volatile enum
-{
-    // No device is present.
-    STATE_NO_DEVICE,
-
-    // Mass storage device is being enumerated.
-    STATE_DEVICE_ENUM,
-
-    // Mass storage device is ready.
-    STATE_DEVICE_READY,
-
-    // An unsupported device has been attached.
-    STATE_UNKNOWN_DEVICE,
-
-    // A mass storage device was connected but failed to ever report ready.
-    STATE_TIMEOUT_DEVICE,
-
-    // A power fault has occurred.
-    STATE_POWER_FAULT
-}
-g_eState;
-
-//*****************************************************************************
-//
 // The size of the host controller's memory pool in bytes.
 //
 //*****************************************************************************
 #define HCD_MEMORY_SIZE         128
-
-//*****************************************************************************
-//
-// The memory pool to provide to the Host controller driver.
-//
-//*****************************************************************************
-uint8_t g_pHCDPool[HCD_MEMORY_SIZE];
-
-
-//*****************************************************************************
-//
-// The instance data for the MSC driver.
-//
-//*****************************************************************************
-extern tUSBHMSCInstance *g_psMSCInstance;
-
-//*****************************************************************************
-//
-// Declare the USB Events driver interface.
-//
-//*****************************************************************************
-
-
-//*****************************************************************************
-//
-// The global that holds all of the host drivers in use in the application.
-// In this case, only the MSC class is loaded.
-//
-//*****************************************************************************
-
-
-//*****************************************************************************
-//
-// This global holds the number of class drivers in the g_ppHostClassDrivers
-// list.
-//
-//*****************************************************************************
 
 //*****************************************************************************
 //
@@ -278,11 +186,6 @@ tDMAControlTable g_psDMAControlTable[6] __attribute__ ((aligned(1024)));
 //*****************************************************************************
 #define MAX_FILES_PER_MENU 64
 #define MAX_SUBDIR_DEPTH 32
-
-
-//TODO: increment flash every read
-//Flash presets
-extern uint32_t address[];
 
 
 void hardware_init(void);
