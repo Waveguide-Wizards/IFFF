@@ -31,10 +31,7 @@ void prv_Memory(void *pvParameters)
 
     // these init's might need to be moved to main if it crashes the OS
     usbInit();
-
-#warning "UART is uninitialized"
-    // TODO - Seems like this function needs to be created
-//    uartInit(); //only necessary for integration tests
+    uartInit(); //only necessary for integration tests
 
     for(ever) {
         /* When in the Select_Printer state and a notification is RX'd,
