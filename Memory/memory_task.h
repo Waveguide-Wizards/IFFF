@@ -8,7 +8,7 @@
 #ifndef MEMORY_MEMORY_TASK_H_
 #define MEMORY_MEMORY_TASK_H_
 
-
+#define ever    ;;
 
 
 

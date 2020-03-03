@@ -11,7 +11,6 @@
 #include "driverlib/gpio.h"
 #include "driverlib/interrupt.h"
 #include "driverlib/sysctl.h"
-#include "driverlib/systick.h"
 #include "driverlib/udma.h"
 #include "driverlib/rom.h"
 #include "driverlib/pin_map.h"
@@ -145,20 +144,6 @@ tFresultString g_sFresultStrings[] =
 #define NAME_TOO_LONG_ERROR 1
 #define OPENDIR_ERROR       2
 
-//*****************************************************************************
-//
-// The number of SysTick ticks per second.
-//
-//*****************************************************************************
-#define TICKS_PER_SECOND 100
-#define MS_PER_SYSTICK (1000 / TICKS_PER_SECOND)
-
-//*****************************************************************************
-//
-// A counter for system clock ticks, used for simple timing.
-//
-//*****************************************************************************
-static uint32_t g_ui32SysTickCount;
 
 //*****************************************************************************
 //
@@ -339,7 +324,6 @@ tDMAControlTable g_psDMAControlTable[6] __attribute__ ((aligned(1024)));
 //----------------------------------------
 void hardware_init(void);
 static bool FileInit(void);
-void SysTickHandler(void);
 static const char *StringFromFresult(FRESULT fresult);
 static void MSCCallback(tUSBHMSCInstance *ps32Instance, uint32_t ui32Event, void *pvData);
 static int printFileStructure (void);
@@ -492,14 +476,13 @@ void usbInit(void){
     // Processor clock is calculated with (pll/2)/4 - > (400/2)/4 = 50
     // NOTE: For USB operation, it should be a minimum of 20MHz
     //
-
-    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
+//    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
 
     //
     // Get the System Clock Rate
     // 50 MHz
     //
-    ui32SysClock = SysCtlClockGet();
+//    ui32SysClock = SysCtlClockGet();
 
     // Enable USB0
     //
@@ -527,13 +510,6 @@ void usbInit(void){
     //
     USBHCDRegisterDrivers(0, g_ppHostClassDrivers, g_ui32NumHostClassDrivers);
 
-    //
-    // Configure SysTick for a 100Hz interrupt.
-    // Systick Period = 5000000 / 100 -> 500000
-    //
-    SysTickPeriodSet(SysCtlClockGet() / TICKS_PER_SECOND);
-    SysTickEnable();
-    SysTickIntEnable();
 
     //
     // Enable the uDMA controller and set up the control table base.
@@ -548,8 +524,6 @@ void usbConnect(void){
 	char *fileName[] = {"POLYGO~1.GCO"};
 	uint32_t ui32DriveTimeout;
 
-
-
     UARTprintf("Hardware Initialized\r\n");
 
     //
@@ -562,14 +536,10 @@ void usbConnect(void){
     //
     g_psMSCInstance = USBHMSCDriveOpen(0, MSCCallback);
 
-    //
     // Initialize the drive timeout.
-    //
     ui32DriveTimeout = USBMSC_DRIVE_RETRY;
 
-    //
-    // Initialize the USB controller for host operation.
-    //
+     // Initialize the USB controller for host operation.
     USBHCDInit(0, g_pHCDPool, HCD_MEMORY_SIZE);
 
     //Initialize File system
@@ -577,19 +547,15 @@ void usbConnect(void){
 
     while(1)
     {
-        //
         // Call the USB stack to keep it running.
-        //
         USBHCDMain();
 
         switch(g_eState)
         {
             case STATE_DEVICE_ENUM:
             {
-                //
                 // Take it easy on the Mass storage device if it is slow to
                 // start up after connecting.
-                //
                 if(USBHMSCDriveReady(g_psMSCInstance) != 0)
                 {
                     //
@@ -775,18 +741,6 @@ static bool FileInit(void) {
     return(true);
 }
 
-//*****************************************************************************
-//
-// This is the handler for this SysTick interrupt.  It simply increments a
-// counter that is used for timing.
-//
-//*****************************************************************************
-void SysTickHandler(void) {
-    //
-    // Update our tick counter.
-    //
-    g_ui32SysTickCount++;
-}
 
 //*****************************************************************************
 //
