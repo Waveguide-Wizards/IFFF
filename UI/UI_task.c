@@ -19,9 +19,10 @@
 
 /*  G L O B A L   V A R I A B L E S   */
 extern eState printer_state;
-extern TaskHandle_t thMotorTask;
-extern TaskHandle_t thExtruderTask;
-extern bool begin_motor_IT;
+extern TaskHandle_t thMemoryTask;
+
+extern bool begin_usb_connect;
+extern bool begin_file_transfer;
 
 void prv_UI(void *pvParameters)
 {
@@ -35,27 +36,40 @@ void prv_UI(void *pvParameters)
     // UI Main
     for(ever)
     {
-        if(printer_state == Idle && begin_motor_IT == true)
+        // signal uC to connect to USB
+        if(printer_state == Idle && begin_usb_connect == true)
         {
-            begin_motor_IT = false;
-            printer_state = Printing;
-            xTaskNotify(thMotorTask, MUI_TEST_PROCEDURE, eSetBits);
+            begin_usb_connect = false;
+            printer_state = Storage_Device_Inserted;
+            xTaskNotifyGive(thMemoryTask);
         }
-        else if(printer_state == Printing)
+
+        // wait for notification that device is connected to USB device
+        else if(printer_state == Storage_Device_Inserted)
+        {
+            // TODO change this to a message queue Notify Wait
+            ret = xTaskNotifyWait(UI_CLEAR_BITS_ON_ENTRY, UI_CLEAR_BITS_ON_EXIT, &error_code, UI_NOTIFY_WAIT_TIME);
+            if(ret == pdPASS)
+            {
+                printer_state = Select_Print;
+            }
+        }
+        // signal uC to begin memory transfer
+        else if(printer_state == Select_Print && begin_file_transfer == true)
+        {
+            begin_file_transfer = false;
+            // TODO change this so it sends filename
+            xTaskNotifyGive(thMemoryTask);
+        }
+        // wait for notification that transfer is complete
+        else if(printer_state == USB_Transfer)
         {
             ret = xTaskNotifyWait(UI_CLEAR_BITS_ON_ENTRY, UI_CLEAR_BITS_ON_EXIT, &error_code, UI_NOTIFY_WAIT_TIME);
             if(ret == pdPASS)
             {
-                UI_HandleErrors(error_code);
+                UI_MemTestComplete(error_code);
             }
         }
-
-        //check for notifications
-//        ret = xTaskNotifyWait(UI_CLEAR_BITS_ON_ENTRY, UI_CLEAR_BITS_ON_EXIT, &error_code, UI_NOTIFY_WAIT_TIME);
-//        if(ret == pdPASS)
-//        {
-//            UI_HandleErrors(error_code);
-//        }
 
         //continue normal UI operation
         WidgetMessageQueueProcess();
