@@ -290,10 +290,11 @@ void usbInit(void){
     uDMAEnable();
     uDMAControlBaseSet(g_psDMAControlTable);
 }
-
 void usbConnect(void){
-	char *fileName[] = {"POLYGO~1.GCO"};
+
 	uint32_t ui32DriveTimeout;
+
+
 
     UARTprintf("Hardware Initialized\r\n");
 
@@ -307,10 +308,14 @@ void usbConnect(void){
     //
     g_psMSCInstance = USBHMSCDriveOpen(0, MSCCallback);
 
+    //
     // Initialize the drive timeout.
+    //
     ui32DriveTimeout = USBMSC_DRIVE_RETRY;
 
-     // Initialize the USB controller for host operation.
+    //
+    // Initialize the USB controller for host operation.
+    //
     USBHCDInit(0, g_pHCDPool, HCD_MEMORY_SIZE);
 
     //Initialize File system
@@ -318,15 +323,19 @@ void usbConnect(void){
 
     while(1)
     {
+        //
         // Call the USB stack to keep it running.
+        //
         USBHCDMain();
 
         switch(g_eState)
         {
             case STATE_DEVICE_ENUM:
             {
+                //
                 // Take it easy on the Mass storage device if it is slow to
                 // start up after connecting.
+                //
                 if(USBHMSCDriveReady(g_psMSCInstance) != 0)
                 {
                     //
@@ -360,22 +369,12 @@ void usbConnect(void){
 
                 UARTprintf("USB Mass Storage Device Ready\r\n");
 
-                g_pcCwdBuf[0] = '/';
-                g_pcCwdBuf[1] = 0;
-
-                //READ FILE !!!
-
-                read_file(2, fileName);
-
-
-
                 g_ui32Flags = FLAGS_DEVICE_PRESENT;
 
 
-                if (isRead == 1){ // does this actually do anything
 
-                        return;
-                    }
+                return;
+
 
                 //break;
             }
@@ -457,7 +456,6 @@ void usbConnect(void){
     }
 
 }
-
 //void main(void)
 //{
 //
