@@ -8,6 +8,7 @@
 // *** Includes
 //
 #include "UI.h"
+#include "usb_host_msc.h"
 
 // *** Variables
 //
