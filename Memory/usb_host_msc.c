@@ -140,43 +140,12 @@ uint32_t address[] = {0x01, 0x00, 0x00};
 // no fkn main()
 //---------------------------------------------------------------------------
 int
-Cmd_cat(int argc, char *argv[])
+read_file(int argc, char *argv[])
 {
     FRESULT fresult;
     uint32_t ui32BytesRead;
 
-    //
-    // First, check to make sure that the current path (CWD), plus the file
-    // name, plus a separator and trailing null, will all fit in the temporary
-    // buffer that will be used to hold the file name.  The file name must be
-    // fully specified, with path, to FatFs.
-    //
-//    if(strlen(g_pcCwdBuf) + strlen(argv[1]) + 1 + 1 > sizeof(g_pcTmpBuf))
-//    {
-//        UARTprintf("Resulting path name is too long\n");
-//        return(0);
-//    }
-//
-//    //
-//    // Copy the current path to the temporary buffer so it can be manipulated.
-//    //
-//    strcpy(g_pcTmpBuf, g_pcCwdBuf);
-//
-//    //
-//    // If not already at the root level, then append a separator.
-//    //
-//    if(strcmp("/", g_pcCwdBuf))
-//    {
-//        strcat(g_pcTmpBuf, "/");
-//    }
-//
-//    //
-//    // Now finally, append the file name to result in a fully specified file.
-//    //
-//    strcat(g_pcTmpBuf, argv[1]);
 
-    //
-    // Open the file for reading.
     //
    fresult = f_open(&g_sFileObject, g_pcTmpBuf, FA_READ);
 
@@ -396,7 +365,7 @@ void usbConnect(void){
 
                 //READ FILE !!!
 
-                Cmd_cat(2, fileName);
+                read_file(2, fileName);
 
 
 
