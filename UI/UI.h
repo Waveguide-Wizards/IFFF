@@ -57,6 +57,9 @@
 //
 #define UI_MS_TO_TICKS(x)                   (x * 40000 / 3)
 #define UI_WARMUP_DELAY_TIME                40
+//
+#define UI_MAX_FILE_NUM                     3
+#define UI_MAX_FILENAME_LEN                 17
 
 // *** Function Definitions
 //
@@ -90,6 +93,7 @@ void UI_SliderMemConfrimFile(tWidget * psWidget, int32_t i32Value);
 void UI_OnSliderChange(tWidget *psWidget, int32_t i32Value);
 //
 void UI_HandleErrors(uint32_t err);
+void UI_UpdateFileNames(void);
 void UI_MemTestComplete(uint32_t bytes_written);
 
 

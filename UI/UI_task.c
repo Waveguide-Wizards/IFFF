@@ -23,6 +23,7 @@ extern TaskHandle_t thMemoryTask;
 
 extern bool begin_usb_connect;
 extern bool begin_file_transfer;
+extern uint32_t file_sel_index;
 
 void prv_UI(void *pvParameters)
 {
@@ -36,39 +37,49 @@ void prv_UI(void *pvParameters)
     // UI Main
     for(ever)
     {
-        // signal uC to connect to USB
-        if(printer_state == Idle && begin_usb_connect == true)
+        switch(printer_state)
         {
-            begin_usb_connect = false;
-            printer_state = Storage_Device_Inserted;
-            xTaskNotifyGive(thMemoryTask);
-        }
 
-        // wait for notification that device is connected to USB device
-        else if(printer_state == Storage_Device_Inserted)
-        {
-            // TODO change this to a message queue Notify Wait
-            ret = xTaskNotifyWait(UI_CLEAR_BITS_ON_ENTRY, UI_CLEAR_BITS_ON_EXIT, &error_code, UI_NOTIFY_WAIT_TIME);
+        case Idle:
+            /* wait for user to signal to begin memory IT */
+            if(begin_usb_connect == true)
+            {
+                begin_usb_connect = false;
+                printer_state = Storage_Device_Inserted;
+                xTaskNotifyGive(thMemoryTask);
+            }
+            break;
+
+        case Storage_Device_Inserted:
+            /* wait for notification that device is connected to USB device */
+            ret = ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
             if(ret == pdPASS)
             {
                 printer_state = Select_Print;
+                UI_UpdateFileNames();
             }
-        }
-        // signal uC to begin memory transfer
-        else if(printer_state == Select_Print && begin_file_transfer == true)
-        {
-            begin_file_transfer = false;
-            // TODO change this so it sends filename
-            xTaskNotifyGive(thMemoryTask);
-        }
-        // wait for notification that transfer is complete
-        else if(printer_state == USB_Transfer)
-        {
+            break;
+
+        case Select_Print:
+            /* wait for user to select file and notify uC to begin transfer */
+            if(begin_file_transfer == true)
+            {
+                begin_file_transfer = false;
+                printer_state = USB_Transfer;
+                xTaskNotify(thMemoryTask, file_sel_index, eSetValueWithOverwrite);
+            }
+            break;
+
+        case USB_Transfer:
+            /* wait for memory transfer to complete */
             ret = xTaskNotifyWait(UI_CLEAR_BITS_ON_ENTRY, UI_CLEAR_BITS_ON_EXIT, &error_code, UI_NOTIFY_WAIT_TIME);
             if(ret == pdPASS)
             {
+                printer_state = Printing;
                 UI_MemTestComplete(error_code);
             }
+            break;
+
         }
 
         //continue normal UI operation

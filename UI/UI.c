@@ -17,6 +17,7 @@
 bool begin_motor_IT;
 bool begin_file_transfer;
 bool begin_usb_connect;
+uint32_t file_sel_index;
 
 static tDMAControlTable psDMAControlTable[64];
 static tContext sContext;
@@ -29,9 +30,9 @@ extern tCanvasWidget g_psPanelsUI[];
 //******************************************************************************
 const char * UI_Filenames[] =
 {
-     " File 1",
-     " File 2",
-     " File 3"
+     "NULLNULLNULLNULL",
+     "NULLNULLNULLNULL",
+     "NULLNULLNULLNULL"
 };
 #define UI_NUM_FILES (sizeof(UI_Filenames) / sizeof(UI_Filenames[0]))
 
@@ -120,7 +121,6 @@ tPushButtonWidget pushButtons_MemSelectFile[] =
                              &g_sFontCm22, "3", g_pui8Blue50x50,
                              g_pui8Blue50x50Press, 125, 25, UI_MemSelectFile),
 };
-static uint8_t fileIndex = 0;
 
 //*****************************************************************************
 // 4 - Confirm File Selection Panel
@@ -450,7 +450,7 @@ void UI_OnFileSelPaint(tWidget *psWidget, tContext *psContext)
     GrStringDrawCentered(psContext, "File Selection:", -1,
                          GrContextDpyWidthGet(psContext) / 2, 32, 0);
 
-    GrStringDrawCentered(psContext, UI_Filenames[fileIndex], -1,
+    GrStringDrawCentered(psContext, UI_Filenames[file_sel_index], -1,
                          GrContextDpyWidthGet(psContext) / 2, 72, 0);
 
 }
@@ -770,7 +770,7 @@ void UI_MemSelectFile(tWidget *psWidget)
     }
 
     // Set File Index
-    fileIndex = ui32Idx;
+    file_sel_index = ui32Idx;
 
     // Remove the current panel.
     WidgetRemove((tWidget *)(g_psPanelsUI + g_ui32PanelUI));
@@ -868,6 +868,11 @@ void UI_HandleErrors(uint32_t err)
     // Add and draw the new panel.
     WidgetAdd(WIDGET_ROOT, (tWidget *)(g_psPanelsUI + g_ui32PanelUI));
     WidgetPaint((tWidget *)(g_psPanelsUI + g_ui32PanelUI));
+}
+
+void UI_UpdateFileNames(void)
+{
+    //TODO StrCpy to your local buffers
 }
 
 void UI_MemTestComplete(uint32_t bytes_written)
