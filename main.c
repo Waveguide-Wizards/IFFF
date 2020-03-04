@@ -18,6 +18,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
+#include "semphr.h"
 
 /*  A P P L I C A T I O N    I N C L U D E S   */
 #include "bsp.h"
@@ -57,6 +58,9 @@ TaskHandle_t thMotorTask = NULL;
 TaskHandle_t thUITask = NULL;
 TaskHandle_t thMemoryTask = NULL;
 
+/*  M U T E X E S   */
+SemaphoreHandle_t semPrintState;
+
 /*  Q U E U E S   */
 QueueHandle_t qFileName;
 
@@ -75,6 +79,9 @@ void main(void)
 
     configASSERT(MemoryReturned == pdPASS);
     configASSERT(UIReturned == pdPASS);
+
+    // Create Semaphore(s)
+    semPrintState = xSemaphoreCreateMutex();
 
     // Create Queue(s)
     qFileName = xQueueCreate(100, 17);

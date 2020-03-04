@@ -16,10 +16,12 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
+#include "semphr.h"
 
 /*  G L O B A L   V A R I A B L E S   */
 extern eState printer_state;
 extern TaskHandle_t thMemoryTask;
+extern SemaphoreHandle_t semPrintState;
 
 extern bool begin_usb_connect;
 extern bool begin_file_transfer;
@@ -40,7 +42,11 @@ void prv_UI(void *pvParameters)
         if(printer_state == Idle && begin_usb_connect == true)
         {
             begin_usb_connect = false;
+
+            xSemaphoreTake(semPrintState, 100);
             printer_state = Storage_Device_Inserted;
+            xSemaphoreGive(semPrintState);
+
             xTaskNotifyGive(thMemoryTask);
         }
 
@@ -51,7 +57,9 @@ void prv_UI(void *pvParameters)
             ret = xTaskNotifyWait(UI_CLEAR_BITS_ON_ENTRY, UI_CLEAR_BITS_ON_EXIT, &error_code, UI_NOTIFY_WAIT_TIME);
             if(ret == pdPASS)
             {
+                xSemaphoreTake(semPrintState, 100);
                 printer_state = Select_Print;
+                xSemaphoreGive(semPrintState);
             }
         }
         // signal uC to begin memory transfer

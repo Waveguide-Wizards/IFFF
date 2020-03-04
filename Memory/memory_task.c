@@ -16,6 +16,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
+#include "semphr.h"
 
 
 /*  G L O B A L   V A R I A B L E S   */
@@ -26,8 +27,9 @@ extern TaskHandle_t thUITask;
 extern TaskHandle_t thMemoryTask;
 
 extern QueueHandle_t qFileName;
+extern SemaphoreHandle_t semPrintState;
 
-
+/** Memory Tasks **/
 void prv_Memory(void *pvParameters)
 {
     static TickType_t delay_time = pdMS_TO_TICKS( 100 );
@@ -51,7 +53,9 @@ void prv_Memory(void *pvParameters)
 
         if(printer_state == Select_Print) {
             ulTaskNotifyTake(pdTRUE, portMAX_DELAY);    // wait until notification is RX'd
+            xSemaphoreTake(semPrintState, 100);
             printer_state = USB_Transfer;
+            xSemaphoreGive(semPrintState);
         }
 
         /* Where the fun stuff happens ;) */
