@@ -57,6 +57,9 @@ TaskHandle_t thMotorTask = NULL;
 TaskHandle_t thUITask = NULL;
 TaskHandle_t thMemoryTask = NULL;
 
+/*  Q U E U E S   */
+QueueHandle_t qFileName;
+
 
 /*   --- M A I N ---   */
 void main(void)
@@ -66,25 +69,18 @@ void main(void)
 
     configASSERT(SysCtlClockGet() == 20000000);
 
+    // Create Tasks
     BaseType_t UIReturned = xTaskCreate(prv_UI, "UI", 400, (void *)NULL, 1, &thUITask);
     BaseType_t MemoryReturned = xTaskCreate(prv_Memory, "Memory", 400, (void *)NULL, 2, &thMemoryTask);
 
     configASSERT(MemoryReturned == pdPASS);
     configASSERT(UIReturned == pdPASS);
 
+    // Create Queue(s)
+    qFileName = xQueueCreate(100, 17);
 
+    // initialize printer_state
     printer_state = Idle;
-
-#ifdef TEST_PREHEATING
-    printer_state = Preheating;
-    vTaskResume(thExtruderHeaterTask);
-    vTaskResume(thBedHeaterTask);
-#endif
-#ifdef TEST_CALIBRATION
-    printer_state = Calibration;
-    vTaskResume(thCalibration);
-    vTaskDelete(thConfig);
-#endif
 
     /* start scheduler */
     vTaskStartScheduler();
