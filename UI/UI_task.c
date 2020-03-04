@@ -76,6 +76,7 @@ void prv_UI(void *pvParameters)
             if(ret == pdPASS)
             {
                 printer_state = Printing;
+                vTaskSuspend(thMemoryTask);
                 UI_MemTestComplete(error_code);
             }
             break;
