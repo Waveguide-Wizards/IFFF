@@ -70,6 +70,7 @@ void main(void)
 
     usbConnect();
     //printFileStructure();
+    //test
     read_file(2,fileName);
     // set clock source to 16MHz external oscillator, use PLL and divide by 10 to get 20MHz
 
