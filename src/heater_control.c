@@ -78,32 +78,32 @@ void prvExtruderHeaterControl(void * prvParameters) {
         ex_temperature_v = adc_convert_to_v(ex_adc_value);
 
         // 3. Check for over voltage
-//        if(ex_temperature_v > MAX_EX_TEMPERATURE_V) {
-//            ex_heater_disable();
-//            add_error_to_list(Ex_Heater_Overheat);
-//            vTaskSuspend(thExtruderHeaterTask);
-//        }
-//        else {
+        if(ex_temperature_v > MAX_EX_TEMPERATURE_V) {
+            ex_heater_disable();
+            add_error_to_list(Ex_Heater_Overheat);
+            vTaskSuspend(thExtruderHeaterTask);
+        }
+        else {
             // 4. Update UI with latest temperature reading
-            // convert_v_to_celsius();
+//             convert_v_to_celsius();
 
             // 5. Pre-heat check
-//            if(ex_heater_ready == false) {
-//                if((ex_temperature_v >= (0.97 * extruder_target_voltage)) && (eTaskGetState(thMotorTask) == eSuspended)) {
-//                    ex_heater_ready = true;
-//                }
-//            }
-//            else {
-//                if(ex_heater_ready && bed_heater_ready) {
-//                    printer_state = Ready_To_Print;
-//                    vTaskResume(thMotorTask);
-//                }
-//            }
+            if(ex_heater_ready == false) {
+                if((ex_temperature_v >= (0.97 * extruder_target_voltage)) && (eTaskGetState(thMotorTask) == eSuspended)) {
+                    ex_heater_ready = true;
+                }
+            }
+            else {
+                if(ex_heater_ready && bed_heater_ready) {
+                    printer_state = Ready_To_Print;
+                    vTaskResume(thMotorTask);
+                }
+            }
 
             // 6. Calculate PID and Change PWM duty cycle based on PID calculation
-//            ex_heater_change_pwm_duty_cycle(PID_calculate(&extruder_heater_pid, ex_temperature_v));
-//            vTaskDelay(delay_time);
-//        }
+            ex_heater_change_pwm_duty_cycle(PID_calculate(&extruder_heater_pid, ex_temperature_v));
+            vTaskDelay(delay_time);
+        }
         vTaskDelay(delay_time);
     }
 }
@@ -129,76 +129,77 @@ void prvBedHeaterControl(void * prvParameters) {
         bed_temperature_v = adc_convert_to_v(bed_adc_value);
 
         // 3. Check for over voltage
-//        if(bed_temperature_v > MAX_BED_TEMPERATURE_V) {
-//            bed_heater_disable();
-//            add_error_to_list(Bed_Heater_Overheat);
-//            vTaskSuspend(thBedHeaterTask);
-//        }
-//        else {
-//            // 4. Update UI with latest temperature reading
-//            // convert_v_to_celsius();
-//
-//            // 5. Pre-heat check
-//            if(bed_heater_ready == false) {
-//                if((bed_temperature_v >= (0.97 * bed_target_voltage)) && (eTaskGetState(thMotorTask) == eSuspended)) {
-//                    bed_heater_ready = true;
-//                }
-//            }
-//            else {  // allow for printing to start
-//                if(ex_heater_ready && bed_heater_ready) {
-//                    printer_state = Ready_To_Print;
-//                    vTaskResume(thMotorTask);
-//                }
-//            }
-//
-//            // 6. Calculate PID and Change PWM duty cycle based on PID calculation
-//            bed_heater_change_pwm_duty_cycle(PID_calculate(&bed_heater_pid, bed_temperature_v));
-//            vTaskDelay(delay_time);
-//        }
+        if(bed_temperature_v > MAX_BED_TEMPERATURE_V) {
+            bed_heater_disable();
+            add_error_to_list(Bed_Heater_Overheat);
+            vTaskSuspend(thBedHeaterTask);
+        }
+        else {
+            // 4. Update UI with latest temperature reading
+            // convert_v_to_celsius();
+
+            // 5. Pre-heat check
+            if(bed_heater_ready == false) {
+                if((bed_temperature_v >= (0.97 * bed_target_voltage)) && (eTaskGetState(thMotorTask) == eSuspended)) {
+                    bed_heater_ready = true;
+                }
+            }
+            else {  // allow for printing to start
+                if(ex_heater_ready && bed_heater_ready) {
+                    printer_state = Ready_To_Print;
+                    vTaskResume(thMotorTask);
+                }
+            }
+
+            // 6. Calculate PID and Change PWM duty cycle based on PID calculation
+            bed_heater_change_pwm_duty_cycle(PID_calculate(&bed_heater_pid, bed_temperature_v));
+            vTaskDelay(delay_time);
+        }
         vTaskDelay(delay_time);
     }
 }
 
 // TODO - Fix all this stuff I just commented so it would build
-#warning "Heater Control Code Disabled"
+//#warning "Heater Control Code Disabled"
 
-///*  A D C   */
-//void init_extruder_heater_adc(void) {
-//    /* Configure ADC peripheral */
-//    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
-//    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-//    GPIOPinTypeADC(EX_HEATER_ADC_PORT, EX_HEATER_ADC_PIN);
-//    ADCSequenceConfigure(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, ADC_TRIGGER_PROCESSOR, 0);
-//    ADCSequenceStepConfigure(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, 0, EX_HEATER_ADC_CHANNEL | ADC_CTL_IE | ADC_CTL_END);
-//    ADCSequenceEnable(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
-//    ADCIntClear(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
-//}
-//
-//void init_bed_heater_adc(void) {
-//    /* Configure ADC peripheral */
-//    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC1);
-//    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-//    GPIOPinTypeADC(BED_HEATER_ADC_PORT, BED_HEATER_ADC_PIN);
-//    ADCSequenceConfigure(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, ADC_TRIGGER_PROCESSOR, 0);
-//    ADCSequenceStepConfigure(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, 0, BED_HEATER_ADC_CHANNEL | ADC_CTL_IE | ADC_CTL_END);
-//    ADCSequenceEnable(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
-//    ADCIntClear(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
-//}
-//
-//void ex_heater_get_adc(uint32_t * put_data) {
-//    ADCProcessorTrigger(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
-//    while(!ADCIntStatus(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, false));
-//    ADCIntClear(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
-//    ADCSequenceDataGet(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, put_data);
-//}
-//
-//void ex_bed_get_adc(uint32_t * put_data) {
-//    ADCProcessorTrigger(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
-//    while(!ADCIntStatus(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, false));
-//    ADCIntClear(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
-//    ADCSequenceDataGet(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, put_data);
-//}
-//
+/*  A D C   */
+void init_extruder_heater_adc(void) {
+    /* Configure ADC peripheral */
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC0);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+    GPIOPinTypeADC(EX_HEATER_ADC_PORT, EX_HEATER_ADC_PIN);
+    ADCSequenceConfigure(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, ADC_TRIGGER_PROCESSOR, 0);
+    ADCSequenceStepConfigure(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, 0, EX_HEATER_ADC_CHANNEL | ADC_CTL_IE | ADC_CTL_END);
+    ADCSequenceEnable(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
+    ADCIntClear(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
+}
+
+void init_bed_heater_adc(void) {
+    /* Configure ADC peripheral */
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_ADC1);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
+    GPIOPinTypeADC(BED_HEATER_ADC_PORT, BED_HEATER_ADC_PIN);
+    ADCSequenceConfigure(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, ADC_TRIGGER_PROCESSOR, 0);
+    ADCSequenceStepConfigure(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, 0, BED_HEATER_ADC_CHANNEL | ADC_CTL_IE | ADC_CTL_END);
+    ADCSequenceEnable(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
+    ADCIntClear(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
+}
+
+void ex_heater_get_adc(uint32_t * put_data) {
+    ADCProcessorTrigger(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
+    while(!ADCIntStatus(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, false));
+    ADCIntClear(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER);
+    ADCSequenceDataGet(EX_HEATER_ADC_BASE, EX_HEATER_ADC_SEQUENCER, put_data);
+}
+
+void ex_bed_get_adc(uint32_t * put_data) {
+    ADCProcessorTrigger(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
+    while(!ADCIntStatus(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, false));
+    ADCIntClear(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER);
+    ADCSequenceDataGet(BED_HEATER_ADC_BASE, BED_HEATER_ADC_SEQUENCER, put_data);
+}
+
+// TODO: Get PWM working for heater controllers
 ///*  P W M */
 //void init_extruder_heater_pwm(void) {
 //    SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
@@ -264,41 +265,41 @@ void prvBedHeaterControl(void * prvParameters) {
 //
 //    PWMOutputState(BED_HEATER_PWM_BASE, (1 << BED_HEATER_PWM_CHANNEL), true);
 //}
-//
-///* @param uint8_t duty_cycle: 0-100 */
-//void ex_heater_change_pwm_duty_cycle(uint8_t duty_cycle) {
-//    PWMPulseWidthSet(EX_HEATER_PWM_BASE, EX_HEATER_PWM_BLOCK, ((duty_cycle * CALC_PERIOD(PWM_FREQUENCY))/100));
-//}
-//
-///* @param uint8_t duty_cycle: 0-100 */
-//void bed_heater_change_pwm_duty_cycle(uint8_t duty_cycle) {
-//    PWMPulseWidthSet(EX_HEATER_PWM_BASE, EX_HEATER_PWM_BLOCK, ((duty_cycle * CALC_PERIOD(PWM_FREQUENCY))/100));
-//}
-//
-//void ex_heater_enable(void) {
-//    PWMOutputState(EX_HEATER_PWM_BASE, (1 << EX_HEATER_PWM_CHANNEL), true); // disables PWM output
-//    PWMGenEnable(EX_HEATER_PWM_BASE, PWM_GEN_0);                            // enables PWM
-//}
-//
-//void ex_heater_disable(void) {
-//    PWMOutputState(EX_HEATER_PWM_BASE, (1 << EX_HEATER_PWM_CHANNEL), false);    // disables PWM output
-//    PWMGenDisable(EX_HEATER_PWM_BASE, PWM_GEN_0);                               // disable PWM
-//}
-//
-//void bed_heater_enable(void) {
-//    PWMOutputState(BED_HEATER_PWM_BASE, (1 << BED_HEATER_PWM_CHANNEL), true);   // disables PWM output
-//    PWMGenEnable(BED_HEATER_PWM_BASE, PWM_GEN_0);                               // enables PWM
-//}
-//
-//void bed_heater_disable(void) {
-//    PWMOutputState(BED_HEATER_PWM_BASE, (1 << BED_HEATER_PWM_CHANNEL), false);  // disables PWM output
-//    PWMGenDisable(BED_HEATER_PWM_BASE, PWM_GEN_0);                              // disable PWM
-//}
-//
-//void emergency_heaters_disable(void) {
-//    ex_heater_disable();
-//    bed_heater_disable();
-//}
+
+/* @param uint8_t duty_cycle: 0-100 */
+void ex_heater_change_pwm_duty_cycle(uint8_t duty_cycle) {
+    PWMPulseWidthSet(EX_HEATER_PWM_BASE, EX_HEATER_PWM_BLOCK, ((duty_cycle * CALC_PERIOD(PWM_FREQUENCY))/100));
+}
+
+/* @param uint8_t duty_cycle: 0-100 */
+void bed_heater_change_pwm_duty_cycle(uint8_t duty_cycle) {
+    PWMPulseWidthSet(EX_HEATER_PWM_BASE, EX_HEATER_PWM_BLOCK, ((duty_cycle * CALC_PERIOD(PWM_FREQUENCY))/100));
+}
+
+void ex_heater_enable(void) {
+    PWMOutputState(EX_HEATER_PWM_BASE, (1 << EX_HEATER_PWM_CHANNEL), true); // disables PWM output
+    PWMGenEnable(EX_HEATER_PWM_BASE, PWM_GEN_0);                            // enables PWM
+}
+
+void ex_heater_disable(void) {
+    PWMOutputState(EX_HEATER_PWM_BASE, (1 << EX_HEATER_PWM_CHANNEL), false);    // disables PWM output
+    PWMGenDisable(EX_HEATER_PWM_BASE, PWM_GEN_0);                               // disable PWM
+}
+
+void bed_heater_enable(void) {
+    PWMOutputState(BED_HEATER_PWM_BASE, (1 << BED_HEATER_PWM_CHANNEL), true);   // disables PWM output
+    PWMGenEnable(BED_HEATER_PWM_BASE, PWM_GEN_0);                               // enables PWM
+}
+
+void bed_heater_disable(void) {
+    PWMOutputState(BED_HEATER_PWM_BASE, (1 << BED_HEATER_PWM_CHANNEL), false);  // disables PWM output
+    PWMGenDisable(BED_HEATER_PWM_BASE, PWM_GEN_0);                              // disable PWM
+}
+
+void emergency_heaters_disable(void) {
+    ex_heater_disable();
+    bed_heater_disable();
+}
 
 /* T E M P E R A T U R E */
 
