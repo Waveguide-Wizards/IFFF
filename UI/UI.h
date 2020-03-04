@@ -90,6 +90,7 @@ void UI_SliderMemConfrimFile(tWidget * psWidget, int32_t i32Value);
 void UI_OnSliderChange(tWidget *psWidget, int32_t i32Value);
 //
 void UI_HandleErrors(uint32_t err);
+void UI_MemTestComplete(uint32_t bytes_written);
 
 
 #endif /* UI_H_ */

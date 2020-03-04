@@ -13,7 +13,11 @@
 // *** Variables
 //
 #pragma DATA_ALIGN(psDMAControlTable, 1024)
+
 bool begin_motor_IT;
+bool begin_file_transfer;
+bool begin_usb_connect;
+
 static tDMAControlTable psDMAControlTable[64];
 static tContext sContext;
 static tRectangle sRect;
@@ -225,7 +229,9 @@ RectangularButton(g_sNextUI, 0, 0, 0, &g_sKentec320x240x16_SSD2119, 270, 190,
 //*****************************************************************************
 void UI_Init(uint32_t ui32SysClock)
 {
-    begin_motor_IT = false;
+    begin_motor_IT      = false;
+    begin_file_transfer = false;
+    begin_usb_connect   = false;
 
     FPUEnable();
     FPULazyStackingEnable();
@@ -692,6 +698,8 @@ void UI_SelectMemTest(tWidget *psWidget)
         return;
     }
 
+    begin_usb_connect = true;
+
     // Remove the current panel.
     WidgetRemove((tWidget *)(g_psPanelsUI + g_ui32PanelUI));
 
@@ -790,6 +798,8 @@ void UI_SliderMemConfrimFile(tWidget * psWidget, int32_t i32Value)
         // reset to 0
         SliderValueSet(&slider_ConfirmFile, 0);
 
+        begin_file_transfer = true;
+
         // Display the next button.
         PushButtonImageOn(&g_sNextUI);
         PushButtonTextOn(&g_sNextUI);
@@ -850,6 +860,27 @@ void UI_HandleErrors(uint32_t err)
 
     // set the panel index.
     g_ui32PanelUI = 9;
+
+    // Set the title of this panel.
+    CanvasTextSet(&g_sTitleUI, g_pcPanei32NamesUI[g_ui32PanelUI]);
+    WidgetPaint((tWidget *)&g_sTitleUI);
+
+    // Add and draw the new panel.
+    WidgetAdd(WIDGET_ROOT, (tWidget *)(g_psPanelsUI + g_ui32PanelUI));
+    WidgetPaint((tWidget *)(g_psPanelsUI + g_ui32PanelUI));
+}
+
+void UI_MemTestComplete(uint32_t bytes_written)
+{
+    //Error code DNE
+    if(bytes_written == 0)
+        return;
+
+    // Remove the current panel.
+    WidgetRemove((tWidget *)(g_psPanelsUI + g_ui32PanelUI));
+
+    // set the panel index.
+    g_ui32PanelUI = 6;
 
     // Set the title of this panel.
     CanvasTextSet(&g_sTitleUI, g_pcPanei32NamesUI[g_ui32PanelUI]);

@@ -27,7 +27,7 @@ extern TaskHandle_t thMemoryTask;
 void prv_Memory(void *pvParameters)
 {
     static TickType_t delay_time = pdMS_TO_TICKS( 100 );
-    static uint32_t error_code = 0;
+//    static uint32_t error_code = 0;
 
     // these init's might need to be moved to main if it crashes the OS
     usbInit();
@@ -42,6 +42,7 @@ void prv_Memory(void *pvParameters)
             /*
              * Get and display files here
              */
+
         }
 
         /* Intermediary state, so we do not receive two notifications
@@ -61,7 +62,7 @@ void prv_Memory(void *pvParameters)
              */
 
             // Once complete, change states
-            printer_state == Printing;
+            printer_state = Printing;
 
             /* The operation is complete.  Set the scheduler back into the Active
             state. */
