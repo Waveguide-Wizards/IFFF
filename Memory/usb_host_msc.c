@@ -600,7 +600,7 @@ void USBHCDEvents(void *pvData) {
 //*****************************************************************************
 // Prints the file structure on UART.
 //*****************************************************************************
-static int printFileStructure (void) {
+int printFileStructure (void) {
 	 g_pcCwdBuf[0] = '/';
 	 g_pcCwdBuf[1] = 0;
 

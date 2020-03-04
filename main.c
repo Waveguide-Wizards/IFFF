@@ -69,7 +69,7 @@ void main(void)
     char *fileName[] = {"POLYGO~1.GCO"};
 
     usbConnect();
-    //printFileStructure();
+    printFileStructure();
     //test
     read_file(2,fileName);
     // set clock source to 16MHz external oscillator, use PLL and divide by 10 to get 20MHz

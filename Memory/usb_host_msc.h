@@ -320,7 +320,7 @@ static bool FileInit(void);
 void SysTickHandler(void);
 static const char *StringFromFresult(FRESULT fresult);
 static void MSCCallback(tUSBHMSCInstance *ps32Instance, uint32_t ui32Event, void *pvData);
-static int printFileStructure (void);
+int printFileStructure (void);
 int read_file(int argc, char *argv[]);
 void usbInit(void);
 void usbConnect(void);
