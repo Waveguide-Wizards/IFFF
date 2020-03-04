@@ -1,35 +1,13 @@
-#include <stdbool.h>
-#include <stdint.h>
-#include <string.h>
 
-//------------------------------------------
-// Own Header File
-//------------------------------------------
+//---------------------------------------------------------------------------
+// main()
+//---------------------------------------------------------------------------
 #include "usb_host_msc.h"
-#include "uartstdio.h"
 
-//*****************************************************************************
-//
-// The following are data structures used by FatFs.
-//
-//*****************************************************************************
-static FATFS g_sFatFs;
-static DIR g_sDirObject;
-static FILINFO g_sFileInfo;
-static FIL g_sFileObject;
-
-unsigned int valueToSave;
+uint32_t address[] = {0x01, 0x00, 0x00};
 unsigned int isRead = 0;
-uint32_t ui32SysClock;
+tUSBHMSCInstance *g_psMSCInstance = 0;
 
-
-//*****************************************************************************
-//
-// A table that holds a mapping between the numerical FRESULT code and
-// it's name as a string.  This is used for looking up error codes and
-// providing a human-readable string.
-//
-//*****************************************************************************
 tFresultString g_sFresultStrings[] =
 {
     FRESULT_ENTRY(FR_OK),
@@ -54,99 +32,46 @@ tFresultString g_sFresultStrings[] =
     FRESULT_ENTRY(FR_INVALID_PARAMETER),
 };
 
-//*****************************************************************************
-//
-// Holds global flags for the system.
-//
-//*****************************************************************************
-static uint32_t g_ui32Flags = 0;
-
-//*****************************************************************************
-//
-// Hold the current state for the application.
-//
-//*****************************************************************************
-volatile enum
-{
-    // No device is present.
-    STATE_NO_DEVICE,
-
-    // Mass storage device is being enumerated.
-    STATE_DEVICE_ENUM,
-
-    // Mass storage device is ready.
-    STATE_DEVICE_READY,
-
-    // An unsupported device has been attached.
-    STATE_UNKNOWN_DEVICE,
-
-    // A mass storage device was connected but failed to ever report ready.
-    STATE_TIMEOUT_DEVICE,
-
-    // A power fault has occurred.
-    STATE_POWER_FAULT
-}
-g_eState;
-
-//*****************************************************************************
-//
-// The memory pool to provide to the Host controller driver.
-//
-//*****************************************************************************
-uint8_t g_pHCDPool[HCD_MEMORY_SIZE];
-
-
-//*****************************************************************************
-//
-// The instance data for the MSC driver.
-//
-//*****************************************************************************
-tUSBHMSCInstance *g_psMSCInstance = 0;
-
-//*****************************************************************************
-//
-// Declare the USB Events driver interface.
-//
-//*****************************************************************************
 DECLARE_EVENT_DRIVER(g_sUSBEventDriver, 0, 0, USBHCDEvents);
 
-//*****************************************************************************
-//
-// The global that holds all of the host drivers in use in the application.
-// In this case, only the MSC class is loaded.
-//
-//*****************************************************************************
 static tUSBHostClassDriver const * const g_ppHostClassDrivers[] =
 {
     &g_sUSBHostMSCClassDriver,
     &g_sUSBEventDriver
 };
 
-//*****************************************************************************
-//
-// This global holds the number of class drivers in the g_ppHostClassDrivers
-// list.
-//
-//*****************************************************************************
 static const uint32_t g_ui32NumHostClassDrivers =
     sizeof(g_ppHostClassDrivers) / sizeof(tUSBHostClassDriver *);
 
 
-//TODO: increment flash every read
-//Flash presets
-uint32_t address[] = {0x01, 0x00, 0x00};
 
-//---------------------------------------------------------------------------
-// no fkn main()
-//---------------------------------------------------------------------------
-int
-read_file(int argc, char *argv[])
+void uartInit(void)
+{
+
+
+    // Initialize UART0 (brought out to the console via the DEBUG USB port)
+    // RX --- PA0
+    // TX --- PA1
+    // NOTE: Uses the UARTstdio utility
+    //
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    GPIOPinConfigure(GPIO_PA0_U0RX);
+    GPIOPinConfigure(GPIO_PA1_U0TX);
+    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
+    UARTClockSourceSet(UART0_BASE, (UART_CLOCK_SYSTEM));
+    UARTStdioConfig(0, 115200, SysCtlClockGet());
+    IntEnable(INT_UART0);
+    UARTIntEnable(UART0_BASE, UART_INT_RX | UART_INT_RT);
+}
+
+int read_file(int argc, char *argv[])
 {
     FRESULT fresult;
     uint32_t ui32BytesRead;
 
 
-    //
+
    fresult = f_open(&g_sFileObject, g_pcTmpBuf, FA_READ);
 
     //
@@ -242,18 +167,21 @@ read_file(int argc, char *argv[])
 }
 
 void usbInit(void){
+    int nStatus;
+
     //
     // Set the main system clock to run from the PLL at 50MHz
     // Processor clock is calculated with (pll/2)/4 - > (400/2)/4 = 50
     // NOTE: For USB operation, it should be a minimum of 20MHz
     //
-//    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
+
+    SysCtlClockSet(SYSCTL_SYSDIV_4 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
 
     //
     // Get the System Clock Rate
     // 50 MHz
     //
-//    ui32SysClock = SysCtlClockGet();
+    ui32SysClock = SysCtlClockGet();
 
     // Enable USB0
     //
@@ -281,6 +209,13 @@ void usbInit(void){
     //
     USBHCDRegisterDrivers(0, g_ppHostClassDrivers, g_ui32NumHostClassDrivers);
 
+    //
+    // Configure SysTick for a 100Hz interrupt.
+    // Systick Period = 5000000 / 100 -> 500000
+    //
+    SysTickPeriodSet(SysCtlClockGet() / TICKS_PER_SECOND);
+    SysTickEnable();
+    SysTickIntEnable();
 
     //
     // Enable the uDMA controller and set up the control table base.
@@ -290,6 +225,7 @@ void usbInit(void){
     uDMAEnable();
     uDMAControlBaseSet(g_psDMAControlTable);
 }
+
 void usbConnect(void){
 
 	uint32_t ui32DriveTimeout;
@@ -456,38 +392,6 @@ void usbConnect(void){
     }
 
 }
-//void main(void)
-//{
-//
-//	//initialize USB
-//	usbInit();
-//
-//
-//
-//    // Initialize UART0 (brought out to the console via the DEBUG USB port)
-//    // RX --- PA0
-//    // TX --- PA1
-//    // NOTE: Uses the UARTstdio utility
-//    //
-//    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
-//    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-//    GPIOPinConfigure(GPIO_PA0_U0RX);
-//    GPIOPinConfigure(GPIO_PA1_U0TX);
-//    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
-//    UARTClockSourceSet(UART0_BASE, (UART_CLOCK_SYSTEM));
-//    UARTStdioConfig(0, 115200, SysCtlClockGet());
-//    IntEnable(INT_UART0);
-//    UARTIntEnable(UART0_BASE, UART_INT_RX | UART_INT_RT);
-//
-//    // Enable all Interrupts. TRY TO COMMENT THIS BACK IN
-//    // IntMasterEnable();
-//
-//    usbConnect();
-//
-//
-//}
-
-
 //*****************************************************************************
 //
 // Initializes the file system module.
@@ -510,6 +414,18 @@ static bool FileInit(void) {
     return(true);
 }
 
+//*****************************************************************************
+//
+// This is the handler for this SysTick interrupt.  It simply increments a
+// counter that is used for timing.
+//
+//*****************************************************************************
+void SysTickHandler(void) {
+    //
+    // Update our tick counter.
+    //
+    g_ui32SysTickCount++;
+}
 
 //*****************************************************************************
 //
@@ -685,6 +601,8 @@ void USBHCDEvents(void *pvData) {
 // Prints the file structure on UART.
 //*****************************************************************************
 static int printFileStructure (void) {
+	 g_pcCwdBuf[0] = '/';
+	 g_pcCwdBuf[1] = 0;
 
     uint32_t ui32ItemCount;
     FRESULT fresult;
@@ -763,17 +681,4 @@ static int printFileStructure (void) {
     // Made it to here, return with no errors.
     //
     return(0);
-}
-
-void uartInit(void)
-{
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_UART0);
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
-    GPIOPinConfigure(GPIO_PA0_U0RX);
-    GPIOPinConfigure(GPIO_PA1_U0TX);
-    GPIOPinTypeUART(GPIO_PORTA_BASE, GPIO_PIN_0 | GPIO_PIN_1);
-    UARTClockSourceSet(UART0_BASE, (UART_CLOCK_SYSTEM));
-    UARTStdioConfig(0, 115200, SysCtlClockGet());
-    IntEnable(INT_UART0);
-    UARTIntEnable(UART0_BASE, UART_INT_RX | UART_INT_RT);
 }

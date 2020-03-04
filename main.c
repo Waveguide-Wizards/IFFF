@@ -29,7 +29,10 @@
 #include "motor_control.h"
 #include "motorUITest.h"
 #include "UI_task.h"
-#include "memory_task.h"
+//#include "memory_task.h"
+
+//here for testing
+#include "usb_host_msc.h"
 
 
 /*  F R E E R T O S   H O O K S   */
@@ -61,7 +64,17 @@ TaskHandle_t thMemoryTask = NULL;
 /*   --- M A I N ---   */
 void main(void)
 {
+    usbInit();
+    uartInit();
+    char *fileName[] = {"POLYGO~1.GCO"};
+
+    usbConnect();
+    //printFileStructure();
+    //test
+    read_file(2,fileName);
     // set clock source to 16MHz external oscillator, use PLL and divide by 10 to get 20MHz
+
+    /*
     SysCtlClockSet(SYSCTL_SYSDIV_10 | SYSCTL_USE_PLL | SYSCTL_OSC_MAIN | SYSCTL_XTAL_16MHZ);
 
     configASSERT(SysCtlClockGet() == 20000000);
@@ -85,10 +98,11 @@ void main(void)
     vTaskResume(thCalibration);
     vTaskDelete(thConfig);
 #endif
-
+    */
     /* start scheduler */
-    vTaskStartScheduler();
-    for( ;; );
+    //vTaskStartScheduler();
+    //for( ;; );
+    while(1);
 }
 
 
