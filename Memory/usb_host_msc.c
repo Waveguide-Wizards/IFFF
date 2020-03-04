@@ -684,7 +684,7 @@ void USBHCDEvents(void *pvData) {
 //*****************************************************************************
 // Prints the file structure on UART.
 //*****************************************************************************
-static int printFileStructure (void) {
+int printFileStructure (void) {
 
     uint32_t ui32ItemCount;
     FRESULT fresult;

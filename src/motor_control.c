@@ -977,7 +977,7 @@ void PWM0Gen0IntHandler(void) {
 
 void PWM0Gen1IntHandler(void) {
     PWMIntDisable(PWM0_BASE, PWM_INT_GEN_1);
-    bool stop = 0;
+//    bool stop = 0;
     int flags = PWMGenIntStatus(PWM0_BASE, PWM_GEN_1, true);       // Get status of interrupts
     PWMGenIntClear(PWM0_BASE, PWM_GEN_1, flags);     // Clear interrupts
 

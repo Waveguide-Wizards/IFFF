@@ -192,11 +192,10 @@ void hardware_init(void);
 static bool FileInit(void);
 static const char *StringFromFresult(FRESULT fresult);
 static void MSCCallback(tUSBHMSCInstance *ps32Instance, uint32_t ui32Event, void *pvData);
-static int printFileStructure (void);
 int read_file(int argc, char *argv[]);
 void usbInit(void);
 void usbConnect(void);
-static int printFileStructure (void);
+int printFileStructure (void);
 void uartInit(void);
 
 #endif /* MEMORY_USB_HOST_MSC_H_ */
