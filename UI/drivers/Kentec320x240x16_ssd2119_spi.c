@@ -173,9 +173,13 @@
 #define LCD_RST_BASE            GPIO_PORTD_BASE
 #define LCD_RST_PIN             GPIO_PIN_7
 
-#define LCD_LED_PERIPH          SYSCTL_PERIPH_GPIOF
-#define LCD_LED_BASE            GPIO_PORTF_BASE
-#define LCD_LED_PIN             GPIO_PIN_2
+#define LCD_LED_PERIPH          SYSCTL_PERIPH_GPIOC
+#define LCD_LED_BASE            GPIO_PORTC_BASE
+#define LCD_LED_PIN             GPIO_PIN_4
+
+//#define LCD_LED_PERIPH          SYSCTL_PERIPH_GPIOF
+//#define LCD_LED_BASE            GPIO_PORTF_BASE
+//#define LCD_LED_PIN             GPIO_PIN_2
 
 //*****************************************************************************
 //

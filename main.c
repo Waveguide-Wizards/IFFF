@@ -1,3 +1,4 @@
+
 /*
  * IFFF
  *  Waveguide Wizards
@@ -73,8 +74,8 @@ void main(void)
     BaseType_t UIReturned = xTaskCreate(prv_UI, "UI", 400, (void *)NULL, 1, &thUITask);
     BaseType_t MemoryReturned = xTaskCreate(prv_Memory, "Memory", 400, (void *)NULL, 2, &thMemoryTask);
 
-    configASSERT(MemoryReturned == pdPASS);
     configASSERT(UIReturned == pdPASS);
+    configASSERT(MemoryReturned == pdPASS);
 
     // Create Queue(s)
     qFileName = xQueueCreate(100, 17);
