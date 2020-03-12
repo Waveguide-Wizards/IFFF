@@ -98,6 +98,7 @@ typedef struct {
 /*  T A S K S   */
 void prv_Motor(void *pvParameters);
 void prv_Extruder_Motor(void *pvParameters);
+void prv_BoardMotorTest(void *pvParameters);
 
 /*  F U N C T I O N S   */
 void find_direction(uint32_t instruction, Motor_t motor);

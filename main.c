@@ -55,6 +55,7 @@ TaskHandle_t thBedHeaterTask = NULL;
 TaskHandle_t thMotorTask = NULL;
 TaskHandle_t thMotorUITest = NULL;
 TaskHandle_t thUITask = NULL;
+TaskHandle_t thBoardMotorTest = NULL;
 
 
 /*   --- M A I N ---   */
@@ -80,10 +81,12 @@ void main(void)
     /* create tasks */
 
     // Priority 1
-    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 3, &thMotorTask);
+      BaseType_t BoardTestReturned = xTaskCreate(prv_BoardMotorTest, "Board Test", 500, (void *)NULL, 3, &thBoardMotorTest);
+
+//    BaseType_t XMotorReturned = xTaskCreate(prv_Motor, "Motor Control", 500, (void *)NULL, 3, &thMotorTask);
 //    vTaskSuspend(thMotorTask);
 
-    BaseType_t UIReturned = xTaskCreate(prv_UI, "UI", 400, (void *)NULL, 2, &thUITask);
+//    BaseType_t UIReturned = xTaskCreate(prv_UI, "UI", 400, (void *)NULL, 2, &thUITask);
 
 
 //    BaseType_t ExHeaterReturned = xTaskCreate(prvExtruderHeaterControl, "ExtruderHeater", 700, (void *)NULL, 2, &thExtruderHeaterTask);
@@ -92,7 +95,7 @@ void main(void)
 //    BaseType_t BedHeaterReturned = xTaskCreate(prvBedHeaterControl, "BedHeater", 500, (void *)NULL, 2, &thBedHeaterTask);
 //    vTaskSuspend(thBedHeaterTask);
 
-    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", 200, (void *)NULL, 1, &thErrorTask);
+//    BaseType_t ErrorCheckReturned = xTaskCreate(prv_ErrorCheck, "ErrorChecking", 200, (void *)NULL, 1, &thErrorTask);
 
     // Priority 2
 //    BaseType_t CalibrationReturned = xTaskCreate(prvCalibration, "Calibration", configMINIMAL_STACK_SIZE, (void *)NULL, 3, &thCalibration);
@@ -108,11 +111,11 @@ void main(void)
 //    configASSERT(XMotorReturned == pdPASS);
 //    configASSERT(ExHeaterReturned == pdPASS);
 //    configASSERT(BedHeaterReturned == pdPASS);
-    configASSERT(ErrorCheckReturned == pdPASS);
+//    configASSERT(ErrorCheckReturned == pdPASS);
 //    configASSERT(BlinkyReturned == pdPASS);
 //    configASSERT(MotorUITestReturned == pdPASS);
-    configASSERT(XMotorReturned == pdPASS);
-    configASSERT(UIReturned == pdPASS);
+//    configASSERT(XMotorReturned == pdPASS);
+//    configASSERT(UIReturned == pdPASS);
 
 
     printer_state = Idle;

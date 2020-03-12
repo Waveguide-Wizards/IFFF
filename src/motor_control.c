@@ -76,6 +76,24 @@ volatile Motor_Status_t Task_Status;
 
 
 /*  T A S K S   */
+
+void prv_BoardMotorTest(void *pvParameters)
+{
+    const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 1000 );  // TODO: switch to max port delay
+
+    init_all_motors();
+
+    while(1)
+    {
+        if(x_motor.direction == Forward) motor_set_direction(x_motor, Backward);
+        else motor_set_direction(x_motor, Forward);
+
+
+        motor_start(ULONG_MAX, 0, x_motor, STEP_16);
+        vTaskDelay(xMaxBlockTime);
+    }
+}
+
 void prv_Motor(void *pvParameters) {
     const TickType_t xMaxBlockTime = pdMS_TO_TICKS( 1000 );  // TODO: switch to max port delay
     BaseType_t NotifReceived;
@@ -351,7 +369,7 @@ void motor_init_x_pwm(void) {
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM0);         // The PWM peripheral must be enabled for use.
 
     /* init GPIO pin */
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);            // enable GPIO port if not already enabled
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOH);            // enable GPIO port if not already enabled
 
     /* setup and enable clock */
     SysCtlPWMClockSet(SYSCTL_PWMDIV_1);                 // Set the PWM clock to the system clock.
@@ -481,7 +499,7 @@ void motor_init_ex_pwm(void) {
     SysCtlPeripheralEnable(SYSCTL_PERIPH_PWM1);         // The PWM peripheral must be enabled for use.
 
     /* init GPIO pin */
-    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);            // enable GPIO port if not already enabled
+    SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);            // enable GPIO port if not already enabled
     GPIOPinConfigure(ex_motor.PWM_Pin_Map);                // configure pin for PWM
     GPIOPinTypePWM(ex_motor.STEP.base, ex_motor.STEP.pin);
 
@@ -544,10 +562,8 @@ void motor_init_x_gpio(void)
 
     // Enable Ports
 
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOA);
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOH);
+
 
     /* Set GPIO output pins */
     MAP_GPIODirModeSet(x_motor.M0.base, x_motor.M0.pin, GPIO_DIR_MODE_OUT);
@@ -601,8 +617,7 @@ void motor_init_y_gpio(void)
 
     MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
     MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOC);
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
+
 
 
 
@@ -659,9 +674,7 @@ void motor_init_z_gpio(void)
     // Enable Ports
 
     MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOE);
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOF);
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOD);
-    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOB);
+
 
     /* Set GPIO output pins */
     MAP_GPIODirModeSet(z_motor.M0.base, z_motor.M0.pin, GPIO_DIR_MODE_OUT);
@@ -711,10 +724,7 @@ void motor_init_ex_gpio(void) {
     ex_motor.STEP.pin    =  EX_STEP_PIN;
 
     // Enable Ports
-
-    MAP_SysCtlPeripheralEnable(ex_motor.M0.base);      // Port E
-    MAP_SysCtlPeripheralEnable(ex_motor.M1.base);      // Port J
-    MAP_SysCtlPeripheralEnable(ex_motor.NFAULT.base);  // Port H
+    MAP_SysCtlPeripheralEnable(SYSCTL_PERIPH_GPIOG);      // Port E
 
     /* Set GPIO output pins */
     MAP_GPIODirModeSet(ex_motor.M0.base, ex_motor.M0.pin, GPIO_DIR_MODE_OUT);
